@@ -84,10 +84,10 @@
     <input type="file" id="backupFileInput" accept=".json" class="hidden" onchange="handleImport(event)">
 
     <!-- ═══════════════════ TOOLBAR ═══════════════════ -->
-    <div class="no-print bg-white p-3 rounded-xl shadow-md mb-5 flex flex-col md:flex-row gap-3 items-center w-[95%] max-w-6xl justify-between border border-gray-300 sticky top-3 z-40">
+    <div class="no-print bg-white p-3 rounded-xl shadow-md mb-5 flex flex-col xl:flex-row gap-3 items-center w-[95%] max-w-7xl justify-between border border-gray-300 sticky top-3 z-40">
         
         <!-- Left: actions -->
-        <div class="flex flex-wrap gap-2 justify-center w-full md:w-auto">
+        <div class="flex flex-wrap gap-2 justify-center w-full xl:w-auto">
             <button onclick="saveCurrentInvoice()" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-save"></i> حفظ
             </button>
@@ -110,6 +110,16 @@
 
         <!-- Right: options + PDF -->
         <div class="flex flex-wrap gap-2 justify-center items-center">
+            
+            <!-- مؤشر الفائدة الصافية -->
+            <div id="profitBadgeContainer" class="flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200" title="الفائدة الصافية من الفاتورة الحالية (لا تظهر في الطباعة)">
+                <i class="fas fa-chart-line text-emerald-600"></i>
+                <span class="text-[11px] font-bold" dir="rtl">الفائدة:</span>
+                <span id="invoiceProfitDisplay" class="font-black text-sm" dir="ltr">0 DA</span>
+            </div>
+
+            <div class="h-6 w-px bg-gray-300 mx-1"></div>
+
             <!-- Checkboxes -->
             <div class="flex gap-2 border-r border-gray-300 pr-3">
                 <label class="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-gray-700 bg-white px-2.5 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100" dir="rtl">
@@ -476,29 +486,51 @@
 
     <!-- ═══════════════════ CATALOG MODAL ═══════════════════ -->
     <div id="catalogModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
             <div class="bg-blue-800 text-white px-6 py-4 flex justify-between items-center">
-                <h2 class="text-lg font-bold flex items-center gap-2"><i class="fas fa-database"></i> الكتالوج</h2>
+                <h2 class="text-lg font-bold flex items-center gap-2"><i class="fas fa-database"></i> الكتالوج وإدارة السلع</h2>
                 <button onclick="toggleCatalog(false)" class="text-gray-200 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-gray-100" dir="rtl">
-                <div class="bg-white p-4 rounded-xl shadow mb-4 border border-gray-200">
-                    <h3 id="formTitle" class="font-bold text-gray-800 mb-3">إضافة سلعة جديدة:</h3>
+                <div class="bg-white p-4 rounded-xl shadow mb-2 border border-gray-200">
+                    <h3 id="formTitle" class="font-bold text-gray-800 mb-3 text-sm">إضافة / تعديل سلعة:</h3>
                     <div class="flex flex-col md:flex-row gap-3">
                         <input type="text" id="newCatName" placeholder="Désignation..." class="flex-1 border-2 border-gray-300 rounded-lg px-4 py-2 font-bold focus:border-blue-500 outline-none" dir="ltr">
-                        <div class="flex gap-2">
-                            <input type="number" id="newCatPrice" placeholder="Prix" class="w-28 border-2 border-gray-300 rounded-lg px-3 py-2 font-bold focus:border-blue-500 outline-none" dir="ltr">
-                            <button id="btnSaveCatalog" onclick="saveOrUpdateCatalog()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-bold">حفظ</button>
-                            <button id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-bold">إلغاء</button>
+                        <div class="flex flex-wrap gap-2">
+                            <div class="relative w-28 md:w-32">
+                                <span class="absolute -top-2.5 right-2 bg-white px-1 text-[10px] font-bold text-gray-500">سعر الشراء</span>
+                                <input type="number" id="newCatPurchasePrice" placeholder="0" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-bold focus:border-blue-500 outline-none text-left" dir="ltr">
+                            </div>
+                            <div class="relative w-28 md:w-32">
+                                <span class="absolute -top-2.5 right-2 bg-white px-1 text-[10px] font-bold text-blue-600">سعر البيع</span>
+                                <input type="number" id="newCatPrice" placeholder="0" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-bold focus:border-blue-500 outline-none text-left" dir="ltr">
+                            </div>
+                            <button id="btnSaveCatalog" onclick="saveOrUpdateCatalog()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-bold flex-1 md:flex-none transition-transform active:scale-95">حفظ</button>
+                            <button id="btnCancelEdit" onclick="cancelEdit()" class="hidden bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-bold flex-1 md:flex-none transition-transform active:scale-95">إلغاء</button>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow overflow-x-auto" dir="ltr">
+
+                <div class="flex justify-between items-center mb-3 mt-4">
+                    <h3 class="font-bold text-gray-800 text-sm">قائمة السلع المتاحة:</h3>
+                    <div class="flex gap-2">
+                        <button onclick="sortCatalog('name')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+                            <i class="fas fa-sort-alpha-down text-blue-600"></i> ترتيب بالاسم
+                        </button>
+                        <button onclick="sortCatalog('price')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+                            <i class="fas fa-sort-numeric-down text-emerald-600"></i> ترتيب بسعر البيع
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow overflow-x-auto border border-gray-200" dir="ltr">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-gray-800 text-white">
                             <tr>
-                                <th class="py-3 px-4 font-bold">Désignation</th>
-                                <th class="py-3 px-4 font-bold">Prix</th>
+                                <th class="py-3 px-4 font-bold w-1/3">Désignation</th>
+                                <th class="py-3 px-4 font-bold text-gray-300">Achat (شراء)</th>
+                                <th class="py-3 px-4 font-bold text-blue-300">Vente (بيع)</th>
+                                <th class="py-3 px-4 font-bold text-emerald-400">Bénéfice (فائدة)</th>
                                 <th class="py-3 px-4 font-bold text-center">Actions</th>
                             </tr>
                         </thead>
@@ -521,6 +553,7 @@
         let editingCatId   = null;
         let currentTotalTTC = 0;
         let currentCurrency = 'DA';
+        let catalogSortOrder = { name: 1, price: 1 }; 
 
         // Color themes: [headerBg, accentText, buttonClass]
         const COLOR_THEMES = {
@@ -563,16 +596,11 @@
         function applyTheme(key) {
             activeTheme = key;
             const t = COLOR_THEMES[key];
-            // Header row
             const thead = document.getElementById('tableHead');
             if (thead) thead.style.background = t.bg;
-            // Page 2 footer border
             document.querySelectorAll('.border-t-\\[4px\\]').forEach(el => el.style.borderColor = t.bg);
-            // Invoice num color
             document.getElementById('invoiceNum').style.color = t.accent;
-            // Page borders
             document.querySelectorAll('.border-b-\\[3px\\]').forEach(el => el.style.borderColor = t.bg);
-            // Rebuild swatches to update active
             buildColorSwatches();
         }
 
@@ -643,10 +671,10 @@
         // ─── Data persistence ─────────────────────────────────────────────────
         function loadData() {
             const sc = localStorage.getItem('dafis_catalog');
-            catalogItems = sc ? JSON.parse(sc) : [
-                { id: 1, name: 'XVR Dahua 16ch 5Mp', price: 42000 },
-                { id: 2, name: 'Camera Dahua 5Mp Int', price: 12500 },
-                { id: 3, name: 'Cable COX (100m)', price: 30000 }
+            catalogItems = sc ? JSON.parse(sc).map(c => ({...c, purchasePrice: c.purchasePrice || 0})) : [
+                { id: 1, name: 'XVR Dahua 16ch 5Mp', purchasePrice: 35000, price: 42000 },
+                { id: 2, name: 'Camera Dahua 5Mp Int', purchasePrice: 9500, price: 12500 },
+                { id: 3, name: 'Cable COX (100m)', purchasePrice: 20000, price: 30000 }
             ];
             if (!sc) saveCatalog();
             const si = localStorage.getItem('dafis_history');
@@ -683,7 +711,7 @@
             reader.onload = e => {
                 try {
                     const d = JSON.parse(e.target.result);
-                    if (d.catalog) { catalogItems = d.catalog; saveCatalog(); }
+                    if (d.catalog) { catalogItems = d.catalog.map(c => ({...c, purchasePrice: c.purchasePrice || 0})); saveCatalog(); }
                     if (d.history) localStorage.setItem('dafis_history', JSON.stringify(d.history));
                     if (d.clients) localStorage.setItem('dafis_clients', JSON.stringify(d.clients));
                     initApp();
@@ -695,8 +723,8 @@
         }
 
         // ─── Invoice items ────────────────────────────────────────────────────
-        function addInvoiceItem(name='', qty=1, price=0) {
-            invoiceItems.push({ id: Date.now(), name, qty, price });
+        function addInvoiceItem(name='', qty=1, price=0, purchasePrice=0) {
+            invoiceItems.push({ id: Date.now(), name, qty, price, purchasePrice });
             renderInvoiceTable();
         }
         function removeInvoiceItem(id) {
@@ -710,6 +738,7 @@
             const cat = catalogItems.find(c => c.name.toLowerCase() === item.name.trim().toLowerCase());
             if (cat) {
                 item.price = cat.price;
+                item.purchasePrice = cat.purchasePrice || 0; // Sync purchase price
                 el.closest('tr').querySelector('.item-price-input').value = cat.price;
                 updateRowTotal(el.closest('tr'), item);
                 calculateTotals();
@@ -761,9 +790,13 @@
             calculateTotals();
         }
 
-        // ─── Totals ───────────────────────────────────────────────────────────
+        // ─── Totals & Profit ──────────────────────────────────────────────────
         function calculateTotals(manualTva = false) {
             const subTotal = invoiceItems.reduce((s, i) => s + i.qty * i.price, 0);
+            
+            // حساب الفائدة الإجمالية الصافية (سعر البيع - سعر الشراء) * الكمية
+            const totalProfit = invoiceItems.reduce((s, i) => s + (i.qty * (i.price - (i.purchasePrice || 0))), 0);
+            
             const totalFrais = extraCharges.reduce((s, c) => s + (parseFloat(c.amount) || 0), 0);
 
             const isTva = document.getElementById('toggleTva').checked;
@@ -792,6 +825,19 @@
             document.getElementById('rowVersement').style.display  = isVers ? 'table-row' : 'none';
             document.getElementById('rowReste').style.display      = isVers ? 'table-row' : 'none';
             document.getElementById('rowFrais').style.display      = totalFrais > 0 ? 'table-row' : 'none';
+
+            // تحديث شارة الفائدة
+            const profitBadge = document.getElementById('profitBadgeContainer');
+            const profitDisplay = document.getElementById('invoiceProfitDisplay');
+            profitDisplay.innerHTML = `${totalProfit > 0 ? '+' : ''}${totalProfit.toLocaleString('fr-FR')} <span class="text-[10px]">${cur}</span>`;
+            
+            if (totalProfit >= 0) {
+                profitBadge.className = 'flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200 transition-colors';
+                profitBadge.querySelector('i').className = 'fas fa-chart-line text-emerald-600';
+            } else {
+                profitBadge.className = 'flex items-center gap-1.5 bg-red-100 text-red-800 px-3 py-1.5 rounded-lg border border-red-200 transition-colors';
+                profitBadge.querySelector('i').className = 'fas fa-arrow-down text-red-600';
+            }
         }
 
         // ─── Invoice number auto-increment ────────────────────────────────────
@@ -851,7 +897,7 @@
                 versementActive: document.getElementById('toggleVersement').checked,
                 versement: parseFloat(document.getElementById('versementInput').value) || 0,
                 extraCharges: [...extraCharges],
-                itemsSnapshot: [...invoiceItems]
+                itemsSnapshot: [...invoiceItems] // This now includes purchasePrice
             };
             const idx = savedInvoices.findIndex(i => i.num === invoiceNum);
             if (idx !== -1) { newInv.status = savedInvoices[idx].status; savedInvoices[idx] = newInv; }
@@ -879,7 +925,8 @@
             document.getElementById('versementInput').value = inv.versement || 0;
             if (inv.currency) { currentCurrency = inv.currency; document.getElementById('currencySelect').value = inv.currency; updateCurrency(); }
             extraCharges = inv.extraCharges ? [...inv.extraCharges] : [];
-            invoiceItems = inv.itemsSnapshot.map(i => ({...i}));
+            // Ensure backwards compatibility by setting default purchasePrice if not present
+            invoiceItems = inv.itemsSnapshot.map(i => ({...i, purchasePrice: i.purchasePrice || 0}));
             syncInvoiceData(); renderInvoiceTable(); renderExtraCharges(); calculateTotals(true);
             toggleHistory(false); generateQR();
         }
@@ -968,18 +1015,42 @@
             if (show) { renderCatalog(); m.classList.remove('hidden'); }
             else m.classList.add('hidden');
         }
+
+        function sortCatalog(criteria) {
+            if (criteria === 'name') {
+                catalogItems.sort((a, b) => a.name.localeCompare(b.name) * catalogSortOrder.name);
+                catalogSortOrder.name *= -1; // Toggle desc/asc
+            } else if (criteria === 'price') {
+                catalogItems.sort((a, b) => (a.price - b.price) * catalogSortOrder.price);
+                catalogSortOrder.price *= -1; // Toggle desc/asc
+            }
+            saveCatalog();
+            renderCatalog();
+        }
+
         function renderCatalog() {
             const tbody = document.getElementById('catalogTableBody');
             tbody.innerHTML = '';
             catalogItems.forEach(item => {
+                const purchasePrice = item.purchasePrice || 0;
+                const sellingPrice = item.price || 0;
+                const profit = sellingPrice - purchasePrice;
+                
+                let profitClass = 'text-gray-400';
+                let profitSign = '';
+                if (profit > 0) { profitClass = 'text-emerald-500'; profitSign = '+'; }
+                else if (profit < 0) { profitClass = 'text-red-500'; }
+
                 tbody.innerHTML += `
                     <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="py-2 px-4 font-bold text-gray-800">${item.name}</td>
-                        <td class="py-2 px-4 font-black text-gray-600">${item.price.toLocaleString('fr-FR')}</td>
-                        <td class="py-2 px-4 text-center">
-                            <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${item.price})" class="text-green-600 hover:bg-green-100 p-1.5 rounded" title="Ajouter"><i class="fas fa-plus"></i></button>
-                            <button onclick="editCatalogItem(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded"><i class="fas fa-pen"></i></button>
-                            <button onclick="deleteFromCatalog(${item.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded"><i class="fas fa-trash"></i></button>
+                        <td class="py-2.5 px-4 font-bold text-gray-800">${item.name}</td>
+                        <td class="py-2.5 px-4 font-bold text-gray-500">${purchasePrice.toLocaleString('fr-FR')}</td>
+                        <td class="py-2.5 px-4 font-black text-blue-700">${sellingPrice.toLocaleString('fr-FR')}</td>
+                        <td class="py-2.5 px-4 font-black ${profitClass}" dir="ltr">${profitSign}${profit.toLocaleString('fr-FR')}</td>
+                        <td class="py-2.5 px-4 text-center">
+                            <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded" title="إضافة للفاتورة"><i class="fas fa-plus"></i></button>
+                            <button onclick="editCatalogItem(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded" title="تعديل"><i class="fas fa-pen"></i></button>
+                            <button onclick="deleteFromCatalog(${item.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded" title="حذف"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
@@ -987,7 +1058,9 @@
         function editCatalogItem(id) {
             const item = catalogItems.find(i => i.id === id);
             document.getElementById('newCatName').value  = item.name;
+            document.getElementById('newCatPurchasePrice').value = item.purchasePrice || 0;
             document.getElementById('newCatPrice').value = item.price;
+            
             editingCatId = id;
             document.getElementById('btnSaveCatalog').innerText = 'تحديث';
             document.getElementById('btnCancelEdit').classList.remove('hidden');
@@ -995,20 +1068,43 @@
         function cancelEdit() {
             editingCatId = null;
             document.getElementById('newCatName').value  = '';
+            document.getElementById('newCatPurchasePrice').value = '';
             document.getElementById('newCatPrice').value = '';
+            
             document.getElementById('btnSaveCatalog').innerText = 'حفظ';
             document.getElementById('btnCancelEdit').classList.add('hidden');
         }
         function saveOrUpdateCatalog() {
             const name  = document.getElementById('newCatName').value.trim();
-            const price = parseFloat(document.getElementById('newCatPrice').value) || 0;
+            const purchasePrice = parseFloat(document.getElementById('newCatPurchasePrice').value) || 0;
+            const price = parseFloat(document.getElementById('newCatPrice').value) || 0; // selling price
+            
             if (!name) return;
-            if (editingCatId) { const item = catalogItems.find(i => i.id === editingCatId); item.name = name; item.price = price; }
-            else catalogItems.push({ id: Date.now(), name, price });
-            saveCatalog(); renderCatalog(); cancelEdit(); renderInvoiceTable();
+            
+            if (editingCatId) { 
+                const item = catalogItems.find(i => i.id === editingCatId); 
+                item.name = name; 
+                item.purchasePrice = purchasePrice;
+                item.price = price; 
+            }
+            else {
+                catalogItems.push({ id: Date.now(), name, purchasePrice, price });
+            }
+            
+            saveCatalog(); 
+            renderCatalog(); 
+            cancelEdit(); 
+            // Re-render table in case we edited an item that is currently in the invoice
+            invoiceItems.forEach(invItem => {
+                if(invItem.name.toLowerCase() === name.toLowerCase()) {
+                    invItem.price = price;
+                    invItem.purchasePrice = purchasePrice;
+                }
+            });
+            renderInvoiceTable();
         }
         function deleteFromCatalog(id) {
-            if (!confirm('حذف السلعة؟')) return;
+            if (!confirm('حذف السلعة من الكتالوج؟')) return;
             catalogItems = catalogItems.filter(i => i.id !== id);
             saveCatalog(); renderCatalog();
         }
@@ -1142,3 +1238,6 @@
     </script>
 </body>
 </html>
+
+
+```
