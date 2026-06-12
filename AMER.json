@@ -1,0 +1,392 @@
+{
+  "catalog": [
+    {
+      "id": 1780921722334,
+      "name": "Alimentation",
+      "price": 100
+    },
+    {
+      "id": 1780921582109,
+      "name": "Armoire 2U",
+      "price": 0
+    },
+    {
+      "id": 1780921600165,
+      "name": "Armoire 4U",
+      "price": 0
+    },
+    {
+      "id": 1780921606630,
+      "name": "Armoire 6U",
+      "price": 0
+    },
+    {
+      "id": 1780921612498,
+      "name": "Armoire 8U",
+      "price": 0
+    },
+    {
+      "id": 1780921767179,
+      "name": "Bloc Alimentation 18cnx",
+      "price": 0
+    },
+    {
+      "id": 1780921753352,
+      "name": "Bloc Alimentation 5cnx",
+      "price": 0
+    },
+    {
+      "id": 1780921759885,
+      "name": "Bloc Alimentation 9cnx",
+      "price": 0
+    },
+    {
+      "id": 1780921690005,
+      "name": "BNC",
+      "price": 100
+    },
+    {
+      "id": 1780921496780,
+      "name": "Cam Dahua 5MP CAISSE",
+      "price": 0
+    },
+    {
+      "id": 1780921385238,
+      "name": "Cam Dahua 5MP EXT",
+      "price": 0
+    },
+    {
+      "id": 1780921409957,
+      "name": "Cam Dahua 5MP EXT AUDIO",
+      "price": 0
+    },
+    {
+      "id": 1780921438616,
+      "name": "Cam Dahua 5MP EXT Full color",
+      "price": 0
+    },
+    {
+      "id": 1780921509355,
+      "name": "Cam Dahua 5MP EXT Zoom",
+      "price": 0
+    },
+    {
+      "id": 1780921402018,
+      "name": "Cam Dahua 5MP INT",
+      "price": 0
+    },
+    {
+      "id": 1780921419495,
+      "name": "Cam Dahua 5MP INT AUDIO",
+      "price": 0
+    },
+    {
+      "id": 1780921458861,
+      "name": "Cam Dahua 5MP INT Full color",
+      "price": 0
+    },
+    {
+      "id": 1780921522154,
+      "name": "Cam Dahua 5MP INT Zoom",
+      "price": 0
+    },
+    {
+      "id": 1780921552485,
+      "name": "Cam Dahua Mini PTZ Full color",
+      "price": 0
+    },
+    {
+      "id": 1780921565791,
+      "name": "Cam Dahua PTZ",
+      "price": 0
+    },
+    {
+      "id": 1780921708760,
+      "name": "Connecteur RG45",
+      "price": 0
+    },
+    {
+      "id": 1780922311925,
+      "name": "Extender HDMI",
+      "price": 0
+    },
+    {
+      "id": 1780922202126,
+      "name": "Hdmi 10m",
+      "price": 1600
+    },
+    {
+      "id": 1780922250240,
+      "name": "Hdmi 15m",
+      "price": 0
+    },
+    {
+      "id": 1780922230456,
+      "name": "Hdmi 1m",
+      "price": 0
+    },
+    {
+      "id": 1780922255295,
+      "name": "Hdmi 30m",
+      "price": 0
+    },
+    {
+      "id": 1780922237447,
+      "name": "Hdmi 3m",
+      "price": 0
+    },
+    {
+      "id": 1780922243913,
+      "name": "Hdmi 5m",
+      "price": 0
+    },
+    {
+      "id": 1780922378254,
+      "name": "KVM 120m",
+      "price": 0
+    },
+    {
+      "id": 1780922365167,
+      "name": "KVM 30m",
+      "price": 0
+    },
+    {
+      "id": 1780922371924,
+      "name": "KVM 60m",
+      "price": 0
+    },
+    {
+      "id": 1780921682375,
+      "name": "Prise RG45",
+      "price": 0
+    },
+    {
+      "id": 1780921953983,
+      "name": "Souris Dahua",
+      "price": 2500
+    },
+    {
+      "id": 1780922353881,
+      "name": "Spliter",
+      "price": 0
+    },
+    {
+      "id": 1780921640681,
+      "name": "Support SC 30cm",
+      "price": 0
+    },
+    {
+      "id": 1780921646372,
+      "name": "Support SC 50cm",
+      "price": 0
+    },
+    {
+      "id": 1780922179041,
+      "name": "Switch 5P 1GB Tenda",
+      "price": 5000
+    },
+    {
+      "id": 1780921238522,
+      "name": "XVR Dahua, 16CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921286933,
+      "name": "XVR Dahua, 16CH 5MP i3",
+      "price": 0
+    },
+    {
+      "id": 1780921349281,
+      "name": "XVR Dahua, 16CH 5MP PRO",
+      "price": 0
+    },
+    {
+      "id": 1780921248373,
+      "name": "XVR Dahua, 32CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921296637,
+      "name": "XVR Dahua, 32CH 5MP i3",
+      "price": 0
+    },
+    {
+      "id": 1780921357506,
+      "name": "XVR Dahua, 32CH 5MP PRO",
+      "price": 0
+    },
+    {
+      "id": 1780921209899,
+      "name": "XVR Dahua, 4CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921262472,
+      "name": "XVR Dahua, 4CH 5MP i3",
+      "price": 0
+    },
+    {
+      "id": 1780921324823,
+      "name": "XVR Dahua, 4CH 5MP PRO",
+      "price": 0
+    },
+    {
+      "id": 1780921230309,
+      "name": "XVR Dahua, 8CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921277633,
+      "name": "XVR Dahua, 8CH 5MP i3",
+      "price": 0
+    },
+    {
+      "id": 1780921342025,
+      "name": "XVR Dahua, 8CH 5MP PRO",
+      "price": 0
+    }
+  ],
+  "history": [
+    {
+      "id": 1780947640019,
+      "num": "2026",
+      "date": "08/06/2026",
+      "client": "Amer",
+      "total": 498080,
+      "status": "unpaid",
+      "tva": 0,
+      "versement": 0,
+      "itemsSnapshot": [
+        {
+          "id": 1780944790172.243,
+          "name": "Cam Dahua 5MP EXT",
+          "qty": 2,
+          "price": 9500
+        },
+        {
+          "id": 1780944834294.9238,
+          "name": "Cam Dahua 5MP INT",
+          "qty": 23,
+          "price": 8500
+        },
+        {
+          "id": 1780944837368.3489,
+          "name": "Cam Dahua 5MP INT AUDIO",
+          "qty": 3,
+          "price": 12000
+        },
+        {
+          "id": 1780944847791.2358,
+          "name": "XVR Dahua, 32CH 5MP i3",
+          "qty": 1,
+          "price": 88000
+        },
+        {
+          "id": 1780944857280.7537,
+          "name": "Armoire 6U",
+          "qty": 1,
+          "price": 12000
+        },
+        {
+          "id": 1780944866486.4272,
+          "name": "Bloc Alimentation 18cnx",
+          "qty": 2,
+          "price": 7000
+        },
+        {
+          "id": 1780944999191.292,
+          "name": "HDD 8 TB spécial télésurveillance ",
+          "qty": 1,
+          "price": 65000
+        },
+        {
+          "id": 1780945000792.27,
+          "name": "Boit derivation",
+          "qty": 2,
+          "price": 750
+        },
+        {
+          "id": 1780945069908.8584,
+          "name": "HDMI PRO 30m 4K",
+          "qty": 1,
+          "price": 6500
+        },
+        {
+          "id": 1780945120792.5073,
+          "name": "CABLE COX (ENV)",
+          "qty": 300,
+          "price": 100
+        },
+        {
+          "id": 1780945167384.6462,
+          "name": "BNC",
+          "qty": 56,
+          "price": 90
+        },
+        {
+          "id": 1780945218666.0713,
+          "name": "ALIMENTATION",
+          "qty": 28,
+          "price": 80
+        },
+        {
+          "id": 1780945248764.3757,
+          "name": "Cable RG 45",
+          "qty": 100,
+          "price": 130
+        },
+        {
+          "id": 1780945292927.4832,
+          "name": "Prise resau",
+          "qty": 5,
+          "price": 1000
+        },
+        {
+          "id": 1780945321328.6936,
+          "name": "Goulotte PM",
+          "qty": 5,
+          "price": 200
+        },
+        {
+          "id": 1780945353683.0212,
+          "name": "Goulotte GM",
+          "qty": 1,
+          "price": 300
+        },
+        {
+          "id": 1780946400818.0647,
+          "name": "Switcher Tenda",
+          "qty": 1,
+          "price": 0
+        },
+        {
+          "id": 1780946404657.656,
+          "name": "Souris sans fille",
+          "qty": 1,
+          "price": 2000
+        },
+        {
+          "id": 1780946468738.4128,
+          "name": "clé wifi",
+          "qty": 1,
+          "price": 2000
+        },
+        {
+          "id": 1780946469529.909,
+          "name": "",
+          "qty": 0,
+          "price": 0
+        },
+        {
+          "id": 1780946470278.268,
+          "name": "",
+          "qty": 0,
+          "price": 0
+        }
+      ]
+    }
+  ],
+  "clients": [
+    "Amer"
+  ]
+}

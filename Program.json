@@ -1,0 +1,622 @@
+{
+  "catalog": [
+    {
+      "id": 1780921722334,
+      "name": "Alimentation",
+      "price": 100
+    },
+    {
+      "id": 1780921582109,
+      "name": "Armoire 2U",
+      "price": 7500
+    },
+    {
+      "id": 1780921600165,
+      "name": "Armoire 4U",
+      "price": 9000
+    },
+    {
+      "id": 1780921606630,
+      "name": "Armoire 6U",
+      "price": 12000
+    },
+    {
+      "id": 1780921612498,
+      "name": "Armoire 8U",
+      "price": 0
+    },
+    {
+      "id": 1780921767179,
+      "name": "Bloc Alimentation 18cnx",
+      "price": 8000
+    },
+    {
+      "id": 1780921753352,
+      "name": "Bloc Alimentation 5cnx",
+      "price": 5000
+    },
+    {
+      "id": 1780921759885,
+      "name": "Bloc Alimentation 9cnx",
+      "price": 6500
+    },
+    {
+      "id": 1780921690005,
+      "name": "BNC",
+      "price": 100
+    },
+    {
+      "id": 1780921496780,
+      "name": "Cam Dahua 5MP CAISSE",
+      "price": 25000
+    },
+    {
+      "id": 1780921385238,
+      "name": "Cam Dahua 5MP EXT",
+      "price": 14000
+    },
+    {
+      "id": 1780921409957,
+      "name": "Cam Dahua 5MP EXT AUDIO",
+      "price": 15000
+    },
+    {
+      "id": 1780921438616,
+      "name": "Cam Dahua 5MP EXT Full color",
+      "price": 25000
+    },
+    {
+      "id": 1780921509355,
+      "name": "Cam Dahua 5MP EXT Zoom",
+      "price": 25000
+    },
+    {
+      "id": 1780921402018,
+      "name": "Cam Dahua 5MP INT",
+      "price": 12000
+    },
+    {
+      "id": 1780921419495,
+      "name": "Cam Dahua 5MP INT AUDIO",
+      "price": 13000
+    },
+    {
+      "id": 1780921458861,
+      "name": "Cam Dahua 5MP INT Full color",
+      "price": 0
+    },
+    {
+      "id": 1780921522154,
+      "name": "Cam Dahua 5MP INT Zoom",
+      "price": 0
+    },
+    {
+      "id": 1780921552485,
+      "name": "Cam Dahua Mini PTZ Full color",
+      "price": 28000
+    },
+    {
+      "id": 1780921565791,
+      "name": "Cam Dahua PTZ",
+      "price": 0
+    },
+    {
+      "id": 1780921708760,
+      "name": "Connecteur RG45",
+      "price": 150
+    },
+    {
+      "id": 1780922311925,
+      "name": "Extender HDMI",
+      "price": 0
+    },
+    {
+      "id": 1780922202126,
+      "name": "Hdmi 10m",
+      "price": 2000
+    },
+    {
+      "id": 1780922250240,
+      "name": "Hdmi 15m",
+      "price": 0
+    },
+    {
+      "id": 1780922230456,
+      "name": "Hdmi 1m",
+      "price": 0
+    },
+    {
+      "id": 1780922255295,
+      "name": "Hdmi 30m 4K",
+      "price": 8000
+    },
+    {
+      "id": 1780922237447,
+      "name": "Hdmi 3m",
+      "price": 0
+    },
+    {
+      "id": 1780922243913,
+      "name": "Hdmi 5m",
+      "price": 0
+    },
+    {
+      "id": 1780922378254,
+      "name": "KVM 120m",
+      "price": 22000
+    },
+    {
+      "id": 1780922365167,
+      "name": "KVM 30m",
+      "price": 9000
+    },
+    {
+      "id": 1780922371924,
+      "name": "KVM 60m",
+      "price": 12500
+    },
+    {
+      "id": 1780921682375,
+      "name": "Prise RG45",
+      "price": 1500
+    },
+    {
+      "id": 1780921953983,
+      "name": "Souris Dahua",
+      "price": 2500
+    },
+    {
+      "id": 1780922353881,
+      "name": "Spliter",
+      "price": 0
+    },
+    {
+      "id": 1780921640681,
+      "name": "Support SC 30cm",
+      "price": 2000
+    },
+    {
+      "id": 1780921646372,
+      "name": "Support SC 50cm",
+      "price": 2500
+    },
+    {
+      "id": 1780922179041,
+      "name": "Switch 5P 1GB Tenda",
+      "price": 5000
+    },
+    {
+      "id": 1780921238522,
+      "name": "XVR Dahua, 16CH 5MP COPER",
+      "price": 36000
+    },
+    {
+      "id": 1780921286933,
+      "name": "XVR Dahua, 16CH 5MP i3",
+      "price": 44000
+    },
+    {
+      "id": 1780921349281,
+      "name": "XVR Dahua, 16CH 5MP PRO",
+      "price": 0
+    },
+    {
+      "id": 1780921248373,
+      "name": "XVR Dahua, 32CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921296637,
+      "name": "XVR Dahua, 32CH 5MP i3",
+      "price": 90000
+    },
+    {
+      "id": 1780921357506,
+      "name": "XVR Dahua, 32CH 5MP PRO",
+      "price": 140000
+    },
+    {
+      "id": 1780921209899,
+      "name": "XVR Dahua, 4CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921262472,
+      "name": "XVR Dahua, 4CH 5MP i3",
+      "price": 0
+    },
+    {
+      "id": 1780921324823,
+      "name": "XVR Dahua, 4CH 5MP PRO",
+      "price": 0
+    },
+    {
+      "id": 1780921230309,
+      "name": "XVR Dahua, 8CH 5MP COPER",
+      "price": 0
+    },
+    {
+      "id": 1780921277633,
+      "name": "XVR Dahua, 8CH 5MP i3",
+      "price": 0
+    },
+    {
+      "id": 1780921342025,
+      "name": "XVR Dahua, 8CH 5MP PRO",
+      "price": 0
+    },
+    {
+      "id": 1781279776154,
+      "name": "Switch Resau 5P 1GB Tenda",
+      "price": 6000
+    },
+    {
+      "id": 1781279874451,
+      "name": "Cable RG45",
+      "price": 180
+    },
+    {
+      "id": 1781279889279,
+      "name": "Cable COX",
+      "price": 120
+    },
+    {
+      "id": 1781280500616,
+      "name": "Support SC T 30cm",
+      "price": 3000
+    },
+    {
+      "id": 1781280515679,
+      "name": "Support SC L 30cm",
+      "price": 2500
+    },
+    {
+      "id": 1781280556882,
+      "name": "HDD 500GB",
+      "price": 5000
+    },
+    {
+      "id": 1781280582820,
+      "name": "HDD 1TB",
+      "price": 10000
+    },
+    {
+      "id": 1781280595450,
+      "name": "HDD 2TB",
+      "price": 18000
+    },
+    {
+      "id": 1781280622671,
+      "name": "HDD 4TB NRML",
+      "price": 32000
+    },
+    {
+      "id": 1781280642789,
+      "name": "HDD 4TB ORG",
+      "price": 36000
+    },
+    {
+      "id": 1781280661703,
+      "name": "HDD 8TB",
+      "price": 62000
+    },
+    {
+      "id": 1781280679950,
+      "name": "HDD 10TB PRO",
+      "price": 80000
+    },
+    {
+      "id": 1781280716505,
+      "name": "AJAX KIT",
+      "price": 80000
+    },
+    {
+      "id": 1781280733552,
+      "name": "ILS",
+      "price": 15000
+    },
+    {
+      "id": 1781280747464,
+      "name": "Detecteur",
+      "price": 18000
+    },
+    {
+      "id": 1781280780691,
+      "name": "Installation CAM",
+      "price": 3000
+    },
+    {
+      "id": 1781280805218,
+      "name": "Installation Armoire",
+      "price": 10000
+    },
+    {
+      "id": 1781280836579,
+      "name": "BOIT DERIVATION",
+      "price": 1000
+    },
+    {
+      "id": 1781280884043,
+      "name": "ONDULEUR UPS 600VA",
+      "price": 12000
+    },
+    {
+      "id": 1781280905836,
+      "name": "ONDULEUR UPS 1.2KVA",
+      "price": 22000
+    },
+    {
+      "id": 1781280927558,
+      "name": "ONDULEUR UPS 2.4KVA",
+      "price": 36000
+    },
+    {
+      "id": 1781281089042,
+      "name": "CAM IMOU RANGER 360 2MP",
+      "price": 14000
+    },
+    {
+      "id": 1781281101637,
+      "name": "CAM IMOU RANGER 360 3MP",
+      "price": 18000
+    },
+    {
+      "id": 1781281115787,
+      "name": "CAM IMOU VERSA",
+      "price": 20000
+    },
+    {
+      "id": 1781281128797,
+      "name": "CAM IMOU CUE",
+      "price": 16000
+    },
+    {
+      "id": 1781281148196,
+      "name": "Cam 360 المصباح ذات عدستين",
+      "price": 12000
+    },
+    {
+      "id": 1781281163533,
+      "name": "V380 PRO",
+      "price": 12000
+    },
+    {
+      "id": 1781281176125,
+      "name": "V380 LITE",
+      "price": 8000
+    },
+    {
+      "id": 1781281187789,
+      "name": "Dahua HERO C1",
+      "price": 16000
+    },
+    {
+      "id": 1781281198758,
+      "name": "CAM IMOU BULLET 4MP",
+      "price": 22000
+    },
+    {
+      "id": 1781281211992,
+      "name": "CAM IMOU CRUISER 2 360 PTZ 5MP",
+      "price": 35000
+    },
+    {
+      "id": 1781281229694,
+      "name": "CAM IMOU CRUISER SE 360 PTZ",
+      "price": 30000
+    },
+    {
+      "id": 1781281245711,
+      "name": "CAM MINI 4.5*4.5*2.5",
+      "price": 13000
+    },
+    {
+      "id": 1781281257727,
+      "name": "CAM MINI T",
+      "price": 11500
+    },
+    {
+      "id": 1781281271481,
+      "name": "Light pulb cam 360 motorise",
+      "price": 12500
+    },
+    {
+      "id": 1781281304555,
+      "name": "Kit System dalarme Captor ( Hub + 2 Detecteur de mouvement + 2 ILS +. 2 Commande + 2 Cle RFID)",
+      "price": 40000
+    },
+    {
+      "id": 1781281327802,
+      "name": "SIRENE",
+      "price": 15000
+    },
+    {
+      "id": 1781281359955,
+      "name": "Vidéo phone Dahua kit",
+      "price": 25000
+    },
+    {
+      "id": 1781281393013,
+      "name": "Vidéo phone Hikvision kit",
+      "price": 25000
+    },
+    {
+      "id": 1781281416101,
+      "name": "Visiophone hybride tuya 7 pouce",
+      "price": 45000
+    },
+    {
+      "id": 1781281434478,
+      "name": "Euronet 1 x La Central d'alarme GSM 1 x Sirène ( intérieur)  1x Détecteur d'entrée 1 x Détecteur de mouvement 2 x Télécommande  2 × Tags",
+      "price": 34000
+    },
+    {
+      "id": 1781281452230,
+      "name": "Alarm GSM wifi Pir detecteur*1, Ils*1 ,Remot*2 ,Rfid*2 ,Siren*1 ,Hub",
+      "price": 28000
+    },
+    {
+      "id": 1781281469662,
+      "name": "Tiger GSM",
+      "price": 34000
+    },
+    {
+      "id": 1781282136500,
+      "name": "Cable Electrique",
+      "price": 100
+    },
+    {
+      "id": 1781282489694,
+      "name": "Prise Electrique",
+      "price": 1000
+    },
+    {
+      "id": 1781282536360,
+      "name": "Prise RG45+ Electrique",
+      "price": 2000
+    },
+    {
+      "id": 1781282635885,
+      "name": "Goulotte",
+      "price": 0
+    },
+    {
+      "id": 1781282679125,
+      "name": "Gaine",
+      "price": 0
+    },
+    {
+      "id": 1781282724358,
+      "name": "Rallonges",
+      "price": 0
+    }
+  ],
+  "history": [
+    {
+      "id": 1781257223058,
+      "num": "2026/001",
+      "date": "10/06/2026",
+      "client": "فوزية عمراني",
+      "clientAddress": "حي الأمير عبدالقادر خارج السور الروماني 05/120",
+      "clientPhone": "0660807799",
+      "clientNif": "",
+      "clientRc": "",
+      "total": 270350,
+      "status": "pending",
+      "currency": "DA",
+      "tvaActive": true,
+      "tvaRate": 0,
+      "tvaAmount": 0,
+      "versementActive": true,
+      "versement": 0,
+      "extraCharges": [],
+      "itemsSnapshot": [
+        {
+          "id": 1781114422737,
+          "name": "Armoire 4U",
+          "qty": 1,
+          "price": 10000
+        },
+        {
+          "id": 1781114427718,
+          "name": "Bloc Alimentation 18cnx",
+          "qty": 1,
+          "price": 7500
+        },
+        {
+          "id": 1781114437725,
+          "name": "Cam Dahua 5MP INT AUDIO",
+          "qty": 2,
+          "price": 12000
+        },
+        {
+          "id": 1781114443481,
+          "name": "Cam Dahua 5MP INT",
+          "qty": 12,
+          "price": 9500
+        },
+        {
+          "id": 1781114448936,
+          "name": "Hdmi 10m",
+          "qty": 1,
+          "price": 1600
+        },
+        {
+          "id": 1781114469406,
+          "name": "Support SC 50cm",
+          "qty": 1,
+          "price": 1500
+        },
+        {
+          "id": 1781114478197,
+          "name": "XVR Dahua, 16CH 5MP i3",
+          "qty": 1,
+          "price": 42000
+        },
+        {
+          "id": 1781114529703,
+          "name": "Alimentation",
+          "qty": 14,
+          "price": 100
+        },
+        {
+          "id": 1781114532461,
+          "name": "BNC",
+          "qty": 28,
+          "price": 100
+        },
+        {
+          "id": 1781114701084,
+          "name": "HDD WP 4 TB",
+          "qty": 1,
+          "price": 26000
+        },
+        {
+          "id": 1781114783292,
+          "name": "Souris Dahua",
+          "qty": 1,
+          "price": 2500
+        },
+        {
+          "id": 1781114784009,
+          "name": "Cle wifi",
+          "qty": 1,
+          "price": 1500
+        },
+        {
+          "id": 1781114829360,
+          "name": "Cable Coaxial + Alimentation",
+          "qty": 300,
+          "price": 100
+        },
+        {
+          "id": 1781114957895,
+          "name": "Goulotte 80x20",
+          "qty": 6,
+          "price": 400
+        },
+        {
+          "id": 1781115055973,
+          "name": "Goulotte 25x25",
+          "qty": 6,
+          "price": 150
+        },
+        {
+          "id": 1781115123772,
+          "name": "Prise électrique apparent",
+          "qty": 3,
+          "price": 500
+        },
+        {
+          "id": 1781115224989,
+          "name": "Rallonge 4s  ",
+          "qty": 1,
+          "price": 750
+        }
+      ]
+    }
+  ],
+  "clients": [
+    "فوزية عمراني"
+  ]
+}
