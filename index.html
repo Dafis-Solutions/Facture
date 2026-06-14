@@ -132,7 +132,7 @@
                 <span id="invoiceProfitDisplay" class="font-black text-sm" dir="ltr">0 DA</span>
             </div>
 
-            <div class="h-6 w-px bg-gray-300 mx-1"></div>
+            <div class="h-6 w-px bg-gray-300 mx-1" id="profitDivider"></div>
 
             <div class="flex gap-2 border-r border-gray-300 pr-3">
                 <label class="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-gray-700 bg-white px-2.5 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100" dir="rtl">
@@ -153,6 +153,11 @@
                 <option value="EUR">EUR</option>
                 <option value="USD">USD</option>
             </select>
+
+            <!-- زر تسجيل الدخول للمسؤول -->
+            <button id="authBtn" onclick="toggleAuth()" class="text-gray-500 hover:text-gray-800 font-bold px-1.5 text-xs flex items-center gap-1 border-r border-gray-300 pr-2 mr-1" title="دخول المسؤول">
+                <i class="fas fa-lock"></i>
+            </button>
 
             <button onclick="exportData()" class="text-indigo-600 hover:text-indigo-800 font-bold px-1.5 text-xs flex items-center gap-1" title="تصدير JSON">
                 <i class="fas fa-cloud-download-alt text-sm"></i> Backup
@@ -473,7 +478,7 @@
                     <div class="flex flex-col md:flex-row gap-3">
                         <input type="text" id="newCatName" placeholder="Désignation..." class="flex-1 border-2 border-gray-300 rounded-lg px-4 py-2 font-bold focus:border-blue-500 outline-none" dir="ltr">
                         <div class="flex flex-wrap gap-2">
-                            <div class="relative w-28 md:w-32">
+                            <div class="relative w-28 md:w-32" id="newPurchasePriceContainer">
                                 <span class="absolute -top-2.5 right-2 bg-white px-1 text-[10px] font-bold text-gray-500">سعر الشراء</span>
                                 <input type="number" id="newCatPurchasePrice" placeholder="0" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-bold focus:border-blue-500 outline-none text-left" dir="ltr">
                             </div>
@@ -492,7 +497,7 @@
                         <button onclick="sortCatalog('name')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
                             <i class="fas fa-sort-alpha-down text-blue-600"></i> ترتيب بالاسم
                         </button>
-                        <button onclick="sortCatalog('purchase')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+                        <button id="sortPurchaseBtn" onclick="sortCatalog('purchase')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
                             <i class="fas fa-sort-numeric-down text-purple-600"></i> ترتيب بسعر الشراء
                         </button>
                         <button onclick="sortCatalog('price')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
@@ -506,9 +511,9 @@
                         <thead class="bg-gray-800 text-white">
                             <tr>
                                 <th class="py-3 px-4 font-bold w-[35%]">Désignation</th>
-                                <th class="py-3 px-4 font-bold text-gray-300">Achat (شراء)</th>
+                                <th id="catThPurch" class="py-3 px-4 font-bold text-gray-300">Achat (شراء)</th>
                                 <th class="py-3 px-4 font-bold text-blue-300">Vente (بيع)</th>
-                                <th class="py-3 px-4 font-bold text-emerald-400">Bénéfice (فائدة)</th>
+                                <th id="catThProf" class="py-3 px-4 font-bold text-emerald-400">Bénéfice (فائدة)</th>
                                 <th class="py-3 px-4 font-bold text-center">Actions</th>
                             </tr>
                         </thead>
@@ -522,6 +527,7 @@
 
     <script>
         // ─── State ───────────────────────────────────────────────────────────
+        let isAdmin = sessionStorage.getItem('dafis_admin') === 'true'; // Auth State
         let invoiceItems   = [];
         let extraCharges   = [];   // {id, label, amount}
         let catalogItems   = [];
@@ -555,6 +561,58 @@
             buildColorSwatches();
             generateQR();
             renderExtraCharges();
+            updateAuthUI(); // Apply auth restrictions on load
+        }
+
+        // ─── Auth (Admin Login/Logout) ────────────────────────────────────────
+        function toggleAuth() {
+            if (isAdmin) {
+                if(confirm('تسجيل الخروج من حساب المسؤول؟')) {
+                    isAdmin = false;
+                    sessionStorage.removeItem('dafis_admin');
+                    updateAuthUI();
+                }
+            } else {
+                const user = prompt('اسم المستخدم:');
+                if (user === null) return;
+                const pass = prompt('كلمة المرور:');
+                if (pass === null) return;
+
+                if (user === 'DAFIS' && pass === 'SOLUTIONS2025') {
+                    isAdmin = true;
+                    sessionStorage.setItem('dafis_admin', 'true');
+                    updateAuthUI();
+                } else {
+                    alert('بيانات الدخول خاطئة!');
+                }
+            }
+        }
+
+        function updateAuthUI() {
+            const authBtn = document.getElementById('authBtn');
+            if (authBtn) {
+                authBtn.innerHTML = isAdmin ? '<i class="fas fa-lock-open text-green-600"></i>' : '<i class="fas fa-lock text-gray-500"></i>';
+            }
+
+            // Profit Badge
+            const profitBadge = document.getElementById('profitBadgeContainer');
+            const profitDiv = document.getElementById('profitDivider');
+            if (profitBadge) profitBadge.style.display = isAdmin ? 'flex' : 'none';
+            if (profitDiv) profitDiv.style.display = isAdmin ? 'block' : 'none';
+
+            // Catalog UI
+            const purchContainer = document.getElementById('newPurchasePriceContainer');
+            if (purchContainer) purchContainer.style.display = isAdmin ? 'block' : 'none';
+            const sortPurchBtn = document.getElementById('sortPurchaseBtn');
+            if (sortPurchBtn) sortPurchBtn.style.display = isAdmin ? 'flex' : 'none';
+            const catThPurch = document.getElementById('catThPurch');
+            if (catThPurch) catThPurch.style.display = isAdmin ? 'table-cell' : 'none';
+            const catThProf = document.getElementById('catThProf');
+            if (catThProf) catThProf.style.display = isAdmin ? 'table-cell' : 'none';
+
+            // Re-render lists to reflect auth changes
+            if(!document.getElementById('catalogModal').classList.contains('hidden')) renderCatalog();
+            if(!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
         }
 
         // ─── Color themes ─────────────────────────────────────────────────────
@@ -942,6 +1000,11 @@
 
             list.forEach(inv => {
                 const sc = STATUS_CONFIG[inv.status] || STATUS_CONFIG.unpaid;
+                
+                // Admin specific buttons
+                let editBtnHtml = isAdmin ? `<button onclick="loadInvoiceForEditing(${inv.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded" title="تعديل"><i class="fas fa-edit"></i></button>` : '';
+                let deleteBtnHtml = isAdmin ? `<button onclick="deleteInv(${inv.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded" title="حذف"><i class="fas fa-trash"></i></button>` : '';
+
                 tbody.innerHTML += `
                     <tr class="border-b border-gray-200 hover:bg-gray-50">
                         <td class="py-3 px-4 font-bold text-gray-900">${inv.num}</td>
@@ -954,9 +1017,9 @@
                             </select>
                         </td>
                         <td class="py-3 px-4 text-center whitespace-nowrap">
-                            <button onclick="loadInvoiceForEditing(${inv.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded" title="تعديل"><i class="fas fa-edit"></i></button>
+                            ${editBtnHtml}
                             <button onclick="duplicateFromHistory(${inv.id})" class="text-teal-600 hover:bg-teal-100 p-1.5 rounded" title="نسخ"><i class="fas fa-copy"></i></button>
-                            <button onclick="deleteInv(${inv.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded" title="حذف"><i class="fas fa-trash"></i></button>
+                            ${deleteBtnHtml}
                         </td>
                     </tr>`;
             });
@@ -1025,15 +1088,19 @@
                             <td class="py-2 px-2">
                                 <input type="text" id="inlineName_${item.id}" value="${item.name.replace(/"/g, '&quot;')}" class="w-full border-2 border-blue-300 rounded px-2 py-1.5 text-sm font-bold bg-white focus:outline-none focus:border-blue-500">
                             </td>
+                            ${isAdmin ? `
                             <td class="py-2 px-2">
                                 <input type="number" id="inlinePurch_${item.id}" value="${purchasePrice}" class="w-full min-w-[80px] border-2 border-blue-300 rounded px-2 py-1.5 text-sm font-bold bg-white text-gray-600 focus:outline-none focus:border-blue-500 text-left" dir="ltr">
                             </td>
+                            ` : ''}
                             <td class="py-2 px-2">
                                 <input type="number" id="inlineSell_${item.id}" value="${sellingPrice}" class="w-full min-w-[80px] border-2 border-blue-300 rounded px-2 py-1.5 text-sm font-bold bg-white text-blue-700 focus:outline-none focus:border-blue-500 text-left" dir="ltr">
                             </td>
+                            ${isAdmin ? `
                             <td class="py-2 px-4 font-bold text-gray-400 text-xs text-center" dir="ltr">
                                 --
                             </td>
+                            ` : ''}
                             <td class="py-2 px-2 text-center whitespace-nowrap">
                                 <button onclick="saveInlineEdit(${item.id})" class="text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded font-bold text-xs shadow-sm transition-transform active:scale-95"><i class="fas fa-check"></i></button>
                                 <button onclick="cancelInlineEdit()" class="text-white bg-gray-500 hover:bg-gray-600 px-2 py-1.5 rounded font-bold text-xs shadow-sm ml-1 transition-transform active:scale-95"><i class="fas fa-times"></i></button>
@@ -1048,9 +1115,9 @@
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
                             <td class="py-2.5 px-4 font-bold text-gray-800">${item.name}</td>
-                            <td class="py-2.5 px-4 font-bold text-gray-500">${purchasePrice.toLocaleString('fr-FR')}</td>
+                            ${isAdmin ? `<td class="py-2.5 px-4 font-bold text-gray-500">${purchasePrice.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 font-black text-blue-700">${sellingPrice.toLocaleString('fr-FR')}</td>
-                            <td class="py-2.5 px-4 font-black ${profitClass}" dir="ltr">${profitSign}${profit.toLocaleString('fr-FR')}</td>
+                            ${isAdmin ? `<td class="py-2.5 px-4 font-black ${profitClass}" dir="ltr">${profitSign}${profit.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 text-center whitespace-nowrap">
                                 <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded transition-colors" title="إضافة للفاتورة"><i class="fas fa-plus"></i></button>
                                 <button onclick="startInlineEdit(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded transition-colors" title="تعديل"><i class="fas fa-pen"></i></button>
@@ -1076,12 +1143,12 @@
             if (!item) return;
 
             const nameInput = document.getElementById(`inlineName_${id}`);
-            const purchInput = document.getElementById(`inlinePurch_${id}`);
+            const purchInput = document.getElementById(`inlinePurch_${id}`); // Might be null if not admin
             const sellInput = document.getElementById(`inlineSell_${id}`);
 
             const oldName = item.name;
             const newName = nameInput.value.trim() || oldName;
-            const newPurch = parseFloat(purchInput.value) || 0;
+            const newPurch = purchInput ? (parseFloat(purchInput.value) || 0) : item.purchasePrice; // Keep old value if hidden
             const newSell = parseFloat(sellInput.value) || 0;
 
             item.name = newName;
@@ -1110,7 +1177,8 @@
 
         function addNewCatalogItem() {
             const name  = document.getElementById('newCatName').value.trim();
-            const purchasePrice = parseFloat(document.getElementById('newCatPurchasePrice').value) || 0;
+            const purchInput = document.getElementById('newCatPurchasePrice');
+            const purchasePrice = purchInput ? (parseFloat(purchInput.value) || 0) : 0;
             const price = parseFloat(document.getElementById('newCatPrice').value) || 0; 
             
             if (!name) {
@@ -1123,7 +1191,7 @@
             renderCatalog(); 
             
             document.getElementById('newCatName').value = '';
-            document.getElementById('newCatPurchasePrice').value = '';
+            if(purchInput) purchInput.value = '';
             document.getElementById('newCatPrice').value = '';
         }
 
@@ -1262,3 +1330,5 @@
     </script>
 </body>
 </html>
+
+```
