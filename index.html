@@ -93,6 +93,7 @@
 </head>
 <body class="bg-gray-200 py-4 font-sans text-gray-900 flex flex-col items-center" onload="initApp()">
 
+    <!-- عنصر ملف مخفي لاستيراد ملفات JSON -->
     <input type="file" id="backupFileInput" accept=".json" class="hidden" onchange="handleImport(event)">
 
     <div class="no-print bg-white p-3 rounded-xl shadow-md mb-5 flex flex-col xl:flex-row gap-3 items-center w-[95%] max-w-7xl justify-between border border-gray-300 sticky top-3 z-40">
@@ -121,7 +122,7 @@
             </button>
         </div>
 
-        <!-- أزرار الإضافة والإزالة للأقسام المطلوبة -->
+        <!-- أزرار الإضافة والإزالة للأقسام -->
         <div class="flex flex-wrap gap-2 justify-center items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
             <span class="text-xs font-bold text-gray-600 ml-1">التحكم:</span>
             <label class="flex items-center gap-1 text-xs font-bold text-gray-700 cursor-pointer bg-white px-2 py-1 rounded border border-gray-300">
@@ -167,6 +168,14 @@
 
             <button id="authBtn" onclick="toggleAuth()" class="text-gray-500 hover:text-gray-800 font-bold px-1.5 text-xs flex items-center gap-1 border-r border-gray-300 pr-2 mr-1" title="دخول المسؤول">
                 <i class="fas fa-lock"></i>
+            </button>
+
+            <!-- زر التصدير والاستيراد JSON -->
+            <button onclick="exportData()" class="text-indigo-600 hover:text-indigo-800 font-bold px-2 py-1.5 text-xs flex items-center gap-1 border-r border-gray-300 pr-2" title="تصدير ملف JSON">
+                <i class="fas fa-cloud-download-alt text-sm"></i> Backup
+            </button>
+            <button onclick="document.getElementById('backupFileInput').click()" class="text-green-600 hover:text-green-800 font-bold px-2 py-1.5 text-xs flex items-center gap-1" title="استيراد ملف JSON">
+                <i class="fas fa-cloud-upload-alt text-sm"></i> Importer
             </button>
 
             <button onclick="openPreview()" class="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
@@ -297,7 +306,7 @@
 
                         <div class="w-[55%] flex flex-col gap-4">
 
-                            <!-- قسم Frais supplémentaires (قابل للإضافة والإزالة) -->
+                            <!-- قسم Frais supplémentaires -->
                             <div id="sectionFrais" class="border border-gray-300 p-3.5 rounded-lg bg-gray-50 shadow-sm">
                                 <h3 class="font-bold text-gray-800 mb-2 border-b border-gray-200 pb-1.5 text-[12px]"><i class="fas fa-plus-circle text-orange-500 mr-1"></i> Frais supplémentaires :</h3>
                                 <div id="extraChargesContainer" class="flex flex-col gap-1.5"></div>
@@ -306,7 +315,7 @@
                                 </button>
                             </div>
 
-                            <!-- قسم Notes / Remarques (قابل للإضافة والإزالة) -->
+                            <!-- قسم Notes / Remarques -->
                             <div id="sectionNotes" class="border border-gray-300 p-3.5 rounded-lg bg-gray-50 shadow-sm">
                                 <h3 class="font-bold text-gray-800 mb-2 border-b border-gray-200 pb-1.5 text-[12px] flex justify-between items-center">
                                     <span><i class="fas fa-info-circle text-blue-600 mr-1"></i> Notes / Remarques :</span>
@@ -363,7 +372,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <!-- خانة المساعدة في السعر (Remise / Autre) القابلة للإضافة والإزالة -->
+                                <!-- خانة المساعدة في السعر (Remise / Autre) -->
                                 <tr class="border-b border-gray-300 bg-yellow-50/50" id="rowPriceHelper">
                                     <td class="p-3 font-bold text-yellow-900 text-[11px]">
                                         <input type="text" id="priceHelperLabel" value="Remise / Autre" class="w-full bg-transparent border-b border-dashed border-yellow-400 outline-none font-bold text-[11px]">
@@ -441,7 +450,6 @@
                 <button onclick="toggleHistory(false)" class="text-gray-200 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-gray-100" dir="rtl">
-                <!-- الإحصائيات -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
                         <div class="text-gray-500 font-bold text-xs mb-1">إجمالي الفواتير</div>
@@ -609,7 +617,6 @@
             generateQR();
         }
 
-        // دالة التحكم في إظهار وإخفاء الأقسام (إضافة وإزالة)
         function toggleSection(section) {
             if (section === 'frais') {
                 const el = document.getElementById('sectionFrais');
@@ -783,6 +790,33 @@
             clientsList.push(name);
             localStorage.setItem('dafis_clients', JSON.stringify(clientsList));
             renderClientsDatalist();
+        }
+
+        // دوال التصدير والاستيراد لملفات JSON
+        function exportData() {
+            const data = { catalog: catalogItems, history: savedInvoices, clients: clientsList };
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+            a.download = `dafis_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const d = JSON.parse(e.target.result);
+                    if (d.catalog) { catalogItems = d.catalog.map(c => ({...c, purchasePrice: c.purchasePrice || 0})); saveCatalog(); }
+                    if (d.history) { savedInvoices = d.history; localStorage.setItem('dafis_history', JSON.stringify(savedInvoices)); }
+                    if (d.clients) { clientsList = d.clients; localStorage.setItem('dafis_clients', JSON.stringify(clientsList)); }
+                    initApp();
+                    alert('✅ Données importées avec succès !');
+                } catch { alert('❌ Fichier JSON invalide !'); }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
         }
 
         function addInvoiceItem(name='', qty=1, price=0, purchasePrice=0) {
