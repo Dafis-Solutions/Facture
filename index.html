@@ -62,7 +62,6 @@
         textarea { resize: none; overflow: hidden; }
         .wrapper-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 1rem; }
 
-        /* Watermark PROFORMA / FACTURE */
         .watermark-proforma {
             position: absolute;
             top: 50%;
@@ -79,21 +78,16 @@
             z-index: 0;
         }
 
-        /* Color picker swatch */
         .color-swatch { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color .15s; }
         .color-swatch:hover, .color-swatch.active { border-color: white; outline: 2px solid #6b7280; }
 
-        /* Status badge */
         .status-paid { background:#d1fae5; color:#065f46; }
         .status-unpaid { background:#fee2e2; color:#991b1b; }
         .status-pending { background:#fef3c7; color:#92400e; }
         .status-cancelled { background:#f3f4f6; color:#6b7280; }
 
-        /* Modal transition */
         .modal-enter { animation: fadeIn .2s ease; }
         @keyframes fadeIn { from { opacity:0; transform:scale(.97); } to { opacity:1; transform:scale(1); } }
-
-        /* Preview overlay */
         #previewModal .page-a4 { transform-origin: top center; pointer-events: none; }
     </style>
 </head>
@@ -116,10 +110,10 @@
             <button onclick="addInvoiceItem()" class="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-plus"></i> سطر
             </button>
-            <button onclick="duplicateCurrentInvoice()" class="flex items-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm" title="نسخ الفاتورة الحالية">
+            <button onclick="duplicateCurrentInvoice()" class="flex items-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-copy"></i> نسخ
             </button>
-            <button onclick="toggleInvoiceType()" id="typeToggleBtn" class="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm" title="التحويل بين فاتورة شكلية وفاتورة عادية">
+            <button onclick="toggleInvoiceType()" id="typeToggleBtn" class="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-exchange-alt"></i> Proforma / Facture
             </button>
             <button onclick="resetInvoiceForm()" class="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
@@ -127,15 +121,29 @@
             </button>
         </div>
 
+        <!-- أزرار الإضافة والإزالة للأقسام المطلوبة -->
+        <div class="flex flex-wrap gap-2 justify-center items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
+            <span class="text-xs font-bold text-gray-600 ml-1">التحكم:</span>
+            <label class="flex items-center gap-1 text-xs font-bold text-gray-700 cursor-pointer bg-white px-2 py-1 rounded border border-gray-300">
+                <input type="checkbox" id="chkToggleFrais" checked onchange="toggleSection('frais')" class="accent-orange-600"> Frais
+            </label>
+            <label class="flex items-center gap-1 text-xs font-bold text-gray-700 cursor-pointer bg-white px-2 py-1 rounded border border-gray-300">
+                <input type="checkbox" id="chkToggleNotes" checked onchange="toggleSection('notes')" class="accent-blue-600"> Notes
+            </label>
+            <label class="flex items-center gap-1 text-xs font-bold text-gray-700 cursor-pointer bg-white px-2 py-1 rounded border border-gray-300">
+                <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper')" class="accent-green-600"> خانة السعر المساعدة
+            </label>
+        </div>
+
         <div class="flex flex-wrap gap-2 justify-center items-center">
             
-            <div id="profitBadgeContainer" class="flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200" title="الفائدة الصافية من الفاتورة الحالية (لا تظهر في الطباعة)">
+            <div id="profitBadgeContainer" class="flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200" style="display:none;">
                 <i class="fas fa-chart-line text-emerald-600"></i>
                 <span class="text-[11px] font-bold" dir="rtl">الفائدة:</span>
                 <span id="invoiceProfitDisplay" class="font-black text-sm" dir="ltr">0 DA</span>
             </div>
 
-            <div class="h-6 w-px bg-gray-300 mx-1" id="profitDivider"></div>
+            <div class="h-6 w-px bg-gray-300 mx-1" id="profitDivider" style="display:none;"></div>
 
             <div class="flex gap-2 border-r border-gray-300 pr-3">
                 <label class="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-gray-700 bg-white px-2.5 py-1.5 rounded-md border border-gray-300 hover:bg-gray-100" dir="rtl">
@@ -146,7 +154,7 @@
                 </label>
             </div>
 
-            <div class="flex items-center gap-1.5 border-r border-gray-300 pr-3" title="لون الفاتورة">
+            <div class="flex items-center gap-1.5 border-r border-gray-300 pr-3">
                 <span class="text-xs font-bold text-gray-500">🎨</span>
                 <div id="colorSwatches" class="flex gap-1"></div>
             </div>
@@ -157,19 +165,9 @@
                 <option value="USD">USD</option>
             </select>
 
-            <!-- زر تسجيل الدخول للمسؤول -->
             <button id="authBtn" onclick="toggleAuth()" class="text-gray-500 hover:text-gray-800 font-bold px-1.5 text-xs flex items-center gap-1 border-r border-gray-300 pr-2 mr-1" title="دخول المسؤول">
                 <i class="fas fa-lock"></i>
             </button>
-
-            <button onclick="exportData()" class="text-indigo-600 hover:text-indigo-800 font-bold px-1.5 text-xs flex items-center gap-1" title="تصدير JSON">
-                <i class="fas fa-cloud-download-alt text-sm"></i> Backup
-            </button>
-            <button onclick="document.getElementById('backupFileInput').click()" class="text-green-600 hover:text-green-800 font-bold px-1.5 text-xs flex items-center gap-1" title="استيراد JSON">
-                <i class="fas fa-cloud-upload-alt text-sm"></i> Importer
-            </button>
-
-            <div class="h-6 w-px bg-gray-300 mx-1"></div>
 
             <button onclick="openPreview()" class="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-eye"></i> Aperçu
@@ -299,7 +297,8 @@
 
                         <div class="w-[55%] flex flex-col gap-4">
 
-                            <div class="border border-gray-300 p-3.5 rounded-lg bg-gray-50 shadow-sm">
+                            <!-- قسم Frais supplémentaires (قابل للإضافة والإزالة) -->
+                            <div id="sectionFrais" class="border border-gray-300 p-3.5 rounded-lg bg-gray-50 shadow-sm">
                                 <h3 class="font-bold text-gray-800 mb-2 border-b border-gray-200 pb-1.5 text-[12px]"><i class="fas fa-plus-circle text-orange-500 mr-1"></i> Frais supplémentaires :</h3>
                                 <div id="extraChargesContainer" class="flex flex-col gap-1.5"></div>
                                 <button onclick="addExtraCharge()" class="no-print mt-2 text-[11px] font-bold text-orange-600 hover:text-orange-800 flex items-center gap-1">
@@ -307,12 +306,13 @@
                                 </button>
                             </div>
 
-                            <div class="border border-gray-300 p-3.5 rounded-lg bg-gray-50 shadow-sm">
+                            <!-- قسم Notes / Remarques (قابل للإضافة والإزالة) -->
+                            <div id="sectionNotes" class="border border-gray-300 p-3.5 rounded-lg bg-gray-50 shadow-sm">
                                 <h3 class="font-bold text-gray-800 mb-2 border-b border-gray-200 pb-1.5 text-[12px] flex justify-between items-center">
                                     <span><i class="fas fa-info-circle text-blue-600 mr-1"></i> Notes / Remarques :</span>
                                     <button id="btn-generate-notes" onclick="autoGenerateNotes()" class="no-print bg-purple-100 hover:bg-purple-200 text-purple-700 px-2 py-0.5 rounded text-[10.5px] font-bold">✨ IA</button>
                                 </h3>
-                                <textarea id="invoiceNotes" class="w-full text-gray-700 text-[11.5px] bg-transparent leading-relaxed border-none outline-none" rows="3">Consommation de cable COX : 100 DA par 1m&#10;Consommation de cable reseau : 180 DA par 1m</textarea>
+                                <textarea id="invoiceNotes" class="w-full text-gray-700 text-[11.5px] bg-transparent leading-relaxed border-none outline-none" rows="3">Consommation de cable COX : 160 DA par 1m&#10;Consommation de cable reseau : 180 DA par 1m</textarea>
                             </div>
 
                             <div class="border border-gray-300 p-3.5 rounded-lg shadow-sm">
@@ -363,6 +363,18 @@
                                         </div>
                                     </td>
                                 </tr>
+                                <!-- خانة المساعدة في السعر (Remise / Autre) القابلة للإضافة والإزالة -->
+                                <tr class="border-b border-gray-300 bg-yellow-50/50" id="rowPriceHelper">
+                                    <td class="p-3 font-bold text-yellow-900 text-[11px]">
+                                        <input type="text" id="priceHelperLabel" value="Remise / Autre" class="w-full bg-transparent border-b border-dashed border-yellow-400 outline-none font-bold text-[11px]">
+                                    </td>
+                                    <td class="p-3 text-right">
+                                        <div class="flex justify-end items-center font-bold text-yellow-900">
+                                            <input type="number" id="priceHelperInput" value="0" oninput="calculateTotals()" class="w-24 text-right bg-transparent border-b border-dashed border-yellow-400 mr-1 text-[13px]">
+                                            <span class="currency-label">DA</span>
+                                        </div>
+                                    </td>
+                                </tr>
                                 <tr class="bg-gray-800 text-white">
                                     <td class="p-3.5 font-black text-[15px] uppercase tracking-wide">TOTAL TTC</td>
                                     <td class="p-3.5 font-black text-right text-[18px] text-red-400" id="valTotalTtc">0 <span class="currency-label" style="color:inherit;">DA</span></td>
@@ -404,7 +416,11 @@
                 </div>
             </div>
 
-        </div></div><div id="previewModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="previewModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
         <div class="bg-gray-100 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[95vh]">
             <div class="bg-gray-800 text-white px-5 py-3 flex justify-between items-center">
                 <h2 class="font-bold flex items-center gap-2"><i class="fas fa-eye"></i> Aperçu avant impression / PDF</h2>
@@ -425,6 +441,7 @@
                 <button onclick="toggleHistory(false)" class="text-gray-200 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-gray-100" dir="rtl">
+                <!-- الإحصائيات -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
                         <div class="text-gray-500 font-bold text-xs mb-1">إجمالي الفواتير</div>
@@ -500,13 +517,13 @@
                 <div class="flex flex-wrap gap-2 justify-between items-center mb-3 mt-4">
                     <h3 class="font-bold text-gray-800 text-sm">قائمة السلع المتاحة:</h3>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="sortCatalog('name')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+                        <button onclick="sortCatalog('name')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
                             <i class="fas fa-sort-alpha-down text-blue-600"></i> ترتيب بالاسم
                         </button>
-                        <button id="sortPurchaseBtn" onclick="sortCatalog('purchase')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+                        <button id="sortPurchaseBtn" onclick="sortCatalog('purchase')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
                             <i class="fas fa-sort-numeric-down text-purple-600"></i> ترتيب بسعر الشراء
                         </button>
-                        <button onclick="sortCatalog('price')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors">
+                        <button onclick="sortCatalog('price')" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
                             <i class="fas fa-sort-numeric-down text-emerald-600"></i> ترتيب بسعر البيع
                         </button>
                     </div>
@@ -532,20 +549,18 @@
 
 
     <script>
-        // ─── State ───────────────────────────────────────────────────────────
-        let isAdmin = sessionStorage.getItem('dafis_admin') === 'true'; // Auth State
+        let isAdmin = sessionStorage.getItem('dafis_admin') === 'true';
         let invoiceItems   = [];
-        let extraCharges   = [];   // {id, label, amount}
+        let extraCharges   = [];
         let catalogItems   = [];
         let savedInvoices  = [];
         let clientsList    = [];
         let inlineEditId   = null; 
         let currentTotalTTC = 0;
         let currentCurrency = 'DA';
-        let isProforma     = true; // Type toggle state
+        let isProforma     = true;
         let catalogSortOrder = { name: 1, price: 1, purchase: 1 }; 
 
-        // Color themes: [headerBg, accentText, buttonClass]
         const COLOR_THEMES = {
             gray:   { bg: '#1f2937', accent: '#dc2626', label: 'Gris' },
             blue:   { bg: '#1e3a5f', accent: '#3b82f6', label: 'Bleu' },
@@ -555,7 +570,6 @@
         };
         let activeTheme = 'gray';
 
-        // ─── Init ─────────────────────────────────────────────────────────────
         function initApp() {
             document.getElementById('invoiceDate').value = new Date().toLocaleDateString('fr-FR');
             loadData();
@@ -568,10 +582,9 @@
             buildColorSwatches();
             generateQR();
             renderExtraCharges();
-            updateAuthUI(); // Apply auth restrictions on load
+            updateAuthUI();
         }
 
-        // ─── Toggle Invoice Type (Proforma / Facture) ────────────────────────
         function toggleInvoiceType() {
             isProforma = !isProforma;
             const titleEl = document.getElementById('invoiceTitle');
@@ -596,7 +609,21 @@
             generateQR();
         }
 
-        // ─── Auth (Admin Login/Logout) ────────────────────────────────────────
+        // دالة التحكم في إظهار وإخفاء الأقسام (إضافة وإزالة)
+        function toggleSection(section) {
+            if (section === 'frais') {
+                const el = document.getElementById('sectionFrais');
+                if(el) el.style.display = document.getElementById('chkToggleFrais').checked ? 'block' : 'none';
+            } else if (section === 'notes') {
+                const el = document.getElementById('sectionNotes');
+                if(el) el.style.display = document.getElementById('chkToggleNotes').checked ? 'block' : 'none';
+            } else if (section === 'priceHelper') {
+                const el = document.getElementById('rowPriceHelper');
+                if(el) el.style.display = document.getElementById('chkTogglePriceHelper').checked ? 'table-row' : 'none';
+            }
+            calculateTotals();
+        }
+
         function toggleAuth() {
             if (isAdmin) {
                 if(confirm('تسجيل الخروج من حساب المسؤول؟')) {
@@ -625,14 +652,11 @@
             if (authBtn) {
                 authBtn.innerHTML = isAdmin ? '<i class="fas fa-lock-open text-green-600"></i>' : '<i class="fas fa-lock text-gray-500"></i>';
             }
-
-            // Profit Badge
             const profitBadge = document.getElementById('profitBadgeContainer');
             const profitDiv = document.getElementById('profitDivider');
             if (profitBadge) profitBadge.style.display = isAdmin ? 'flex' : 'none';
             if (profitDiv) profitDiv.style.display = isAdmin ? 'block' : 'none';
 
-            // Catalog UI
             const purchContainer = document.getElementById('newPurchasePriceContainer');
             if (purchContainer) purchContainer.style.display = isAdmin ? 'block' : 'none';
             const sortPurchBtn = document.getElementById('sortPurchaseBtn');
@@ -642,12 +666,10 @@
             const catThProf = document.getElementById('catThProf');
             if (catThProf) catThProf.style.display = isAdmin ? 'table-cell' : 'none';
 
-            // Re-render lists to reflect auth changes
             if(!document.getElementById('catalogModal').classList.contains('hidden')) renderCatalog();
             if(!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
         }
 
-        // ─── Color themes ─────────────────────────────────────────────────────
         function buildColorSwatches() {
             const container = document.getElementById('colorSwatches');
             container.innerHTML = '';
@@ -666,9 +688,7 @@
             const thead = document.getElementById('tableHead');
             if (thead) {
                 thead.style.background = t.bg;
-                thead.querySelectorAll('th').forEach(th => {
-                    th.style.color = '#ffffff';
-                });
+                thead.querySelectorAll('th').forEach(th => { th.style.color = '#ffffff'; });
             }
             document.querySelectorAll('.border-t-\\[4px\\]').forEach(el => el.style.borderColor = t.bg);
             document.getElementById('invoiceNum').style.color = t.accent;
@@ -676,7 +696,6 @@
             buildColorSwatches();
         }
 
-        // ─── QR Code ──────────────────────────────────────────────────────────
         function generateQR() {
             ['qrcode-p1', 'qrcode-p2'].forEach(id => {
                 const el = document.getElementById(id);
@@ -692,7 +711,6 @@
             });
         }
 
-        // ─── Currency ─────────────────────────────────────────────────────────
         function updateCurrency() {
             currentCurrency = document.getElementById('currencySelect').value;
             document.querySelectorAll('.currency-label').forEach(el => el.textContent = currentCurrency);
@@ -700,7 +718,6 @@
             calculateTotals();
         }
 
-        // ─── Extra charges ────────────────────────────────────────────────────
         function addExtraCharge(label = '', amount = 0) {
             extraCharges.push({ id: Date.now(), label, amount });
             renderExtraCharges();
@@ -733,7 +750,6 @@
             if (c) { c[field] = value; calculateTotals(); }
         }
 
-        // ─── Sync header data ────────────────────────────────────────────────
         function syncInvoiceData() {
             const num  = document.getElementById('invoiceNum').value;
             const date = document.getElementById('invoiceDate').value;
@@ -741,7 +757,6 @@
             document.getElementById('syncDateDisplay').innerText = date;
         }
 
-        // ─── Data persistence ─────────────────────────────────────────────────
         function loadData() {
             const sc = localStorage.getItem('dafis_catalog');
             catalogItems = sc ? JSON.parse(sc).map(c => ({...c, purchasePrice: c.purchasePrice || 0})) : [
@@ -770,32 +785,6 @@
             renderClientsDatalist();
         }
 
-        function exportData() {
-            const data = { catalog: catalogItems, history: savedInvoices, clients: clientsList };
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-            a.download = `dafis_backup_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-        }
-        function handleImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                try {
-                    const d = JSON.parse(e.target.result);
-                    if (d.catalog) { catalogItems = d.catalog.map(c => ({...c, purchasePrice: c.purchasePrice || 0})); saveCatalog(); }
-                    if (d.history) localStorage.setItem('dafis_history', JSON.stringify(d.history));
-                    if (d.clients) localStorage.setItem('dafis_clients', JSON.stringify(d.clients));
-                    initApp();
-                    alert('✅ Données importées avec succès !');
-                } catch { alert('❌ Fichier invalide !'); }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        // ─── Invoice items ────────────────────────────────────────────────────
         function addInvoiceItem(name='', qty=1, price=0, purchasePrice=0) {
             invoiceItems.push({ id: Date.now(), name, qty, price, purchasePrice });
             renderInvoiceTable();
@@ -863,11 +852,12 @@
             calculateTotals();
         }
 
-        // ─── Totals & Profit ──────────────────────────────────────────────────
         function calculateTotals(manualTva = false) {
             const subTotal = invoiceItems.reduce((s, i) => s + i.qty * i.price, 0);
             const totalProfit = invoiceItems.reduce((s, i) => s + (i.qty * (i.price - (i.purchasePrice || 0))), 0);
-            const totalFrais = extraCharges.reduce((s, c) => s + (parseFloat(c.amount) || 0), 0);
+            
+            const fraisChecked = document.getElementById('chkToggleFrais').checked;
+            const totalFrais = fraisChecked ? extraCharges.reduce((s, c) => s + (parseFloat(c.amount) || 0), 0) : 0;
 
             const isTva = document.getElementById('toggleTva').checked;
             const tvaRateEl = document.getElementById('tvaInput');
@@ -883,7 +873,11 @@
 
             const isVers = document.getElementById('toggleVersement').checked;
             const versement = isVers ? (parseFloat(document.getElementById('versementInput').value) || 0) : 0;
-            const reste = totalTTC - versement;
+            
+            const priceHelperChecked = document.getElementById('chkTogglePriceHelper').checked;
+            const priceHelperVal = priceHelperChecked ? (parseFloat(document.getElementById('priceHelperInput').value) || 0) : 0;
+
+            const reste = totalTTC - versement - priceHelperVal;
             const cur = currentCurrency;
 
             document.getElementById('valSousTotal').innerHTML = subTotal.toLocaleString('fr-FR') + ` <span class="currency-label">${cur}</span>`;
@@ -894,7 +888,17 @@
             document.getElementById('rowTva').style.display       = isTva ? 'table-row' : 'none';
             document.getElementById('rowVersement').style.display  = isVers ? 'table-row' : 'none';
             document.getElementById('rowReste').style.display      = isVers ? 'table-row' : 'none';
-            document.getElementById('rowFrais').style.display      = totalFrais > 0 ? 'table-row' : 'none';
+            document.getElementById('rowFrais').style.display      = (totalFrais > 0 && fraisChecked) ? 'table-row' : 'none';
+            
+            const rowPriceHelper = document.getElementById('rowPriceHelper');
+            if(rowPriceHelper) rowPriceHelper.style.display = priceHelperChecked ? 'table-row' : 'none';
+
+            const sectionFrais = document.getElementById('sectionFrais');
+            if(sectionFrais) sectionFrais.style.display = fraisChecked ? 'block' : 'none';
+
+            const sectionNotes = document.getElementById('sectionNotes');
+            const notesChecked = document.getElementById('chkToggleNotes').checked;
+            if(sectionNotes) sectionNotes.style.display = notesChecked ? 'block' : 'none';
 
             const profitBadge = document.getElementById('profitBadgeContainer');
             const profitDisplay = document.getElementById('invoiceProfitDisplay');
@@ -909,19 +913,18 @@
             }
         }
 
-        // ─── Invoice number auto-increment ────────────────────────────────────
         function autoIncrementInvoiceNum() {
             const year = new Date().getFullYear();
             document.getElementById('invoiceNum').value = `${year}/${String(savedInvoices.length + 1).padStart(3,'0')}`;
             syncInvoiceData();
         }
 
-        // ─── Reset ────────────────────────────────────────────────────────────
         function resetInvoiceForm() {
             if (!confirm('تفريغ الفاتورة وبدء واحدة جديدة؟')) return;
             invoiceItems = []; extraCharges = [];
             ['clientName','clientAddress','clientPhone','clientNif','clientRc','amountInWords'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
             document.getElementById('versementInput').value = '0';
+            document.getElementById('priceHelperInput').value = '0';
             document.getElementById('valTvaAmount').value   = '0';
             document.getElementById('tvaInput').value       = '19';
             document.getElementById('toggleTva').checked    = true;
@@ -933,7 +936,6 @@
             generateQR();
         }
 
-        // ─── Duplicate current invoice ────────────────────────────────────────
         function duplicateCurrentInvoice() {
             if (!confirm('نسخ الفاتورة الحالية كفاتورة جديدة؟')) return;
             const newItems = invoiceItems.map(i => ({...i, id: Date.now() + Math.random()}));
@@ -944,7 +946,6 @@
             renderInvoiceTable();
         }
 
-        // ─── Save ─────────────────────────────────────────────────────────────
         function saveCurrentInvoice() {
             const clientName = document.getElementById('clientName').value.trim();
             const invoiceNum = document.getElementById('invoiceNum').value;
@@ -977,7 +978,6 @@
             alert('✅ Facture sauvegardée !');
         }
 
-        // ─── Load for editing ─────────────────────────────────────────────────
         function loadInvoiceForEditing(id) {
             const inv = savedInvoices.find(i => i.id === id);
             if (!inv) return;
@@ -1003,7 +1003,6 @@
             toggleHistory(false); generateQR();
         }
 
-        // ─── History ──────────────────────────────────────────────────────────
         function toggleHistory(show) {
             const m = document.getElementById('historyModal');
             if (show) { renderHistoryTable(); m.classList.remove('hidden'); }
@@ -1037,8 +1036,6 @@
 
             list.forEach(inv => {
                 const sc = STATUS_CONFIG[inv.status] || STATUS_CONFIG.unpaid;
-                
-                // Admin specific buttons
                 let editBtnHtml = isAdmin ? `<button onclick="loadInvoiceForEditing(${inv.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded" title="تعديل"><i class="fas fa-edit"></i></button>` : '';
                 let deleteBtnHtml = isAdmin ? `<button onclick="deleteInv(${inv.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded" title="حذف"><i class="fas fa-trash"></i></button>` : '';
 
@@ -1085,14 +1082,9 @@
             syncInvoiceData();
         }
 
-        // ─── Catalog ──────────────────────────────────────────────────────────
         function toggleCatalog(show) {
             const m = document.getElementById('catalogModal');
-            if (show) { 
-                inlineEditId = null; 
-                renderCatalog(); 
-                m.classList.remove('hidden'); 
-            }
+            if (show) { inlineEditId = null; renderCatalog(); m.classList.remove('hidden'); }
             else m.classList.add('hidden');
         }
 
@@ -1133,14 +1125,10 @@
                             <td class="py-2 px-2">
                                 <input type="number" id="inlineSell_${item.id}" value="${sellingPrice}" class="w-full min-w-[80px] border-2 border-blue-300 rounded px-2 py-1.5 text-sm font-bold bg-white text-blue-700 focus:outline-none focus:border-blue-500 text-left" dir="ltr">
                             </td>
-                            ${isAdmin ? `
-                            <td class="py-2 px-4 font-bold text-gray-400 text-xs text-center" dir="ltr">
-                                --
-                            </td>
-                            ` : ''}
+                            ${isAdmin ? `<td class="py-2 px-4 font-bold text-gray-400 text-xs text-center" dir="ltr">--</td>` : ''}
                             <td class="py-2 px-2 text-center whitespace-nowrap">
-                                <button onclick="saveInlineEdit(${item.id})" class="text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded font-bold text-xs shadow-sm transition-transform active:scale-95"><i class="fas fa-check"></i></button>
-                                <button onclick="cancelInlineEdit()" class="text-white bg-gray-500 hover:bg-gray-600 px-2 py-1.5 rounded font-bold text-xs shadow-sm ml-1 transition-transform active:scale-95"><i class="fas fa-times"></i></button>
+                                <button onclick="saveInlineEdit(${item.id})" class="text-white bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded font-bold text-xs shadow-sm"><i class="fas fa-check"></i></button>
+                                <button onclick="cancelInlineEdit()" class="text-white bg-gray-500 hover:bg-gray-600 px-2 py-1.5 rounded font-bold text-xs shadow-sm ml-1"><i class="fas fa-times"></i></button>
                             </td>
                         </tr>`;
                 } else {
@@ -1156,60 +1144,35 @@
                             <td class="py-2.5 px-4 font-black text-blue-700">${sellingPrice.toLocaleString('fr-FR')}</td>
                             ${isAdmin ? `<td class="py-2.5 px-4 font-black \${profitClass}" dir="ltr">${profitSign}${profit.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 text-center whitespace-nowrap">
-                                <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded transition-colors" title="إضافة للفاتورة"><i class="fas fa-plus"></i></button>
-                                <button onclick="startInlineEdit(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded transition-colors" title="تعديل"><i class="fas fa-pen"></i></button>
-                                <button onclick="deleteFromCatalog(${item.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded transition-colors" title="حذف"><i class="fas fa-trash"></i></button>
+                                <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded" title="إضافة للفاتورة"><i class="fas fa-plus"></i></button>
+                                <button onclick="startInlineEdit(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded" title="تعديل"><i class="fas fa-pen"></i></button>
+                                <button onclick="deleteFromCatalog(${item.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded" title="حذف"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>`;
                 }
             });
         }
 
-        function startInlineEdit(id) {
-            inlineEditId = id;
-            renderCatalog();
-        }
-
-        function cancelInlineEdit() {
-            inlineEditId = null;
-            renderCatalog();
-        }
-
+        function startInlineEdit(id) { inlineEditId = id; renderCatalog(); }
+        function cancelInlineEdit() { inlineEditId = null; renderCatalog(); }
         function saveInlineEdit(id) {
             const item = catalogItems.find(i => i.id === id);
             if (!item) return;
-
             const nameInput = document.getElementById(`inlineName_${id}`);
-            const purchInput = document.getElementById(`inlinePurch_${id}`); // Might be null if not admin
+            const purchInput = document.getElementById(`inlinePurch_${id}`);
             const sellInput = document.getElementById(`inlineSell_${id}`);
-
             const oldName = item.name;
-            const newName = nameInput.value.trim() || oldName;
-            const newPurch = purchInput ? (parseFloat(purchInput.value) || 0) : item.purchasePrice; // Keep old value if hidden
-            const newSell = parseFloat(sellInput.value) || 0;
-
-            item.name = newName;
-            item.purchasePrice = newPurch;
-            item.price = newSell;
-
+            item.name = nameInput.value.trim() || oldName;
+            if(purchInput) item.purchasePrice = parseFloat(purchInput.value) || 0;
+            item.price = parseFloat(sellInput.value) || 0;
             saveCatalog();
-
-            let invoiceUpdated = false;
             invoiceItems.forEach(invItem => {
                 if (invItem.name.toLowerCase() === oldName.toLowerCase()) {
-                    invItem.name = newName;
-                    invItem.price = newSell;
-                    invItem.purchasePrice = newPurch;
-                    invoiceUpdated = true;
+                    invItem.name = item.name; invItem.price = item.price; invItem.purchasePrice = item.purchasePrice;
                 }
             });
-
-            if (invoiceUpdated) {
-                renderInvoiceTable();
-            }
-
-            inlineEditId = null;
-            renderCatalog();
+            renderInvoiceTable();
+            inlineEditId = null; renderCatalog();
         }
 
         function addNewCatalogItem() {
@@ -1217,16 +1180,9 @@
             const purchInput = document.getElementById('newCatPurchasePrice');
             const purchasePrice = purchInput ? (parseFloat(purchInput.value) || 0) : 0;
             const price = parseFloat(document.getElementById('newCatPrice').value) || 0; 
-            
-            if (!name) {
-                alert("يرجى إدخال اسم السلعة.");
-                return;
-            }
-            
+            if (!name) { alert("يرجى إدخال اسم السلعة."); return; }
             catalogItems.push({ id: Date.now(), name, purchasePrice, price });
-            saveCatalog(); 
-            renderCatalog(); 
-            
+            saveCatalog(); renderCatalog(); 
             document.getElementById('newCatName').value = '';
             if(purchInput) purchInput.value = '';
             document.getElementById('newCatPrice').value = '';
@@ -1238,16 +1194,13 @@
             saveCatalog(); renderCatalog();
         }
 
-        // ─── Preview ──────────────────────────────────────────────────────────
         function openPreview() {
             const modal   = document.getElementById('previewModal');
             const content = document.getElementById('previewContent');
             content.innerHTML = '<div class="text-white font-bold text-lg animate-pulse">⏳ Génération de l\'aperçu...</div>';
             modal.classList.remove('hidden');
-
             const noPrint = document.querySelectorAll('.no-print');
             noPrint.forEach(el => el.style.setProperty('display','none','important'));
-
             setTimeout(async () => {
                 const pages = document.querySelectorAll('#invoice-container .page-a4');
                 content.innerHTML = '';
@@ -1267,65 +1220,37 @@
             document.querySelectorAll('.no-print').forEach(el => el.style.removeProperty('display'));
         }
 
-        // ─── Word Export ──────────────────────────────────────────────────────
         function downloadWord() {
             const container = document.getElementById('invoice-container');
             const clone = container.cloneNode(true);
-            
             clone.querySelectorAll('input, textarea').forEach(el => {
                 const span = document.createElement('span');
                 span.textContent = el.value;
-                if (el.tagName === 'TEXTAREA') {
-                    span.style.whiteSpace = 'pre-wrap';
-                }
+                if (el.tagName === 'TEXTAREA') span.style.whiteSpace = 'pre-wrap';
                 el.parentNode.replaceChild(span, el);
             });
-
             clone.querySelectorAll('.no-print, button').forEach(el => el.remove());
-
             const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
             const safeName = document.getElementById('clientName').value.trim() || 'Client';
             const fileTitle = isProforma ? `Facture_PROFORMA_${safeNum}_${safeName}` : `Facture_${safeNum}_${safeName}`;
-
-            const wordContent = `
-            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head>
-                <meta charset='utf-8'>
-                <title>${fileTitle}</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; }
-                    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                    th { background-color: #f2f2f2; }
-                    .watermark-proforma { display: none; }
-                </style>
-            </head>
-            <body>
-                ${clone.innerHTML}
-            </body>
-            </html>`;
-
+            const wordContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>${fileTitle}</title><style>body { font-family: Arial, sans-serif; margin: 20px; } table { width: 100%; border-collapse: collapse; margin-bottom: 15px; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; }</style></head>
+            <body>${clone.innerHTML}</body></html>`;
             const blob = new Blob(['\ufeff', wordContent], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `${fileTitle}.doc`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.href = url; a.download = `${fileTitle}.doc`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
-        // ─── PDF ──────────────────────────────────────────────────────────────
         async function downloadPDF() {
             const btn = document.querySelector('button[onclick="downloadPDF()"]');
             const origText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري...';
             btn.disabled = true;
-
             const noPrint = document.querySelectorAll('.no-print');
             noPrint.forEach(el => el.style.setProperty('display','none','important'));
-
             const replacements = [];
             document.querySelectorAll('#invoice-container input, #invoice-container textarea').forEach(el => {
                 const isTA = el.tagName === 'TEXTAREA';
@@ -1337,43 +1262,34 @@
                 el.style.display = 'none';
                 replacements.push(el);
             });
-
             window.scrollTo(0, 0);
             await new Promise(r => setTimeout(r, 350));
-
             const restore = () => {
                 noPrint.forEach(el => el.style.removeProperty('display'));
                 document.querySelectorAll('.pdf-val').forEach(el => el.remove());
                 replacements.forEach(el => el.style.display = '');
-                btn.innerHTML = origText;
-                btn.disabled = false;
+                btn.innerHTML = origText; btn.disabled = false;
             };
-
             try {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait', compress:true });
                 const canvasOpts = { scale:2, useCORS:true, allowTaint:true, logging:false, backgroundColor:'#ffffff' };
-
                 const pages = document.querySelectorAll('#invoice-container .page-a4');
                 for (let i = 0; i < pages.length; i++) {
                     if (i > 0) doc.addPage();
                     const canvas = await html2canvas(pages[i], canvasOpts);
                     doc.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0, 210, 297);
                 }
-
                 const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
                 const safeName = document.getElementById('clientName').value.trim() || 'Client';
                 const pdfPrefix = isProforma ? 'Facture_PROFORMA' : 'Facture';
                 doc.save(`${pdfPrefix}_${safeNum}_${safeName}.pdf`);
             } catch(err) {
-                console.error(err);
                 alert('Erreur PDF : ' + err.message);
             } finally { restore(); }
         }
 
-        // ─── Gemini AI ────────────────────────────────________________________
         const apiKey = '';
-
         async function callGeminiWithRetry(prompt, retries = 4) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             const payload = { contents:[{parts:[{text:prompt}]}], systemInstruction:{parts:[{text:"You are a professional assistant for an Algerian security company's invoices. Reply concisely in French."}]} };
