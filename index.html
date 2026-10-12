@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DAFIS SOLUTIONS - Facture PROFORMA</title>
+    <title id="documentTitle">DAFIS SOLUTIONS - Facture PROFORMA</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -62,7 +62,7 @@
         textarea { resize: none; overflow: hidden; }
         .wrapper-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 1rem; }
 
-        /* Watermark PROFORMA */
+        /* Watermark PROFORMA / FACTURE */
         .watermark-proforma {
             position: absolute;
             top: 50%;
@@ -119,6 +119,9 @@
             <button onclick="duplicateCurrentInvoice()" class="flex items-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm" title="نسخ الفاتورة الحالية">
                 <i class="fas fa-copy"></i> نسخ
             </button>
+            <button onclick="toggleInvoiceType()" id="typeToggleBtn" class="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm" title="التحويل بين فاتورة شكلية وفاتورة عادية">
+                <i class="fas fa-exchange-alt"></i> Proforma / Facture
+            </button>
             <button onclick="resetInvoiceForm()" class="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-redo"></i> تفريغ
             </button>
@@ -171,6 +174,9 @@
             <button onclick="openPreview()" class="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 text-sm">
                 <i class="fas fa-eye"></i> Aperçu
             </button>
+            <button onclick="downloadWord()" class="flex items-center gap-1.5 bg-blue-700 hover:bg-blue-800 text-white px-3.5 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95 text-sm">
+                <i class="fas fa-file-word"></i> Word
+            </button>
             <button onclick="downloadPDF()" class="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-black shadow-md transition-transform active:scale-95 text-base">
                 <i class="fas fa-file-pdf"></i> PDF
             </button>
@@ -187,7 +193,7 @@
                 <div class="absolute inset-0 opacity-[0.025] pointer-events-none flex items-center justify-center z-0">
                     <i class="fas fa-shield-alt text-[380px] text-gray-800"></i>
                 </div>
-                <div class="watermark-proforma">PROFORMA</div>
+                <div class="watermark-proforma" id="watermarkP1">PROFORMA</div>
 
                 <div class="relative z-10 flex flex-col flex-1">
 
@@ -266,7 +272,7 @@
             <div class="html2pdf__page-break page-divider"></div>
 
             <div class="page-a4">
-                <div class="watermark-proforma">PROFORMA</div>
+                <div class="watermark-proforma" id="watermarkP2">PROFORMA</div>
 
                 <div class="relative z-10 flex flex-col h-full">
 
@@ -280,7 +286,7 @@
                             </div>
                         </div>
                         <div class="flex flex-col items-end gap-1">
-                            <span class="text-[11px] font-black text-gray-500 uppercase tracking-widest">FACTURE PROFORMA <span class="text-gray-400 font-normal">(Suite)</span></span>
+                            <span class="text-[11px] font-black text-gray-500 uppercase tracking-widest" id="subTitleP2">FACTURE PROFORMA <span class="text-gray-400 font-normal">(Suite)</span></span>
                             <div class="text-[11.5px] font-bold text-gray-600 flex items-center gap-2">
                                 N° <span id="syncNumDisplay" class="text-red-600 font-black text-[13px]">2026/001</span>
                                 <span class="text-gray-300">|</span>
@@ -536,6 +542,7 @@
         let inlineEditId   = null; 
         let currentTotalTTC = 0;
         let currentCurrency = 'DA';
+        let isProforma     = true; // Type toggle state
         let catalogSortOrder = { name: 1, price: 1, purchase: 1 }; 
 
         // Color themes: [headerBg, accentText, buttonClass]
@@ -562,6 +569,31 @@
             generateQR();
             renderExtraCharges();
             updateAuthUI(); // Apply auth restrictions on load
+        }
+
+        // ─── Toggle Invoice Type (Proforma / Facture) ────────────────────────
+        function toggleInvoiceType() {
+            isProforma = !isProforma;
+            const titleEl = document.getElementById('invoiceTitle');
+            const watermarkP1 = document.getElementById('watermarkP1');
+            const watermarkP2 = document.getElementById('watermarkP2');
+            const subTitleP2 = document.getElementById('subTitleP2');
+            const docTitle = document.getElementById('documentTitle');
+
+            if (isProforma) {
+                titleEl.innerText = 'FACTURE PROFORMA';
+                watermarkP1.innerText = 'PROFORMA';
+                watermarkP2.innerText = 'PROFORMA';
+                subTitleP2.innerHTML = 'FACTURE PROFORMA <span class="text-gray-400 font-normal">(Suite)</span>';
+                docTitle.innerText = 'DAFIS SOLUTIONS - Facture PROFORMA';
+            } else {
+                titleEl.innerText = 'FACTURE';
+                watermarkP1.innerText = 'FACTURE';
+                watermarkP2.innerText = 'FACTURE';
+                subTitleP2.innerHTML = 'FACTURE <span class="text-gray-400 font-normal">(Suite)</span>';
+                docTitle.innerText = 'DAFIS SOLUTIONS - FACTURE';
+            }
+            generateQR();
         }
 
         // ─── Auth (Admin Login/Logout) ────────────────────────────────────────
@@ -652,7 +684,8 @@
                 el.innerHTML = '';
                 const num = document.getElementById('invoiceNum').value;
                 const client = document.getElementById('clientName').value || '—';
-                const text = `DAFIS SOLUTIONS | Facture: ${num} | Client: ${client} | dafis-solutions.github.io`;
+                const typeText = isProforma ? 'Facture PROFORMA' : 'FACTURE';
+                const text = `DAFIS SOLUTIONS | ${typeText}: ${num} | Client: ${client} | dafis-solutions.github.io`;
                 try {
                     new QRCode(el, { text, width: 64, height: 64, colorDark: '#1f2937', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
                 } catch(e) {}
@@ -927,6 +960,7 @@
                 clientRc:      document.getElementById('clientRc').value,
                 total: currentTotalTTC, status: 'unpaid',
                 currency: currentCurrency,
+                isProforma: isProforma,
                 tvaActive: document.getElementById('toggleTva').checked,
                 tvaRate:   parseFloat(document.getElementById('tvaInput').value) || 0,
                 tvaAmount: parseFloat(document.getElementById('valTvaAmount').value) || 0,
@@ -954,6 +988,9 @@
             document.getElementById('clientPhone').value   = inv.clientPhone || '';
             document.getElementById('clientNif').value     = inv.clientNif || '';
             document.getElementById('clientRc').value      = inv.clientRc || '';
+            if (inv.isProforma !== undefined && inv.isProforma !== isProforma) {
+                toggleInvoiceType();
+            }
             document.getElementById('toggleTva').checked   = inv.tvaActive !== undefined ? inv.tvaActive : true;
             document.getElementById('tvaInput').value      = inv.tvaRate !== undefined ? inv.tvaRate : 19;
             document.getElementById('valTvaAmount').value  = inv.tvaAmount || 0;
@@ -1013,7 +1050,7 @@
                         <td class="py-3 px-4 font-black text-right text-red-600">${inv.total.toLocaleString('fr-FR')} ${inv.currency || 'DA'}</td>
                         <td class="py-3 px-4 text-center">
                             <select onchange="updateInvStatus(${inv.id},this.value)" class="outline-none rounded-full px-3 py-1 font-bold text-xs ${sc.cls}">
-                                ${Object.entries(STATUS_CONFIG).map(([k,v]) => `<option value="${k}" ${inv.status===k?'selected':''}>${v.label}</option>`).join('')}
+                                ${Object.entries(STATUS_CONFIG).map(([k,v]) => `<option value="\${k}" ${inv.status===k?'selected':''}>${v.label}</option>`).join('')}
                             </select>
                         </td>
                         <td class="py-3 px-4 text-center whitespace-nowrap">
@@ -1115,9 +1152,9 @@
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
                             <td class="py-2.5 px-4 font-bold text-gray-800">${item.name}</td>
-                            ${isAdmin ? `<td class="py-2.5 px-4 font-bold text-gray-500">${purchasePrice.toLocaleString('fr-FR')}</td>` : ''}
+                            ${isAdmin ? `<td class="py-2.5 px-4 font-bold text-gray-500">\${purchasePrice.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 font-black text-blue-700">${sellingPrice.toLocaleString('fr-FR')}</td>
-                            ${isAdmin ? `<td class="py-2.5 px-4 font-black ${profitClass}" dir="ltr">${profitSign}${profit.toLocaleString('fr-FR')}</td>` : ''}
+                            ${isAdmin ? `<td class="py-2.5 px-4 font-black \${profitClass}" dir="ltr">${profitSign}${profit.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 text-center whitespace-nowrap">
                                 <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded transition-colors" title="إضافة للفاتورة"><i class="fas fa-plus"></i></button>
                                 <button onclick="startInlineEdit(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded transition-colors" title="تعديل"><i class="fas fa-pen"></i></button>
@@ -1230,6 +1267,55 @@
             document.querySelectorAll('.no-print').forEach(el => el.style.removeProperty('display'));
         }
 
+        // ─── Word Export ──────────────────────────────────────────────────────
+        function downloadWord() {
+            const container = document.getElementById('invoice-container');
+            const clone = container.cloneNode(true);
+            
+            clone.querySelectorAll('input, textarea').forEach(el => {
+                const span = document.createElement('span');
+                span.textContent = el.value;
+                if (el.tagName === 'TEXTAREA') {
+                    span.style.whiteSpace = 'pre-wrap';
+                }
+                el.parentNode.replaceChild(span, el);
+            });
+
+            clone.querySelectorAll('.no-print, button').forEach(el => el.remove());
+
+            const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
+            const safeName = document.getElementById('clientName').value.trim() || 'Client';
+            const fileTitle = isProforma ? `Facture_PROFORMA_${safeNum}_${safeName}` : `Facture_${safeNum}_${safeName}`;
+
+            const wordContent = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset='utf-8'>
+                <title>${fileTitle}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #f2f2f2; }
+                    .watermark-proforma { display: none; }
+                </style>
+            </head>
+            <body>
+                ${clone.innerHTML}
+            </body>
+            </html>`;
+
+            const blob = new Blob(['\ufeff', wordContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${fileTitle}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
         // ─── PDF ──────────────────────────────────────────────────────────────
         async function downloadPDF() {
             const btn = document.querySelector('button[onclick="downloadPDF()"]');
@@ -1240,7 +1326,6 @@
             const noPrint = document.querySelectorAll('.no-print');
             noPrint.forEach(el => el.style.setProperty('display','none','important'));
 
-            // Replace inputs with visible spans
             const replacements = [];
             document.querySelectorAll('#invoice-container input, #invoice-container textarea').forEach(el => {
                 const isTA = el.tagName === 'TEXTAREA';
@@ -1278,14 +1363,15 @@
 
                 const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
                 const safeName = document.getElementById('clientName').value.trim() || 'Client';
-                doc.save(`Facture_PROFORMA_${safeNum}_${safeName}.pdf`);
+                const pdfPrefix = isProforma ? 'Facture_PROFORMA' : 'Facture';
+                doc.save(`${pdfPrefix}_${safeNum}_${safeName}.pdf`);
             } catch(err) {
                 console.error(err);
                 alert('Erreur PDF : ' + err.message);
             } finally { restore(); }
         }
 
-        // ─── Gemini AI ────────────────────────────────────────────────────────
+        // ─── Gemini AI ────────────────────────────────________________________
         const apiKey = '';
 
         async function callGeminiWithRetry(prompt, retries = 4) {
@@ -1311,7 +1397,7 @@
             const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>'; btn.disabled = true;
             try {
                 const txt = await callGeminiWithRetry(`Convert ${currentTotalTTC} ${currentCurrency} to French words for an invoice. Return ONLY the text string, no quotes.`);
-                if (txt) document.getElementById('amountInWords').value = txt.trim().replace(/^"|"$/g,'');
+                if (txt) document.getElementById('amountInWords').value = txt.trim().replace(/^"|"\$/g,'');
             } catch { alert("Erreur IA Gemini."); }
             finally { btn.innerHTML = orig; btn.disabled = false; }
         }
@@ -1330,5 +1416,3 @@
     </script>
 </body>
 </html>
-
-```
