@@ -1324,7 +1324,7 @@
                 const safeName = document.getElementById('clientName').value.trim() || 'Client';
                 const pdfPrefix = isProforma ? 'Facture_PROFORMA' : 'Facture';
                 doc.save(`${pdfPrefix}_${safeNum}_${safeName}.pdf`);
-            } المؤمل (err) {
+            } catch(err) {
                 alert('Erreur PDF : ' + err.message);
             } finally { restore(); }
         }
