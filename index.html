@@ -256,11 +256,11 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr id="tableHead" class="bg-gray-800 text-white text-[9.5px] uppercase tracking-wider">
-                                    <th class="py-1 px-2 font-bold border border-gray-800 w-[50%]">Désignation</th>
+                                    <th class="py-1 px-2 font-bold border border-gray-800 w-[48%]">Désignation</th>
                                     <th class="py-1 px-1 font-bold border border-gray-800 text-center w-[9%]">Qté</th>
                                     <th class="py-1 px-1 font-bold border border-gray-800 text-center w-[18%]">P.U HT (<span id="thCurrency">DA</span>)</th>
-                                    <th class="py-1 px-2 font-bold border border-gray-800 text-right w-[23%]">Total HT</th>
-                                    <th class="no-print w-6 border border-gray-800"></th>
+                                    <th class="py-1 px-2 font-bold border border-gray-800 text-right w-[25%]">Total HT</th>
+                                    <th class="no-print w-11 border border-gray-800"></th>
                                 </tr>
                             </thead>
                             <tbody id="invoiceTableBody"></tbody>
@@ -387,6 +387,36 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- نافذة إضافة سلعة من الفاتورة إلى الكتالوج السريع -->
+    <div id="quickAddCatalogModal" class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden modal-enter" dir="rtl">
+            <div class="bg-blue-800 text-white px-5 py-3.5 flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة السلعة للكتالوج</h3>
+                <button onclick="closeQuickCatalogModal()" class="text-gray-200 hover:text-white text-xl cursor-pointer"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">اسم السلعة (Désignation):</label>
+                    <input type="text" id="quickCatName" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-bold text-sm focus:border-blue-500 outline-none" dir="ltr">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">سعر الشراء (Achat):</label>
+                        <input type="number" id="quickCatPurchase" placeholder="0" class="w-full border-2 border-emerald-400 rounded-lg px-3 py-2 font-black text-sm focus:border-emerald-600 outline-none text-left bg-emerald-50/30" dir="ltr">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-blue-600 mb-1">سعر البيع (Vente):</label>
+                        <input type="number" id="quickCatPrice" placeholder="0" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-black text-sm focus:border-blue-500 outline-none text-left" dir="ltr">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 mt-2">
+                    <button onclick="closeQuickCatalogModal()" class="px-4 py-2 rounded-lg font-bold text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 cursor-pointer">إلغاء</button>
+                    <button onclick="saveQuickCatalogItem()" class="px-5 py-2 rounded-lg font-bold text-xs bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer"><i class="fas fa-save ml-1"></i> حفظ وإضافة</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -530,6 +560,7 @@
         let currentTotalTTC = 0;
         let currentCurrency = 'DA';
         let isProforma     = false;
+        let quickAddRowId  = null;
 
         const initialDefaultItems = [
             { name: 'XVR Dahua, 8CH 5MP COPER', qty: 1, price: 25500, purchasePrice: 20000 },
@@ -644,6 +675,7 @@
             const catThProf = document.getElementById('catThProf');
             if (catThProf) catThProf.style.display = isAdmin ? 'table-cell' : 'none';
 
+            renderInvoiceTable();
             if(!document.getElementById('catalogModal').classList.contains('hidden')) renderCatalog();
             if(!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
         }
@@ -759,7 +791,7 @@
         }
 
         function addInvoiceItem(name='', qty=1, price=0, purchasePrice=0) {
-            invoiceItems.push({ id: Date.now(), name, qty, price, purchasePrice });
+            invoiceItems.push({ id: Date.now() + Math.random(), name, qty, price, purchasePrice });
             renderInvoiceTable();
         }
         function removeInvoiceItem(id) {
@@ -775,16 +807,77 @@
                 item.price = cat.price;
                 item.purchasePrice = cat.purchasePrice || 0;
                 el.closest('tr').querySelector('.item-price-input').value = cat.price;
-                updateRowTotal(el.closest('tr'), item);
-                calculateTotals();
             }
+            updateRowTotal(el.closest('tr'), item);
+            calculateTotals();
         }
         function updateItem(id, field, el) {
             const item = invoiceItems.find(i => i.id === id);
-            if (item) { item[field] = parseFloat(el.value) || 0; updateRowTotal(el.closest('tr'), item); calculateTotals(); }
+            if (item) { 
+                item[field] = parseFloat(el.value) || 0; 
+                updateRowTotal(el.closest('tr'), item); 
+                calculateTotals(); 
+            }
         }
         function updateRowTotal(row, item) {
-            row.querySelector('.item-total').innerText = (item.qty * item.price).toLocaleString('fr-FR');
+            const total = item.qty * item.price;
+            const profit = item.qty * (item.price - (item.purchasePrice || 0));
+            const totalCell = row.querySelector('.item-total');
+            let profitHtml = '';
+            if (isAdmin) {
+                const pColor = profit >= 0 ? 'text-emerald-600' : 'text-red-500';
+                profitHtml = `<span class="no-print block text-[8px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
+            }
+            totalCell.innerHTML = `${total.toLocaleString('fr-FR')}${profitHtml}`;
+        }
+
+        function openQuickCatalogModal(id) {
+            const item = invoiceItems.find(i => i.id === id);
+            if (!item) return;
+            quickAddRowId = id;
+            document.getElementById('quickCatName').value = item.name;
+            document.getElementById('quickCatPurchase').value = item.purchasePrice || '';
+            document.getElementById('quickCatPrice').value = item.price || 0;
+            document.getElementById('quickAddCatalogModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('quickCatPurchase').focus(), 50);
+        }
+
+        function closeQuickCatalogModal() {
+            document.getElementById('quickAddCatalogModal').classList.add('hidden');
+            quickAddRowId = null;
+        }
+
+        function saveQuickCatalogItem() {
+            const name = document.getElementById('quickCatName').value.trim();
+            const purchasePrice = parseFloat(document.getElementById('quickCatPurchase').value) || 0;
+            const price = parseFloat(document.getElementById('quickCatPrice').value) || 0;
+            
+            if (!name) {
+                alert('يرجى إدخال اسم السلعة.');
+                return;
+            }
+
+            const existing = catalogItems.find(c => c.name.toLowerCase() === name.toLowerCase());
+            if (existing) {
+                existing.purchasePrice = purchasePrice;
+                existing.price = price;
+            } else {
+                catalogItems.push({ id: Date.now(), name, purchasePrice, price });
+            }
+            saveCatalog();
+
+            if (quickAddRowId !== null) {
+                const rowItem = invoiceItems.find(i => i.id === quickAddRowId);
+                if (rowItem) {
+                    rowItem.name = name;
+                    rowItem.purchasePrice = purchasePrice;
+                    rowItem.price = price;
+                }
+            }
+
+            closeQuickCatalogModal();
+            renderCatalog();
+            renderInvoiceTable();
         }
 
         function renderInvoiceTable() {
@@ -794,12 +887,21 @@
             catalogItems.forEach(c => datalist.appendChild(new Option(c.name)));
             tbody.innerHTML = '';
             if (!invoiceItems.length) {
-                tbody.innerHTML = `<tr class="no-print"><td colspan="5" class="text-center py-4 text-gray-400 italic text-xs">Facture vide. Cliquez sur "+ Ligne".</td></tr>`;
+                tbody.innerHTML = `<tr class="no-print"><td colspan="5" class="text-center py-4 text-gray-400 italic text-xs">Facture vide. Cliquez sur "+ سطر".</td></tr>`;
             } else {
                 invoiceItems.forEach((item, idx) => {
                     const bg = idx % 2 === 0 ? 'bg-white' : 'bg-gray-50';
                     const tr = document.createElement('tr');
                     tr.className = `${bg} border-b border-gray-200 text-[9.5px]`;
+                    
+                    const total = item.qty * item.price;
+                    const profit = item.qty * (item.price - (item.purchasePrice || 0));
+                    let profitHtml = '';
+                    if (isAdmin) {
+                        const pColor = profit >= 0 ? 'text-emerald-600' : 'text-red-500';
+                        profitHtml = `<span class="no-print block text-[8px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
+                    }
+
                     tr.innerHTML = `
                         <td class="py-0.5 px-1.5 border-r border-gray-200">
                             <input type="text" list="catalogDatalist" oninput="handleDesignationInput(${item.id},this)" value="${item.name.replace(/"/g, '&quot;')}"
@@ -813,11 +915,12 @@
                             <input type="number" oninput="updateItem(${item.id},'price',this)" value="${item.price}"
                                 class="w-full text-center font-bold text-gray-800 bg-transparent outline-none item-price-input border-b border-dashed border-gray-300 focus:border-red-500">
                         </td>
-                        <td class="py-0.5 px-1.5 text-right font-black text-gray-900 item-total border-r border-gray-200">
-                            ${(item.qty * item.price).toLocaleString('fr-FR')}
+                        <td class="py-0.5 px-1.5 text-right font-black text-gray-900 item-total border-r border-gray-200 leading-tight">
+                            ${total.toLocaleString('fr-FR')}${profitHtml}
                         </td>
-                        <td class="no-print text-center px-0.5">
-                            <button onclick="removeInvoiceItem(${item.id})" class="text-red-500 hover:bg-red-100 p-0.5 rounded cursor-pointer"><i class="fas fa-times text-[10px]"></i></button>
+                        <td class="no-print text-center px-0.5 whitespace-nowrap">
+                            <button onclick="openQuickCatalogModal(${item.id})" class="text-blue-600 hover:bg-blue-100 p-0.5 rounded cursor-pointer" title="إضافة للكتالوج"><i class="fas fa-plus-circle text-[10px]"></i></button>
+                            <button onclick="removeInvoiceItem(${item.id})" class="text-red-500 hover:bg-red-100 p-0.5 rounded cursor-pointer" title="حذف السطر"><i class="fas fa-times text-[10px]"></i></button>
                         </td>`;
                     tbody.appendChild(tr);
                 });
@@ -864,7 +967,7 @@
             if (totalProfit >= 0) {
                 profitBadge.className = 'flex items-center gap-1 bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg border border-emerald-200';
             } else {
-                profitBadge.className = 'flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-lg border border-emerald-200';
+                profitBadge.className = 'flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-lg border border-red-200';
             }
         }
 
@@ -1052,6 +1155,18 @@
             const m = document.getElementById('catalogModal');
             if (show) { inlineEditId = null; renderCatalog(); m.classList.remove('hidden'); }
             else m.classList.add('hidden');
+        }
+
+        function sortCatalog(by) {
+            if (by === 'name') {
+                catalogItems.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (by === 'purchase') {
+                catalogItems.sort((a, b) => (a.purchasePrice || 0) - (b.purchasePrice || 0));
+            } else if (by === 'price') {
+                catalogItems.sort((a, b) => (a.price || 0) - (b.price || 0));
+            }
+            saveCatalog();
+            renderCatalog();
         }
 
         function renderCatalog() {
