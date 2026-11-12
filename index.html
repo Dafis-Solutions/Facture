@@ -184,18 +184,21 @@
 
                 <div class="relative z-10 flex flex-col flex-1 h-full">
 
-                    <!-- الهيدر الرسمي وشعار المؤسسة -->
-                    <div class="flex justify-between border-b-2 border-gray-800 pb-1.5 mb-1.5" id="header-p1">
-                        <div class="flex flex-col w-[55%]">
-                            <img src="logo.jpg" alt="DAFIS Solutions" class="w-36 h-auto object-contain mb-0.5"
+                    <!-- الهيدر الرسمي وشعار المؤسسة (مُعدل حسب الطلب) -->
+                    <div class="flex justify-between items-center border-b-2 border-gray-800 pb-1.5 mb-1.5" id="header-p1">
+                        <!-- الشعار على اليسار -->
+                        <div class="flex flex-col w-[36%]">
+                            <img src="logo.jpg" alt="DAFIS Solutions" class="w-40 h-auto object-contain"
                                  onerror="this.onerror=null;this.src='https://placehold.co/200x60/ffffff/e50000?text=DAFIS+SOLUTIONS';"/>
-                            <div class="text-gray-800 font-bold text-[9.5px] flex flex-col gap-0">
-                                <div class="flex items-center gap-1"><i class="fas fa-check-circle text-red-600"></i> AGRÉE PAR L'ÉTAT</div>
-                                <div class="flex items-center gap-1"><i class="fas fa-video text-red-600"></i> Solutions de Télésurveillance & Réseaux</div>
-                            </div>
                         </div>
 
-                        <div class="flex flex-col items-end w-[45%]">
+                        <!-- كود QR لخرائط جوجل في المنتصف -->
+                        <div class="flex flex-col items-center justify-center w-[24%]">
+                            <div id="qrcode-maps" class="p-1 bg-white border border-gray-200 rounded shadow-xs"></div>
+                        </div>
+
+                        <!-- معلومات الفاتورة والوصف على اليمين -->
+                        <div class="flex flex-col items-end w-[40%]">
                             <h1 id="invoiceTitle" class="font-black text-gray-900 uppercase tracking-widest mb-1 whitespace-nowrap" style="font-size:18px; letter-spacing:.08em;">FACTURE</h1>
                             <div class="flex flex-col w-full max-w-[190px] gap-0.5 mb-1">
                                 <div class="flex justify-between items-center border-b border-gray-300 pb-0.5">
@@ -207,7 +210,11 @@
                                     <input type="text" id="invoiceDate" oninput="syncInvoiceData()" class="text-right font-black text-gray-800 text-[10px] bg-transparent outline-none w-24">
                                 </div>
                             </div>
-                            <div id="qrcode-p1" class="mt-0"></div>
+                            <!-- الكتابة المنقولة أسفل التاريخ مباشرة -->
+                            <div class="text-gray-800 font-bold text-[9.5px] flex flex-col items-end gap-0 text-right">
+                                <div class="flex items-center gap-1"><i class="fas fa-check-circle text-red-600"></i> AGRÉE PAR L'ÉTAT</div>
+                                <div class="flex items-center gap-1"><i class="fas fa-video text-red-600"></i> Solutions de Télésurveillance & Réseaux</div>
+                            </div>
                         </div>
                     </div>
 
@@ -315,7 +322,7 @@
                                         </td>
                                         <td class="py-0.5 px-1.5 font-black text-right text-gray-900" id="valTva">0 DA</td>
                                     </tr>
-                                    <!-- خانة السعر المساعد (Price Helper) -->
+                                    <!-- خانة الخصم (Remise / Autre) -->
                                     <tr class="border-b border-gray-300 bg-yellow-50/50" id="rowPriceHelper">
                                         <td class="py-0.5 px-1.5 font-bold text-yellow-900 text-[8.5px]">
                                             <input type="text" id="priceHelperLabel" value="Remise / Autre" class="w-full bg-transparent border-b border-dashed border-yellow-400 outline-none font-bold text-[8.5px]">
@@ -327,7 +334,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <!-- خانة الخصم (Versement) مستقلة لكل فاتورة -->
+                                    <!-- خانة الدفعة (Versement) مستقلة لكل فاتورة -->
                                     <tr class="border-b border-gray-300 bg-purple-50/50" id="rowRemise">
                                         <td class="py-0.5 px-1.5 font-bold text-purple-900 text-[8.5px]">Versement</td>
                                         <td class="py-0.5 px-1.5 text-right">
@@ -358,13 +365,12 @@
                             </div>
                         </div>
 
-                        <!-- التوقيع والـ QR -->
-                        <div class="mt-1.5 flex justify-between items-end">
-                            <div id="qrcode-p2" class="shrink-0"></div>
+                        <!-- التوقيع والختم -->
+                        <div class="mt-1.5 flex justify-end items-end">
                             <div class="text-center font-bold text-gray-700 border-b border-gray-800 pb-0.5 px-8 text-[9.5px]">Cachet & Signature</div>
                         </div>
 
-                        <!-- الفوتر الرسمي (مع تعديل المعلومات والمحاذاة لليسار) -->
+                        <!-- الفوتر الرسمي -->
                         <div class="mt-1 pt-1 border-t-2 border-gray-800 flex justify-between items-end">
                             <div class="flex flex-col items-start gap-0 text-[8.5px] font-bold text-gray-700 leading-tight">
                                 <div class="flex items-center gap-1"><i class="fas fa-envelope text-red-600 w-3 text-center"></i> contact.dafisolutions@gmail.com</div>
@@ -606,7 +612,6 @@
                 docTitle.innerText = 'DAFIS SOLUTIONS - Facture';
                 toggleLabel.innerText = 'تحويل لـ PROFORMA';
             }
-            generateQR();
         }
 
         function toggleSection(section) {
@@ -676,16 +681,21 @@
             if(!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
         }
 
+        // توليد كود QR لخرائط جوجل فقط
         function generateQR() {
-            const el = document.getElementById('qrcode-p1');
+            const el = document.getElementById('qrcode-maps');
             if (!el) return;
             el.innerHTML = '';
-            const num = document.getElementById('invoiceNum').value;
-            const client = document.getElementById('clientName').value || '—';
-            const typeText = isProforma ? 'Facture PROFORMA' : 'FACTURE';
-            const text = `DAFIS SOLUTIONS | ${typeText}: ${num} | Client: ${client} | dafis-solutions.github.io`;
+            const mapsUrl = 'https://maps.app.goo.gl/wHU5zn4BHrScdRrM9';
             try {
-                new QRCode(el, { text, width: 48, height: 48, colorDark: '#1f2937', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+                new QRCode(el, { 
+                    text: mapsUrl, 
+                    width: 64, 
+                    height: 64, 
+                    colorDark: '#1f2937', 
+                    colorLight: '#ffffff', 
+                    correctLevel: QRCode.CorrectLevel.M 
+                });
             } catch(e) {}
         }
 
@@ -729,7 +739,7 @@
         }
 
         function syncInvoiceData() {
-            generateQR();
+            // الاحتفاظ بالدالة لضمان توافق الإدخال
         }
 
         function loadData() {
@@ -941,7 +951,8 @@
             const remiseChecked = document.getElementById('chkToggleRemise').checked;
             const remiseVal = remiseChecked ? (parseFloat(document.getElementById('remiseInput').value) || 0) : 0;
 
-            const totalTTC = subTotal + totalFrais + tvaAmount + priceHelperVal - remiseVal;
+            // تم تعديل المعادلة لطرح قيمة Remise / Autre (- priceHelperVal)
+            const totalTTC = subTotal + totalFrais + tvaAmount - priceHelperVal - remiseVal;
             currentTotalTTC = totalTTC;
             const cur = currentCurrency;
 
@@ -1000,12 +1011,14 @@
         function resetInvoiceForm() {
             if (!confirm('تفريغ الفاتورة وبدء واحدة جديدة؟')) return;
             invoiceItems = []; extraCharges = [];
-            ['clientName','clientAddress','clientNif','clientRc','amountInWords','remiseInput'].forEach(id => { const el = document.getElementById(id); if(el) el.value = id === 'remiseInput' ? '0' : ''; });
+            ['clientName','clientAddress','clientNif','clientRc','amountInWords','remiseInput','priceHelperInput'].forEach(id => { 
+                const el = document.getElementById(id); 
+                if(el) el.value = (id === 'remiseInput' || id === 'priceHelperInput') ? '0' : ''; 
+            });
             document.getElementById('invoiceDate').value = new Date().toLocaleDateString('fr-FR');
             document.getElementById('invoiceNum').value = '2026/' + String(savedInvoices.length + 1).padStart(2,'0');
             renderInvoiceTable();
             renderExtraCharges();
-            generateQR();
         }
 
         function duplicateCurrentInvoice() {
@@ -1033,6 +1046,7 @@
                 isProforma: isProforma,
                 tvaActive: document.getElementById('toggleTva').checked,
                 tvaRate:   parseFloat(document.getElementById('tvaInput').value) || 0,
+                priceHelperVal: parseFloat(document.getElementById('priceHelperInput').value) || 0,
                 remiseVal: parseFloat(document.getElementById('remiseInput').value) || 0,
                 extraCharges: [...extraCharges],
                 itemsSnapshot: [...invoiceItems] 
@@ -1041,7 +1055,6 @@
             if (idx !== -1) { newInv.status = savedInvoices[idx].status; savedInvoices[idx] = newInv; }
             else savedInvoices.push(newInv);
             localStorage.setItem('dafis_history', JSON.stringify(savedInvoices));
-            generateQR();
             alert('✅ Facture sauvegardée !');
         }
 
@@ -1054,6 +1067,7 @@
             document.getElementById('clientAddress').value = inv.clientAddress || '';
             document.getElementById('clientNif').value     = inv.clientNif || '';
             document.getElementById('clientRc').value      = inv.clientRc || '';
+            document.getElementById('priceHelperInput').value = inv.priceHelperVal !== undefined ? inv.priceHelperVal : 0;
             document.getElementById('remiseInput').value   = inv.remiseVal !== undefined ? inv.remiseVal : 0;
             
             if (inv.isProforma !== isProforma) toggleInvoiceType();
@@ -1064,7 +1078,7 @@
             extraCharges = inv.extraCharges ? [...inv.extraCharges] : [];
             invoiceItems = inv.itemsSnapshot.map(i => ({...i, purchasePrice: i.purchasePrice || 0}));
             syncInvoiceData(); renderInvoiceTable(); renderExtraCharges(); calculateTotals();
-            toggleHistory(false); generateQR();
+            toggleHistory(false);
         }
 
         function toggleHistory(show) {
