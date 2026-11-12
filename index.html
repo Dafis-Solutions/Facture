@@ -185,8 +185,9 @@
                 <div class="relative z-10 flex flex-col flex-1 h-full">
 
                     <!-- الهيدر الرسمي وشعار المؤسسة -->
-                    <div class="flex justify-between border-b-2 border-gray-800 pb-1.5 mb-1.5" id="header-p1">
-                        <div class="flex flex-col w-[55%]">
+                    <div class="flex justify-between items-start border-b-2 border-gray-800 pb-1.5 mb-1.5" id="header-p1">
+                        <!-- اليسار: اللوغو ومعلومات الاعتماد -->
+                        <div class="flex flex-col w-[32%]">
                             <img src="logo.jpg" alt="DAFIS Solutions" class="w-36 h-auto object-contain mb-0.5"
                                  onerror="this.onerror=null;this.src='https://placehold.co/200x60/ffffff/e50000?text=DAFIS+SOLUTIONS';"/>
                             <div class="text-gray-800 font-bold text-[9.5px] flex flex-col gap-0">
@@ -195,8 +196,18 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col items-end w-[45%]">
-                            <h1 id="invoiceTitle" class="font-black text-gray-900 uppercase tracking-widest mb-1 whitespace-nowrap" style="font-size:18px; letter-spacing:.08em;">FACTURE</h1>
+                        <!-- المنتصف: كلمة FACTURE وأسفلها الأيقونات الثلاث مع كتابتها -->
+                        <div class="flex flex-col items-center w-[36%] text-center">
+                            <h1 id="invoiceTitle" class="font-black text-gray-900 uppercase tracking-widest mb-1.5 whitespace-nowrap" style="font-size:18px; letter-spacing:.08em;">FACTURE</h1>
+                            <div class="flex items-center justify-center gap-3 text-[9px] font-bold text-gray-700 bg-gray-50 px-2 py-1 rounded border border-gray-200">
+                                <div class="flex items-center gap-1" title="Vidéosurveillance"><i class="fas fa-video text-red-600"><span>Caméra</span></i></div>
+                                <div class="flex items-center gap-1" title="Sécurité / Biométrie"><i class="fas fa-fingerprint text-red-600"><span>Sécurité</span></i></div>
+                                <div class="flex items-center gap-1" title="Support technique"><i class="fas fa-headset text-red-600"><span>Support</span></i></div>
+                            </div>
+                        </div>
+
+                        <!-- اليمين: رقم الفاتورة، التاريخ والـ QR -->
+                        <div class="flex flex-col items-end w-[32%]">
                             <div class="flex flex-col w-full max-w-[190px] gap-0.5 mb-1">
                                 <div class="flex justify-between items-center border-b border-gray-300 pb-0.5">
                                     <span class="font-bold text-gray-500 text-[9px] uppercase tracking-wider">N°</span>
@@ -364,13 +375,15 @@
                             <div class="text-center font-bold text-gray-700 border-b border-gray-800 pb-0.5 px-8 text-[9.5px]">Cachet & Signature</div>
                         </div>
 
-                        <!-- الفوتر الرسمي -->
+                        <!-- الفوتر الرسمي (الهامش السفلي معكوس: الأيقونات على اليسار والمعلومات على اليمين) -->
                         <div class="mt-1 pt-1 border-t-2 border-gray-800 flex justify-between items-end">
-                            <div class="flex gap-2 text-base opacity-80">
-                                <i class="fas fa-video text-red-600"></i>
-                                <i class="fas fa-fingerprint text-red-600"></i>
-                                <i class="fas fa-headset text-red-600"></i>
+                            <!-- الأيقونات الثلاث في اليسار -->
+                            <div class="flex gap-3 text-base opacity-90">
+                                <i class="fas fa-video text-red-600" title="Caméra"></i>
+                                <i class="fas fa-fingerprint text-red-600" title="Sécurité"></i>
+                                <i class="fas fa-headset text-red-600" title="Support"></i>
                             </div>
+                            <!-- معلومات الاتصال في اليمين -->
                             <div class="flex flex-col items-end gap-0 text-[8.5px] font-bold text-gray-700 leading-tight">
                                 <div class="flex items-center gap-1">contact.dafisolutions@gmail.com <i class="fas fa-envelope text-red-600 w-3 text-center"></i></div>
                                 <div class="flex items-center gap-1 text-[9px]"><span class="tracking-wider">06 59 84 96 56 / 07 95 98 33 37</span> <i class="fas fa-phone-alt text-red-600 w-3 text-center"></i></div>
@@ -963,7 +976,7 @@
             if (totalProfit >= 0) {
                 profitBadge.className = 'flex items-center gap-1 bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg border border-emerald-200';
             } else {
-                profitBadge.className = 'flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-lg border border-red-200';
+                profitBadge.className = 'flex items-center gap-1 bg-red-100 text-red-800 px-2 py-1 rounded-lg border border-emerald-200';
             }
         }
 
