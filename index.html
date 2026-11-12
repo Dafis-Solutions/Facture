@@ -251,16 +251,16 @@
                         </div>
                     </div>
 
-                    <!-- جدول السلع والفاتورة المدمج والمتسع لأكثر من 30 سطر -->
+                    <!-- جدول السلع والفاتورة المدمج والمصغر -->
                     <div class="flex-1 overflow-hidden min-h-0">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr id="tableHead" class="bg-gray-800 text-white text-[9.5px] uppercase tracking-wider">
-                                    <th class="py-1 px-2 font-bold border border-gray-800 w-[48%]">Désignation</th>
-                                    <th class="py-1 px-1 font-bold border border-gray-800 text-center w-[9%]">Qté</th>
-                                    <th class="py-1 px-1 font-bold border border-gray-800 text-center w-[18%]">P.U HT (<span id="thCurrency">DA</span>)</th>
-                                    <th class="py-1 px-2 font-bold border border-gray-800 text-right w-[25%]">Total HT</th>
-                                    <th class="no-print w-11 border border-gray-800"></th>
+                                <tr id="tableHead" class="bg-gray-800 text-white text-[8.5px] uppercase tracking-wider">
+                                    <th class="py-0.5 px-1.5 font-bold border border-gray-800 w-[49%]">Désignation</th>
+                                    <th class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[8%]">Qté</th>
+                                    <th class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[18%]">P.U HT (<span id="thCurrency">DA</span>)</th>
+                                    <th class="py-0.5 px-1.5 font-bold border border-gray-800 text-right w-[25%]">Total HT</th>
+                                    <th class="no-print w-10 border border-gray-800"></th>
                                 </tr>
                             </thead>
                             <tbody id="invoiceTableBody"></tbody>
@@ -271,24 +271,24 @@
                     <!-- القسم السفلي الثابت (المجاميع والملاحظات) -->
                     <div class="mt-auto pt-1">
                         <div class="flex justify-between items-start gap-3">
-                            <div class="w-[54%] flex flex-col gap-1 text-[9.5px]">
+                            <div class="w-[56%] flex flex-col gap-1 text-[9px]">
                                 
                                 <div id="sectionFrais" class="border border-gray-300 p-1 rounded bg-gray-50">
-                                    <h3 class="font-bold text-gray-800 mb-0.5 border-b pb-0.5 text-[9.5px]"><i class="fas fa-plus-circle text-orange-500 mr-1"></i> Frais supplémentaires :</h3>
+                                    <h3 class="font-bold text-gray-800 mb-0.5 border-b pb-0.5 text-[9px]"><i class="fas fa-plus-circle text-orange-500 mr-1"></i> Frais supplémentaires :</h3>
                                     <div id="extraChargesContainer" class="flex flex-col gap-0.5"></div>
-                                    <button onclick="addExtraCharge()" class="no-print mt-0.5 text-[9px] font-bold text-orange-600 hover:text-orange-800 flex items-center gap-1 cursor-pointer">
+                                    <button onclick="addExtraCharge()" class="no-print mt-0.5 text-[8.5px] font-bold text-orange-600 hover:text-orange-800 flex items-center gap-1 cursor-pointer">
                                         <i class="fas fa-plus"></i> Ajouter un frais
                                     </button>
                                 </div>
 
                                 <div id="sectionNotes" class="border border-gray-300 p-1 rounded bg-gray-50">
-                                    <h3 class="font-bold text-gray-800 mb-0.5 border-b pb-0.5 text-[9.5px]"><i class="fas fa-info-circle text-blue-600 mr-1"></i> Notes / Remarques :</h3>
-                                    <textarea id="invoiceNotes" class="w-full text-gray-700 text-[9px] bg-transparent outline-none" rows="1">Garantie matériel 12 mois. Service après-vente assuré.</textarea>
+                                    <h3 class="font-bold text-gray-800 mb-0.5 border-b pb-0.5 text-[9px]"><i class="fas fa-info-circle text-blue-600 mr-1"></i> Notes / Remarques :</h3>
+                                    <textarea id="invoiceNotes" class="w-full text-gray-700 text-[8.5px] bg-transparent outline-none" rows="1">Garantie matériel 12 mois. Service après-vente assuré.</textarea>
                                 </div>
 
                                 <div class="border border-gray-300 p-1 rounded bg-white">
-                                    <h3 class="font-bold text-gray-800 mb-0.5 border-b pb-0.5 text-[9.5px]"><i class="fas fa-university text-green-600 mr-1"></i> Coordonnées Bancaires :</h3>
-                                    <div class="text-gray-700 font-bold text-[9px]">
+                                    <h3 class="font-bold text-gray-800 mb-0.5 border-b pb-0.5 text-[9px]"><i class="fas fa-university text-green-600 mr-1"></i> Coordonnées Bancaires :</h3>
+                                    <div class="text-gray-700 font-bold text-[8.5px]">
                                         <div>Nom : <span class="text-gray-900">MESSAOUDI AHMED EL MOKHTAR</span></div>
                                         <div>N° compte : <span class="font-mono text-gray-900 font-black">00100491030000209946</span></div>
                                     </div>
@@ -296,58 +296,54 @@
                             </div>
 
                             <!-- جدول الحسابات التلقائي المصغر -->
-                            <div class="w-[44%] border border-gray-800 rounded overflow-hidden shadow-sm text-[10px]">
+                            <div class="w-[42%] border border-gray-800 rounded overflow-hidden shadow-sm text-[9px]">
                                 <table class="w-full">
                                     <tr class="border-b border-gray-300">
-                                        <td class="p-1 font-bold text-gray-700 bg-gray-100 w-[50%]">Total HT</td>
-                                        <td class="p-1 font-black text-right text-gray-900" id="valSousTotal">0 DA</td>
+                                        <td class="py-0.5 px-1.5 font-bold text-gray-700 bg-gray-100 w-[50%]">Total HT</td>
+                                        <td class="py-0.5 px-1.5 font-black text-right text-gray-900" id="valSousTotal">0 DA</td>
                                     </tr>
                                     <tr class="border-b border-gray-300" id="rowFrais" style="display:none;">
-                                        <td class="p-1 font-bold text-gray-700 bg-gray-100">Frais Supp.</td>
-                                        <td class="p-1 font-black text-right text-orange-700" id="valFrais">0 DA</td>
+                                        <td class="py-0.5 px-1.5 font-bold text-gray-700 bg-gray-100">Frais Supp.</td>
+                                        <td class="py-0.5 px-1.5 font-black text-right text-orange-700" id="valFrais">0 DA</td>
                                     </tr>
                                     <tr class="border-b border-gray-300" id="rowTva">
-                                        <td class="p-1 font-bold text-gray-700 bg-gray-100">
+                                        <td class="py-0.5 px-1.5 font-bold text-gray-700 bg-gray-100">
                                             <div class="flex items-center justify-between">
                                                 <span>TVA</span>
-                                                <input type="number" id="tvaInput" value="0" oninput="calculateTotals()" class="w-8 bg-white border rounded text-center text-red-600 font-bold text-[9px] py-0">%
+                                                <input type="number" id="tvaInput" value="0" oninput="calculateTotals()" class="w-7 bg-white border rounded text-center text-red-600 font-bold text-[8.5px] py-0">%
                                             </div>
                                         </td>
-                                        <td class="p-1 font-black text-right text-gray-900" id="valTva">0 DA</td>
+                                        <td class="py-0.5 px-1.5 font-black text-right text-gray-900" id="valTva">0 DA</td>
                                     </tr>
                                     <!-- خانة السعر المساعد (Price Helper) -->
                                     <tr class="border-b border-gray-300 bg-yellow-50/50" id="rowPriceHelper">
-                                        <td class="p-1 font-bold text-yellow-900 text-[9px]">
-                                            <input type="text" id="priceHelperLabel" value="Remise / Autre" class="w-full bg-transparent border-b border-dashed border-yellow-400 outline-none font-bold text-[9px]">
+                                        <td class="py-0.5 px-1.5 font-bold text-yellow-900 text-[8.5px]">
+                                            <input type="text" id="priceHelperLabel" value="Remise / Autre" class="w-full bg-transparent border-b border-dashed border-yellow-400 outline-none font-bold text-[8.5px]">
                                         </td>
-                                        <td class="p-1 text-right">
+                                        <td class="py-0.5 px-1.5 text-right">
                                             <div class="flex justify-end items-center font-bold text-yellow-900">
-                                                <input type="number" id="priceHelperInput" value="0" oninput="calculateTotals()" class="w-20 text-right bg-transparent border-b border-dashed border-yellow-400 text-[10px]">
+                                                <input type="number" id="priceHelperInput" value="0" oninput="calculateTotals()" class="w-16 text-right bg-transparent border-b border-dashed border-yellow-400 text-[9px]">
                                                 <span class="currency-label ml-0.5">DA</span>
                                             </div>
                                         </td>
                                     </tr>
                                     <!-- خانة الخصم (Remise) -->
                                     <tr class="border-b border-gray-300 bg-purple-50/50" id="rowRemise">
-                                        <td class="p-1 font-bold text-purple-900 text-[9px]">Versement</td>
-                                        <td class="p-1 text-right">
+                                        <td class="py-0.5 px-1.5 font-bold text-purple-900 text-[8.5px]">Versement</td>
+                                        <td class="py-0.5 px-1.5 text-right">
                                             <div class="flex justify-end items-center font-bold text-purple-900">
-                                                <input type="number" id="remiseInput" value="0" oninput="calculateTotals()" class="w-20 text-right bg-transparent border-b border-dashed border-purple-400 text-[10px]">
+                                                <input type="number" id="remiseInput" value="0" oninput="calculateTotals()" class="w-16 text-right bg-transparent border-b border-dashed border-purple-400 text-[9px]">
                                                 <span class="currency-label ml-0.5">DA</span>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr class="border-b border-gray-300 bg-gray-50">
-                                        <td class="p-1 font-black text-gray-800">Total TTC</td>
-                                        <td class="p-1 font-black text-right text-red-600" id="valTotalTtc">0 DA</td>
-                                    </tr>
-                                    <tr class="border-b border-gray-300">
-                                        <td class="p-1 font-bold text-gray-700 bg-gray-100">Droit de timbre</td>
-                                        <td class="p-1 font-black text-right text-gray-800">0 DA</td>
+                                        <td class="py-0.5 px-1.5 font-black text-gray-800">Total TTC</td>
+                                        <td class="py-0.5 px-1.5 font-black text-right text-red-600" id="valTotalTtc">0 DA</td>
                                     </tr>
                                     <tr class="bg-gray-800 text-white">
-                                        <td class="p-1.5 font-black text-[11px] uppercase">NET À PAYER</td>
-                                        <td class="p-1.5 font-black text-right text-[12px] text-red-400" id="valNetAPayer">0 DA</td>
+                                        <td class="py-1 px-1.5 font-black text-[10px] uppercase">NET À PAYER</td>
+                                        <td class="py-1 px-1.5 font-black text-right text-[11px] text-red-400" id="valNetAPayer">0 DA</td>
                                     </tr>
                                 </table>
                             </div>
@@ -719,11 +715,11 @@
                 row.className = 'flex items-center gap-1';
                 row.innerHTML = `
                     <input type="text" value="${charge.label}" oninput="updateCharge(${charge.id},'label',this.value)"
-                        placeholder="Description du frais..." class="flex-1 border-b border-dashed border-gray-300 text-[9px] font-bold bg-transparent outline-none text-gray-700">
+                        placeholder="Description du frais..." class="flex-1 border-b border-dashed border-gray-300 text-[8.5px] font-bold bg-transparent outline-none text-gray-700">
                     <input type="number" value="${charge.amount}" oninput="updateCharge(${charge.id},'amount',+this.value)"
-                        class="w-20 border-b border-dashed border-orange-300 text-right text-[9.5px] font-black bg-transparent outline-none text-orange-700">
-                    <span class="text-[9px] font-bold text-gray-500 currency-label">${currentCurrency}</span>
-                    <button onclick="removeExtraCharge(${charge.id})" class="no-print text-red-400 hover:text-red-600 cursor-pointer"><i class="fas fa-times text-[10px]"></i></button>`;
+                        class="w-16 border-b border-dashed border-orange-300 text-right text-[9px] font-black bg-transparent outline-none text-orange-700">
+                    <span class="text-[8.5px] font-bold text-gray-500 currency-label">${currentCurrency}</span>
+                    <button onclick="removeExtraCharge(${charge.id})" class="no-print text-red-400 hover:text-red-600 cursor-pointer"><i class="fas fa-times text-[9px]"></i></button>`;
                 container.appendChild(row);
             });
         }
@@ -826,7 +822,7 @@
             let profitHtml = '';
             if (isAdmin) {
                 const pColor = profit >= 0 ? 'text-emerald-600' : 'text-red-500';
-                profitHtml = `<span class="no-print block text-[8px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
+                profitHtml = `<span class="no-print ml-1 text-[8px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
             }
             totalCell.innerHTML = `${total.toLocaleString('fr-FR')}${profitHtml}`;
         }
@@ -887,40 +883,40 @@
             catalogItems.forEach(c => datalist.appendChild(new Option(c.name)));
             tbody.innerHTML = '';
             if (!invoiceItems.length) {
-                tbody.innerHTML = `<tr class="no-print"><td colspan="5" class="text-center py-4 text-gray-400 italic text-xs">Facture vide. Cliquez sur "+ سطر".</td></tr>`;
+                tbody.innerHTML = `<tr class="no-print"><td colspan="5" class="text-center py-3 text-gray-400 italic text-xs">Facture vide. Cliquez sur "+ سطر".</td></tr>`;
             } else {
                 invoiceItems.forEach((item, idx) => {
                     const bg = idx % 2 === 0 ? 'bg-white' : 'bg-gray-50';
                     const tr = document.createElement('tr');
-                    tr.className = `${bg} border-b border-gray-200 text-[9.5px]`;
+                    tr.className = `${bg} border-b border-gray-200 text-[9px]`;
                     
                     const total = item.qty * item.price;
                     const profit = item.qty * (item.price - (item.purchasePrice || 0));
                     let profitHtml = '';
                     if (isAdmin) {
                         const pColor = profit >= 0 ? 'text-emerald-600' : 'text-red-500';
-                        profitHtml = `<span class="no-print block text-[8px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
+                        profitHtml = `<span class="no-print ml-1 text-[8px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
                     }
 
                     tr.innerHTML = `
-                        <td class="py-0.5 px-1.5 border-r border-gray-200">
+                        <td class="py-[1.5px] px-1.5 border-r border-gray-200">
                             <input type="text" list="catalogDatalist" oninput="handleDesignationInput(${item.id},this)" value="${item.name.replace(/"/g, '&quot;')}"
                                 class="w-full font-bold text-gray-800 bg-transparent outline-none" placeholder="Désignation...">
                         </td>
-                        <td class="py-0.5 px-1 border-r border-gray-200">
+                        <td class="py-[1.5px] px-1 border-r border-gray-200">
                             <input type="number" oninput="updateItem(${item.id},'qty',this)" value="${item.qty}"
                                 class="w-full text-center font-bold text-gray-800 bg-transparent outline-none border-b border-dashed border-gray-300 focus:border-red-500">
                         </td>
-                        <td class="py-0.5 px-1 border-r border-gray-200">
+                        <td class="py-[1.5px] px-1 border-r border-gray-200">
                             <input type="number" oninput="updateItem(${item.id},'price',this)" value="${item.price}"
                                 class="w-full text-center font-bold text-gray-800 bg-transparent outline-none item-price-input border-b border-dashed border-gray-300 focus:border-red-500">
                         </td>
-                        <td class="py-0.5 px-1.5 text-right font-black text-gray-900 item-total border-r border-gray-200 leading-tight">
+                        <td class="py-[1.5px] px-1.5 text-right font-black text-gray-900 item-total border-r border-gray-200 leading-tight whitespace-nowrap">
                             ${total.toLocaleString('fr-FR')}${profitHtml}
                         </td>
                         <td class="no-print text-center px-0.5 whitespace-nowrap">
-                            <button onclick="openQuickCatalogModal(${item.id})" class="text-blue-600 hover:bg-blue-100 p-0.5 rounded cursor-pointer" title="إضافة للكتالوج"><i class="fas fa-plus-circle text-[10px]"></i></button>
-                            <button onclick="removeInvoiceItem(${item.id})" class="text-red-500 hover:bg-red-100 p-0.5 rounded cursor-pointer" title="حذف السطر"><i class="fas fa-times text-[10px]"></i></button>
+                            <button onclick="openQuickCatalogModal(${item.id})" class="text-blue-600 hover:bg-blue-100 px-0.5 rounded cursor-pointer" title="إضافة للكتالوج"><i class="fas fa-plus-circle text-[9.5px]"></i></button>
+                            <button onclick="removeInvoiceItem(${item.id})" class="text-red-500 hover:bg-red-100 px-0.5 rounded cursor-pointer" title="حذف السطر"><i class="fas fa-times text-[9.5px]"></i></button>
                         </td>`;
                     tbody.appendChild(tr);
                 });
@@ -1289,7 +1285,7 @@
             const safeName = document.getElementById('clientName').value.trim() || 'Client';
             const fileTitle = isProforma ? `Facture_PROFORMA_${safeNum}_${safeName}` : `Facture_${safeNum}_${safeName}`;
             const wordContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head><meta charset='utf-8'><title>${fileTitle}</title><style>body { font-family: Arial, sans-serif; margin: 10px; } table { width: 100%; border-collapse: collapse; margin-bottom: 10px; } th, td { border: 1px solid #ddd; padding: 4px; text-align: left; font-size: 11px; } th { background-color: #f2f2f2; }</style></head>
+            <head><meta charset='utf-8'><title>${fileTitle}</title><style>body { font-family: Arial, sans-serif; margin: 10px; } table { width: 100%; border-collapse: collapse; margin-bottom: 10px; } th, td { border: 1px solid #ddd; padding: 3px; text-align: left; font-size: 10px; } th { background-color: #f2f2f2; }</style></head>
             <body>${clone.innerHTML}</body></html>`;
             const blob = new Blob(['\ufeff', wordContent], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
