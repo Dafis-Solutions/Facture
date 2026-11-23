@@ -15,6 +15,10 @@
         :root {
             --color-primary: #1f2937;
             --color-accent: #dc2626;
+            --page-padding: 5mm 7mm;
+            --row-height: 14px;
+            --table-font-size: 8.5px;
+            --input-height: 12px;
         }
 
         @media print {
@@ -31,7 +35,7 @@
                 height: 296mm !important; 
                 max-height: 296mm !important;
                 min-height: 296mm !important;
-                padding: 5mm 7mm !important; 
+                padding: var(--page-padding) !important; 
                 box-sizing: border-box !important; 
                 page-break-after: always !important; 
                 break-after: always !important; 
@@ -44,12 +48,12 @@
         }
 
         .invoice-wrapper { width: 794px; min-width: 794px; background: white; margin: 0 auto; box-shadow: 0 15px 35px rgba(0,0,0,0.15); box-sizing: border-box; flex-shrink: 0; }
-        .page-a4 { width: 100%; min-height: 1123px; padding: 5mm 7mm; box-sizing: border-box; display: flex; flex-direction: column; background-color: white; position: relative; overflow: hidden; }
+        .page-a4 { width: 100%; min-height: 1123px; padding: var(--page-padding); box-sizing: border-box; display: flex; flex-direction: column; background-color: white; position: relative; overflow: hidden; transition: padding 0.2s ease; }
 
-        /* ضغط صفوف الجدول لتتسع لـ 40 سطر بأريحية */
-        #invoiceTableBody tr { height: 14px; }
-        #invoiceTableBody td { padding-top: 0.5px; padding-bottom: 0.5px; line-height: 1.1; }
-        #invoiceTableBody input { line-height: 1.1; padding: 0; margin: 0; height: 12px; }
+        /* التحكم الديناميكي في حجم الأسطر حسب الاختيار */
+        #invoiceTableBody tr { height: var(--row-height); }
+        #invoiceTableBody td { padding-top: 0.5px; padding-bottom: 0.5px; line-height: 1.1; font-size: var(--table-font-size); }
+        #invoiceTableBody input { line-height: 1.1; padding: 0; margin: 0; height: var(--input-height); font-size: var(--table-font-size); }
 
         input, textarea { background: transparent; outline: none; }
         textarea { resize: none; overflow: hidden; }
@@ -111,8 +115,20 @@
             </button>
         </div>
 
+        <!-- التحكم في حجم الفاتورة وعدد الأسطر + العناصر -->
         <div class="flex flex-wrap gap-1 justify-center items-center bg-gray-50 p-1.5 rounded-lg border border-gray-200 text-xs">
-            <span class="font-bold text-gray-600 ml-1">التحكم:</span>
+            <div class="flex items-center gap-1 bg-indigo-50 border border-indigo-300 px-1.5 py-0.5 rounded font-bold text-indigo-900" dir="rtl">
+                <i class="fas fa-compress-arrows-alt text-indigo-600"></i>
+                <span>سعة الجدول:</span>
+                <select id="rowDensitySelect" onchange="updateRowDensity()" class="bg-white border border-indigo-300 rounded px-1 py-0 text-xs font-black text-indigo-700 outline-none cursor-pointer">
+                    <option value="10">10 أسطر (كبير)</option>
+                    <option value="20">20 سطر (متوسط)</option>
+                    <option value="30">30 سطر (مدمج)</option>
+                    <option value="40" selected>40 سطر (مضغوط)</option>
+                    <option value="50">50 سطر (أقصى ضغط)</option>
+                </select>
+            </div>
+
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkToggleFrais" checked onchange="toggleSection('frais')" class="accent-orange-600"> Frais
             </label>
@@ -120,13 +136,13 @@
                 <input type="checkbox" id="chkToggleNotes" checked onchange="toggleSection('notes')" class="accent-blue-600"> Notes
             </label>
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper')" class="accent-green-600"> Remise / Autre
+                <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper')" class="accent-green-600"> Remise
             </label>
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkToggleRemise" checked onchange="toggleSection('remise')" class="accent-purple-600"> Versement
             </label>
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkToggleWords" checked onchange="toggleSection('words')" class="accent-red-600"> المبلغ بالحروف
+                <input type="checkbox" id="chkToggleWords" checked onchange="toggleSection('words')" class="accent-red-600"> الحروف
             </label>
         </div>
 
@@ -162,6 +178,9 @@
                 <i class="fas fa-cloud-upload-alt text-xs"></i> Importer
             </button>
 
+            <button onclick="openEmailModal()" class="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer" title="إرسال عبر البريد الإلكتروني">
+                <i class="fas fa-envelope"></i> Email
+            </button>
             <button onclick="openPreview()" class="flex items-center gap-1 bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer">
                 <i class="fas fa-eye"></i> Aperçu
             </button>
@@ -189,20 +208,17 @@
 
                 <div class="relative z-10 flex flex-col flex-1 h-full">
 
-                    <!-- الهيدر الرسمي المضغوط -->
+                    <!-- الهيدر الرسمي -->
                     <div class="flex justify-between items-center border-b-2 border-gray-800 pb-1 mb-1" id="header-p1">
-                        <!-- الشعار على اليسار -->
                         <div class="flex flex-col w-[36%]">
                             <img src="logo.jpg" alt="DAFIS Solutions" class="w-36 h-auto object-contain"
                                  onerror="this.onerror=null;this.src='https://placehold.co/200x60/ffffff/e50000?text=DAFIS+SOLUTIONS';"/>
                         </div>
 
-                        <!-- كود QR لخرائط جوجل في المنتصف -->
                         <div class="flex flex-col items-center justify-center w-[24%]">
                             <div id="qrcode-maps" class="p-0.5 bg-white border border-gray-200 rounded shadow-xs"></div>
                         </div>
 
-                        <!-- معلومات الفاتورة والوصف على اليمين -->
                         <div class="flex flex-col items-end w-[40%]">
                             <h1 id="invoiceTitle" class="font-black text-gray-900 uppercase tracking-widest mb-0.5 whitespace-nowrap leading-none" style="font-size:16px; letter-spacing:.08em;">FACTURE</h1>
                             <div class="flex flex-col w-full max-w-[185px] gap-0 mb-0.5">
@@ -222,9 +238,8 @@
                         </div>
                     </div>
 
-                    <!-- معلومات البائع والعميل المضغوطة -->
+                    <!-- معلومات البائع والعميل -->
                     <div class="grid grid-cols-2 gap-1.5 mb-1 text-[8.5px]">
-                        <!-- بيانات البائع DAFIS SOLUTIONS -->
                         <div class="border border-gray-300 rounded px-1.5 py-1 bg-gray-50/70">
                             <div class="font-black text-red-600 border-b border-gray-200 pb-0.5 mb-0.5 flex items-center gap-1"><i class="fas fa-building"></i> VENDEUR : DAFIS SOLUTIONS</div>
                             <div class="grid grid-cols-3 gap-y-0 text-gray-700 font-bold leading-tight">
@@ -237,7 +252,6 @@
                             </div>
                         </div>
 
-                        <!-- بيانات العميل CLIENT -->
                         <div class="border border-gray-300 rounded px-1.5 py-1 bg-white">
                             <div class="font-black text-gray-800 border-b border-gray-200 pb-0.5 mb-0.5 flex items-center gap-1"><i class="fas fa-user-tie text-red-600"></i> CLIENT</div>
                             <div class="flex flex-col gap-0 leading-tight">
@@ -262,11 +276,11 @@
                         </div>
                     </div>
 
-                    <!-- جدول السلع المصغر والمحسن لـ 40 سطر -->
+                    <!-- جدول السلع المتكيف مع الكثافة المختارة -->
                     <div class="flex-1 overflow-hidden min-h-0">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr id="tableHead" class="bg-gray-800 text-white text-[8px] uppercase tracking-wider">
+                                <tr id="tableHead" class="bg-gray-800 text-white text-[8.5px] uppercase tracking-wider">
                                     <th class="py-0.5 px-1.5 font-bold border border-gray-800 w-[50%]">Désignation</th>
                                     <th class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[8%]">Qté</th>
                                     <th class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[17%]">P.U HT (<span id="thCurrency">DA</span>)</th>
@@ -279,7 +293,7 @@
                         <datalist id="catalogDatalist"></datalist>
                     </div>
 
-                    <!-- القسم السفلي الثابت (المجاميع والملاحظات) المضغوط -->
+                    <!-- القسم السفلي الثابت -->
                     <div class="mt-auto pt-1">
                         <div class="flex justify-between items-start gap-2">
                             <div class="w-[56%] flex flex-col gap-0.5 text-[8.5px]">
@@ -306,7 +320,7 @@
                                 </div>
                             </div>
 
-                            <!-- جدول الحسابات التلقائي المضغوط -->
+                            <!-- جدول الحسابات -->
                             <div class="w-[42%] border border-gray-800 rounded overflow-hidden shadow-sm text-[8.5px]">
                                 <table class="w-full">
                                     <tr class="border-b border-gray-300">
@@ -391,6 +405,39 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- نافذة إرسال الفاتورة عبر البريد الإلكتروني -->
+    <div id="emailModal" class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden modal-enter" dir="rtl">
+            <div class="bg-indigo-800 text-white px-5 py-3.5 flex justify-between items-center">
+                <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-envelope-open-text"></i> إرسال الفاتورة عبر البريد الإلكتروني</h3>
+                <button onclick="closeEmailModal()" class="text-gray-200 hover:text-white text-xl cursor-pointer"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-3">
+                <div class="bg-amber-50 border border-amber-300 text-amber-800 p-2.5 rounded-lg text-xs font-bold flex items-start gap-2">
+                    <i class="fas fa-info-circle mt-0.5 text-amber-600"></i>
+                    <span>ملاحظة: سيتم تنزيل ملف PDF للفاتورة تلقائياً على جهازك وفتح بريدك الإلكتروني لإرفاقه وإرساله للعميل.</span>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">البريد الإلكتروني للعميل (Destinataire):</label>
+                    <input type="email" id="emailTo" placeholder="client@example.com" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-bold text-sm focus:border-indigo-500 outline-none text-left" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">موضوع الرسالة (Objet):</label>
+                    <input type="text" id="emailSubject" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-bold text-sm focus:border-indigo-500 outline-none text-left" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">نص الرسالة (Message):</label>
+                    <textarea id="emailBody" rows="6" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 font-medium text-xs focus:border-indigo-500 outline-none text-left leading-relaxed" dir="ltr"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 mt-2">
+                    <button onclick="closeEmailModal()" class="px-4 py-2 rounded-lg font-bold text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 cursor-pointer">إلغاء</button>
+                    <button onclick="sendEmailNow('gmail')" class="px-4 py-2 rounded-lg font-bold text-xs bg-red-600 hover:bg-red-700 text-white shadow cursor-pointer flex items-center gap-1.5"><i class="fab fa-google"></i> فتح في Gmail</button>
+                    <button onclick="sendEmailNow('default')" class="px-4 py-2 rounded-lg font-bold text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow cursor-pointer flex items-center gap-1.5"><i class="fas fa-paper-plane"></i> تطبيق البريد</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -586,6 +633,7 @@
                 invoiceItems = initialDefaultItems.map(i => ({...i, id: Date.now() + Math.random()}));
             }
 
+            updateRowDensity();
             renderClientsDatalist();
             renderCatalog();
             renderInvoiceTable();
@@ -594,6 +642,69 @@
             generateQR();
             renderExtraCharges();
             updateAuthUI();
+        }
+
+        // التحكم الديناميكي في عدد الأسطر وحجم الجدول (10، 20، 30، 40، 50)
+        function updateRowDensity() {
+            const count = document.getElementById('rowDensitySelect').value;
+            const root = document.documentElement;
+            const presets = {
+                '10': { pad: '9mm 11mm',  rowH: '28px', font: '11.5px', inputH: '22px' },
+                '20': { pad: '7mm 9mm',   rowH: '21px', font: '10.5px', inputH: '17px' },
+                '30': { pad: '6mm 8mm',   rowH: '17px', font: '9.5px',  inputH: '14px' },
+                '40': { pad: '5mm 7mm',   rowH: '14px', font: '8.5px',  inputH: '12px' },
+                '50': { pad: '4mm 6mm',   rowH: '11.5px', font: '7.5px', inputH: '10px' }
+            };
+            const p = presets[count] || presets['40'];
+            root.style.setProperty('--page-padding', p.pad);
+            root.style.setProperty('--row-height', p.rowH);
+            root.style.setProperty('--table-font-size', p.font);
+            root.style.setProperty('--input-height', p.inputH);
+        }
+
+        // نافذة إرسال البريد الإلكتروني
+        function openEmailModal() {
+            const clientName = document.getElementById('clientName').value.trim();
+            const invNum = document.getElementById('invoiceNum').value;
+            const invDate = document.getElementById('invoiceDate').value;
+            const docType = isProforma ? 'Facture Proforma' : 'Facture';
+            const totalStr = `${currentTotalTTC.toLocaleString('fr-FR')} ${currentCurrency}`;
+
+            document.getElementById('emailSubject').value = `${docType} N° ${invNum} - DAFIS SOLUTIONS`;
+            document.getElementById('emailBody').value = 
+`Bonjour${clientName && clientName !== '/' ? ' ' + clientName : ''},
+
+Veuillez trouver ci-joint votre ${docType.toLowerCase()} N° ${invNum} en date du ${invDate}, d'un montant net à payer de ${totalStr}.
+
+Nous restons à votre entière disposition pour tout renseignement complémentaire.
+
+Cordialement,
+DAFIS SOLUTIONS
+Tél : 06 59 84 96 56 / 07 95 98 33 37
+Email : contact.dafisolutions@gmail.com
+Tébessa - Algérie`;
+
+            document.getElementById('emailModal').classList.remove('hidden');
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.add('hidden');
+        }
+
+        async function sendEmailNow(provider) {
+            const to = encodeURIComponent(document.getElementById('emailTo').value.trim());
+            const subject = encodeURIComponent(document.getElementById('emailSubject').value);
+            const body = encodeURIComponent(document.getElementById('emailBody').value);
+
+            closeEmailModal();
+            // تنزيل PDF أولاً ليكون جاهزاً للإرفاق
+            await downloadPDF();
+
+            if (provider === 'gmail') {
+                window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`, '_blank');
+            } else {
+                window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+            }
         }
 
         function toggleInvoiceType() {
@@ -683,7 +794,6 @@
             if(!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
         }
 
-        // توليد كود QR لخرائط جوجل (مُصغر قليلاً لكسب المساحة)
         function generateQR() {
             const el = document.getElementById('qrcode-maps');
             if (!el) return;
@@ -898,7 +1008,7 @@
                 invoiceItems.forEach((item, idx) => {
                     const bg = idx % 2 === 0 ? 'bg-white' : 'bg-gray-50';
                     const tr = document.createElement('tr');
-                    tr.className = `${bg} border-b border-gray-200 text-[8px]`;
+                    tr.className = `${bg} border-b border-gray-200`;
                     
                     const total = item.qty * item.price;
                     const profit = item.qty * (item.price - (item.purchasePrice || 0));
@@ -1043,6 +1153,7 @@
                 total: currentTotalTTC, status: 'unpaid',
                 currency: currentCurrency,
                 isProforma: isProforma,
+                rowDensity: document.getElementById('rowDensitySelect').value,
                 tvaActive: document.getElementById('toggleTva').checked,
                 tvaRate:   parseFloat(document.getElementById('tvaInput').value) || 0,
                 priceHelperVal: parseFloat(document.getElementById('priceHelperInput').value) || 0,
@@ -1069,6 +1180,11 @@
             document.getElementById('priceHelperInput').value = inv.priceHelperVal !== undefined ? inv.priceHelperVal : 0;
             document.getElementById('remiseInput').value   = inv.remiseVal !== undefined ? inv.remiseVal : 0;
             
+            if (inv.rowDensity) {
+                document.getElementById('rowDensitySelect').value = inv.rowDensity;
+                updateRowDensity();
+            }
+
             if (inv.isProforma !== isProforma) toggleInvoiceType();
 
             document.getElementById('toggleTva').checked = inv.tvaActive !== undefined ? inv.tvaActive : true;
