@@ -64,14 +64,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-35deg);
-            font-size: 100px;
+            font-size: 90px;
             font-weight: 900;
             color: #dc2626;
             opacity: 0.03;
             pointer-events: none;
             user-select: none;
             white-space: nowrap;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             z-index: 0;
         }
 
@@ -107,7 +107,7 @@
             <button onclick="duplicateCurrentInvoice()" class="flex items-center gap-1 bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer">
                 <i class="fas fa-copy"></i> نسخ
             </button>
-            <button onclick="toggleInvoiceType()" id="typeToggleBtn" class="flex items-center gap-1 bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer">
+            <button onclick="cycleDocType()" id="typeToggleBtn" class="flex items-center gap-1 bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer">
                 <i class="fas fa-exchange-alt"></i> <span id="typeToggleLabel">تحويل لـ PROFORMA</span>
             </button>
             <button onclick="resetInvoiceForm()" class="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer">
@@ -138,13 +138,13 @@
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkToggleBank" checked onchange="toggleSection('bank')" class="accent-emerald-600"> Banque
             </label>
-            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
+            <label class="price-control flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper')" class="accent-green-600"> Remise
             </label>
-            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
+            <label class="price-control flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkToggleRemise" checked onchange="toggleSection('remise')" class="accent-purple-600"> Versement
             </label>
-            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
+            <label class="price-control flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkToggleWords" checked onchange="toggleSection('words')" class="accent-red-600"> الحروف
             </label>
         </div>
@@ -158,13 +158,13 @@
 
             <div class="h-5 w-px bg-gray-300 mx-0.5" id="profitDivider" style="display:none;"></div>
 
-            <div class="flex gap-1.5 border-r border-gray-300 pr-2">
+            <div class="price-control flex gap-1.5 border-r border-gray-300 pr-2">
                 <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-gray-700 bg-white px-2 py-1 rounded border border-gray-300 hover:bg-gray-100" dir="rtl">
                     <input type="checkbox" id="toggleTva" checked onchange="calculateTotals()" class="w-3 h-3 accent-blue-600"> TVA
                 </label>
             </div>
 
-            <select id="currencySelect" onchange="updateCurrency()" class="text-xs font-bold border border-gray-300 rounded px-1.5 py-1 bg-white text-gray-700 outline-none cursor-pointer">
+            <select id="currencySelect" onchange="updateCurrency()" class="price-control text-xs font-bold border border-gray-300 rounded px-1.5 py-1 bg-white text-gray-700 outline-none cursor-pointer">
                 <option value="DA">DA</option>
                 <option value="EUR">EUR</option>
                 <option value="USD">USD</option>
@@ -279,15 +279,15 @@
                         </div>
                     </div>
 
-                    <!-- جدول السلع المتكيف مع الكثافة المختارة -->
+                    <!-- جدول السلع المتكيف مع الكثافة المختارة ونوع الوثيقة -->
                     <div class="flex-1 overflow-hidden min-h-0">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr id="tableHead" class="bg-gray-800 text-white text-[8.5px] uppercase tracking-wider">
-                                    <th class="py-0.5 px-1.5 font-bold border border-gray-800 w-[50%]">Désignation</th>
-                                    <th class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[8%]">Qté</th>
-                                    <th class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[17%]">P.U HT (<span id="thCurrency">DA</span>)</th>
-                                    <th class="py-0.5 px-1.5 font-bold border border-gray-800 text-right w-[25%]">Total HT</th>
+                                    <th id="thDesignation" class="py-0.5 px-1.5 font-bold border border-gray-800 w-[50%]">Désignation</th>
+                                    <th id="thQty" class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[8%]">Qté</th>
+                                    <th class="price-col py-0.5 px-1 font-bold border border-gray-800 text-center w-[17%]">P.U HT (<span id="thCurrency">DA</span>)</th>
+                                    <th class="price-col py-0.5 px-1.5 font-bold border border-gray-800 text-right w-[25%]">Total HT</th>
                                     <th class="no-print w-10 border border-gray-800"></th>
                                 </tr>
                             </thead>
@@ -299,13 +299,13 @@
                     <!-- القسم السفلي الثابت -->
                     <div class="mt-auto pt-1">
                         <div class="flex justify-between items-start gap-2">
-                            <div class="w-[56%] flex flex-col gap-0.5 text-[8.5px]">
+                            <div id="bottomLeftSections" class="w-[56%] flex flex-col gap-0.5 text-[8.5px]">
                                 
                                 <div id="sectionFrais" class="border border-gray-300 px-1.5 py-0.5 rounded bg-gray-50">
-                                    <h3 class="font-bold text-gray-800 border-b pb-0.5 text-[8.5px]"><i class="fas fa-plus-circle text-orange-500 mr-1"></i> Frais supplémentaires :</h3>
+                                    <h3 class="font-bold text-gray-800 border-b pb-0.5 text-[8.5px]"><i class="fas fa-plus-circle text-orange-500 mr-1"></i> <span id="fraisBoxTitle">Frais supplémentaires :</span></h3>
                                     <div id="extraChargesContainer" class="flex flex-col gap-0"></div>
                                     <button onclick="addExtraCharge()" class="no-print text-[8px] font-bold text-orange-600 hover:text-orange-800 flex items-center gap-1 cursor-pointer">
-                                        <i class="fas fa-plus"></i> Ajouter un frais
+                                        <i class="fas fa-plus"></i> Ajouter
                                     </button>
                                 </div>
 
@@ -323,8 +323,8 @@
                                 </div>
                             </div>
 
-                            <!-- جدول الحسابات -->
-                            <div class="w-[42%] border border-gray-800 rounded overflow-hidden shadow-sm text-[8.5px]">
+                            <!-- جدول الحسابات (يختفي في Bon de Livraison) -->
+                            <div id="totalsBoxContainer" class="w-[42%] border border-gray-800 rounded overflow-hidden shadow-sm text-[8.5px]">
                                 <table class="w-full">
                                     <tr class="border-b border-gray-300">
                                         <td class="py-[1px] px-1.5 font-bold text-gray-700 bg-gray-100 w-[50%]">Total HT</td>
@@ -375,7 +375,7 @@
                             </div>
                         </div>
 
-                        <!-- المبلغ بالحروف -->
+                        <!-- المبلغ بالحروف (يختفي في Bon de Livraison) -->
                         <div class="mt-1 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200 text-[8.5px]" id="sectionWords">
                             <div class="flex items-center gap-1.5">
                                 <span class="font-bold text-gray-800 whitespace-nowrap">Arrêtée la présente facture à la somme de :</span>
@@ -415,13 +415,13 @@
     <div id="emailModal" class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden modal-enter" dir="rtl">
             <div class="bg-indigo-800 text-white px-5 py-3.5 flex justify-between items-center">
-                <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-envelope-open-text"></i> إرسال الفاتورة عبر البريد الإلكتروني</h3>
+                <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-envelope-open-text"></i> إرسال الوثيقة عبر البريد الإلكتروني</h3>
                 <button onclick="closeEmailModal()" class="text-gray-200 hover:text-white text-xl cursor-pointer"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 flex flex-col gap-3">
                 <div class="bg-amber-50 border border-amber-300 text-amber-800 p-2.5 rounded-lg text-xs font-bold flex items-start gap-2">
                     <i class="fas fa-info-circle mt-0.5 text-amber-600"></i>
-                    <span>ملاحظة: سيتم تنزيل ملف PDF للفاتورة تلقائياً على جهازك وفتح بريدك الإلكتروني لإرفاقه وإرساله للعميل.</span>
+                    <span>ملاحظة: سيتم تنزيل ملف PDF للوثيقة تلقائياً على جهازك وفتح بريدك الإلكتروني لإرفاقه وإرساله للعميل.</span>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">البريد الإلكتروني للعميل (Destinataire):</label>
@@ -498,7 +498,7 @@
             <div class="p-5 overflow-y-auto flex-1 bg-gray-100" dir="rtl">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
-                        <div class="text-gray-500 font-bold text-xs mb-1">إجمالي الفواتير</div>
+                        <div class="text-gray-500 font-bold text-xs mb-1">إجمالي الوثائق</div>
                         <div class="text-2xl font-black text-purple-600" id="statTotalInvoices">0</div>
                     </div>
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
@@ -528,7 +528,7 @@
                     <table class="w-full text-left text-sm">
                         <thead class="bg-gray-800 text-white">
                             <tr>
-                                <th class="py-3 px-4 font-bold">N° Facture</th>
+                                <th class="py-3 px-4 font-bold">N° Doc</th>
                                 <th class="py-3 px-4 font-bold">Type</th>
                                 <th class="py-3 px-4 font-bold">Date</th>
                                 <th class="py-3 px-4 font-bold">Client</th>
@@ -613,7 +613,8 @@
         let inlineEditId   = null; 
         let currentTotalTTC = 0;
         let currentCurrency = 'DA';
-        let isProforma     = false;
+        // أنواع الوثائق: 'facture' | 'proforma' | 'bl'
+        let docType        = 'facture';
         let quickAddRowId  = null;
 
         const initialDefaultItems = [
@@ -639,6 +640,7 @@
             updateRowDensity();
             renderClientsDatalist();
             renderCatalog();
+            applyDocTypeUI();
             renderInvoiceTable();
             syncInvoiceData();
             calculateTotals();
@@ -665,19 +667,108 @@
             root.style.setProperty('--input-height', p.inputH);
         }
 
+        // التبديل الدوري بين: Facture -> Facture Proforma -> Bon de Livraison
+        function cycleDocType() {
+            if (docType === 'facture') {
+                docType = 'proforma';
+            } else if (docType === 'proforma') {
+                docType = 'bl';
+            } else {
+                docType = 'facture';
+            }
+            applyDocTypeUI();
+            renderInvoiceTable();
+            renderExtraCharges();
+        }
+
+        function applyDocTypeUI() {
+            const titleEl = document.getElementById('invoiceTitle');
+            const watermarkP1 = document.getElementById('watermarkP1');
+            const docTitle = document.getElementById('documentTitle');
+            const toggleLabel = document.getElementById('typeToggleLabel');
+            const toggleBtn = document.getElementById('typeToggleBtn');
+
+            const isBL = (docType === 'bl');
+
+            if (docType === 'facture') {
+                titleEl.innerText = 'FACTURE';
+                watermarkP1.innerText = 'FACTURE';
+                docTitle.innerText = 'DAFIS SOLUTIONS - Facture';
+                toggleLabel.innerText = 'تحويل لـ PROFORMA';
+                toggleBtn.className = 'flex items-center gap-1 bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer';
+            } else if (docType === 'proforma') {
+                titleEl.innerText = 'FACTURE PROFORMA';
+                watermarkP1.innerText = 'PROFORMA';
+                docTitle.innerText = 'DAFIS SOLUTIONS - Facture PROFORMA';
+                toggleLabel.innerText = 'تحويل لـ BON DE LIVRAISON';
+                toggleBtn.className = 'flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer';
+            } else if (docType === 'bl') {
+                titleEl.innerText = 'BON DE LIVRAISON';
+                watermarkP1.innerText = 'LIVRAISON';
+                docTitle.innerText = 'DAFIS SOLUTIONS - Bon de Livraison';
+                toggleLabel.innerText = 'تحويل لـ FACTURE';
+                toggleBtn.className = 'flex items-center gap-1 bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer';
+            }
+
+            // إخفاء / إظهار أعمدة الأسعار في الجدول وتعديل عرض التسمية والكمية
+            const thDes = document.getElementById('thDesignation');
+            const thQty = document.getElementById('thQty');
+            document.querySelectorAll('.price-col').forEach(el => {
+                el.style.display = isBL ? 'none' : 'table-cell';
+            });
+            if (isBL) {
+                thDes.style.width = '82%';
+                thQty.style.width = '18%';
+            } else {
+                thDes.style.width = '50%';
+                thQty.style.width = '8%';
+            }
+
+            // إخفاء / إظهار جدول المجاميع والمبلغ بالحروف وعناصر التسعير في الشريط العلوي
+            const totalsBox = document.getElementById('totalsBoxContainer');
+            const bottomLeft = document.getElementById('bottomLeftSections');
+            const wordsSec = document.getElementById('sectionWords');
+            const fraisTitle = document.getElementById('fraisBoxTitle');
+
+            if (totalsBox) totalsBox.style.display = isBL ? 'none' : 'block';
+            if (bottomLeft) {
+                bottomLeft.classList.toggle('w-full', isBL);
+                bottomLeft.classList.toggle('w-[56%]', !isBL);
+            }
+            if (fraisTitle) {
+                fraisTitle.innerText = isBL ? 'Détails supplémentaires :' : 'Frais supplémentaires :';
+            }
+            if (wordsSec) {
+                wordsSec.style.display = (!isBL && document.getElementById('chkToggleWords').checked) ? 'block' : 'none';
+            }
+
+            document.querySelectorAll('.price-control').forEach(el => {
+                el.style.display = isBL ? 'none' : '';
+            });
+
+            // إخفاء شارة الفائدة في حالة Bon de Livraison
+            const profitBadge = document.getElementById('profitBadgeContainer');
+            const profitDiv = document.getElementById('profitDivider');
+            if (profitBadge) profitBadge.style.display = (isAdmin && !isBL) ? 'flex' : 'none';
+            if (profitDiv) profitDiv.style.display = (isAdmin && !isBL) ? 'block' : 'none';
+        }
+
         // نافذة إرسال البريد الإلكتروني
         function openEmailModal() {
             const clientName = document.getElementById('clientName').value.trim();
             const invNum = document.getElementById('invoiceNum').value;
             const invDate = document.getElementById('invoiceDate').value;
-            const docType = isProforma ? 'Facture Proforma' : 'Facture';
+            const labelMap = { facture: 'Facture', proforma: 'Facture Proforma', bl: 'Bon de Livraison' };
+            const docLabel = labelMap[docType] || 'Facture';
             const totalStr = `${currentTotalTTC.toLocaleString('fr-FR')} ${currentCurrency}`;
 
-            document.getElementById('emailSubject').value = `${docType} N° ${invNum} - DAFIS SOLUTIONS`;
+            document.getElementById('emailSubject').value = `${docLabel} N° ${invNum} - DAFIS SOLUTIONS`;
+            const amountClause = docType === 'bl' ? '.' : `, d'un montant net à payer de ${totalStr}.`;
+
             document.getElementById('emailBody').value = 
 `Bonjour${clientName && clientName !== '/' ? ' ' + clientName : ''},
 
-Veuillez trouver ci-joint votre ${docType.toLowerCase()} N° ${invNum} en date du ${invDate}, d'un montant net à payer de ${totalStr}.
+Veuillez trouver ci-joint votre ${docLabel.toLowerCase()} N° ${invNum} en date du ${invDate}${amountClause}
 
 Nous restons à votre entière disposition pour tout renseignement complémentaire.
 
@@ -700,33 +791,12 @@ Tébessa - Algérie`;
             const body = encodeURIComponent(document.getElementById('emailBody').value);
 
             closeEmailModal();
-            // تنزيل PDF أولاً ليكون جاهزاً للإرفاق
             await downloadPDF();
 
             if (provider === 'gmail') {
                 window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`, '_blank');
             } else {
                 window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-            }
-        }
-
-        function toggleInvoiceType() {
-            isProforma = !isProforma;
-            const titleEl = document.getElementById('invoiceTitle');
-            const watermarkP1 = document.getElementById('watermarkP1');
-            const docTitle = document.getElementById('documentTitle');
-            const toggleLabel = document.getElementById('typeToggleLabel');
-
-            if (isProforma) {
-                titleEl.innerText = 'FACTURE PROFORMA';
-                watermarkP1.innerText = 'PROFORMA';
-                docTitle.innerText = 'DAFIS SOLUTIONS - Facture PROFORMA';
-                toggleLabel.innerText = 'تحويل لـ FACTURE';
-            } else {
-                titleEl.innerText = 'FACTURE';
-                watermarkP1.innerText = 'FACTURE';
-                docTitle.innerText = 'DAFIS SOLUTIONS - Facture';
-                toggleLabel.innerText = 'تحويل لـ PROFORMA';
             }
         }
 
@@ -748,7 +818,7 @@ Tébessa - Algérie`;
                 if(el) el.style.display = document.getElementById('chkToggleRemise').checked ? 'table-row' : 'none';
             } else if (section === 'words') {
                 const el = document.getElementById('sectionWords');
-                if(el) el.style.display = document.getElementById('chkToggleWords').checked ? 'block' : 'none';
+                if(el) el.style.display = (docType !== 'bl' && document.getElementById('chkToggleWords').checked) ? 'block' : 'none';
             }
             calculateTotals();
         }
@@ -781,10 +851,11 @@ Tébessa - Algérie`;
             if (authBtn) {
                 authBtn.innerHTML = isAdmin ? '<i class="fas fa-lock-open text-green-600"></i>' : '<i class="fas fa-lock text-gray-500"></i>';
             }
+            const isBL = (docType === 'bl');
             const profitBadge = document.getElementById('profitBadgeContainer');
             const profitDiv = document.getElementById('profitDivider');
-            if (profitBadge) profitBadge.style.display = isAdmin ? 'flex' : 'none';
-            if (profitDiv) profitDiv.style.display = isAdmin ? 'block' : 'none';
+            if (profitBadge) profitBadge.style.display = (isAdmin && !isBL) ? 'flex' : 'none';
+            if (profitDiv) profitDiv.style.display = (isAdmin && !isBL) ? 'block' : 'none';
 
             const purchContainer = document.getElementById('newPurchasePriceContainer');
             if (purchContainer) purchContainer.style.display = isAdmin ? 'block' : 'none';
@@ -838,15 +909,18 @@ Tébessa - Algérie`;
             const container = document.getElementById('extraChargesContainer');
             if (!container) return;
             container.innerHTML = '';
+            const isBL = (docType === 'bl');
             extraCharges.forEach(charge => {
                 const row = document.createElement('div');
                 row.className = 'flex items-center gap-1';
-                row.innerHTML = `
-                    <input type="text" value="${charge.label}" oninput="updateCharge(${charge.id},'label',this.value)"
-                        placeholder="Description du frais..." class="flex-1 border-b border-dashed border-gray-300 text-[8px] font-bold bg-transparent outline-none text-gray-700">
+                const pricePart = isBL ? '' : `
                     <input type="number" value="${charge.amount}" oninput="updateCharge(${charge.id},'amount',+this.value)"
                         class="w-16 border-b border-dashed border-orange-300 text-right text-[8.5px] font-black bg-transparent outline-none text-orange-700">
-                    <span class="text-[8px] font-bold text-gray-500 currency-label">${currentCurrency}</span>
+                    <span class="text-[8px] font-bold text-gray-500 currency-label">${currentCurrency}</span>`;
+                row.innerHTML = `
+                    <input type="text" value="${charge.label}" oninput="updateCharge(${charge.id},'label',this.value)"
+                        placeholder="Description..." class="flex-1 border-b border-dashed border-gray-300 text-[8px] font-bold bg-transparent outline-none text-gray-700">
+                    ${pricePart}
                     <button onclick="removeExtraCharge(${charge.id})" class="no-print text-red-400 hover:text-red-600 cursor-pointer"><i class="fas fa-times text-[8.5px]"></i></button>`;
                 container.appendChild(row);
             });
@@ -928,7 +1002,8 @@ Tébessa - Algérie`;
             if (cat) {
                 item.price = cat.price;
                 item.purchasePrice = cat.purchasePrice || 0;
-                el.closest('tr').querySelector('.item-price-input').value = cat.price;
+                const priceInput = el.closest('tr').querySelector('.item-price-input');
+                if (priceInput) priceInput.value = cat.price;
             }
             updateRowTotal(el.closest('tr'), item);
             calculateTotals();
@@ -942,9 +1017,10 @@ Tébessa - Algérie`;
             }
         }
         function updateRowTotal(row, item) {
+            const totalCell = row.querySelector('.item-total');
+            if (!totalCell) return;
             const total = item.qty * item.price;
             const profit = item.qty * (item.price - (item.purchasePrice || 0));
-            const totalCell = row.querySelector('.item-total');
             let profitHtml = '';
             if (isAdmin) {
                 const pColor = profit >= 0 ? 'text-emerald-600' : 'text-red-500';
@@ -1003,13 +1079,17 @@ Tébessa - Algérie`;
         }
 
         function renderInvoiceTable() {
-            const tbody   = document.getElementById('invoiceTableBody');
+            const tbody    = document.getElementById('invoiceTableBody');
             const datalist = document.getElementById('catalogDatalist');
+            const isBL     = (docType === 'bl');
+            const colSpan  = isBL ? 3 : 5;
+
             datalist.innerHTML = '';
             catalogItems.forEach(c => datalist.appendChild(new Option(c.name)));
             tbody.innerHTML = '';
+
             if (!invoiceItems.length) {
-                tbody.innerHTML = `<tr class="no-print"><td colspan="5" class="text-center py-3 text-gray-400 italic text-xs">Facture vide. Cliquez sur "+ سطر".</td></tr>`;
+                tbody.innerHTML = `<tr class="no-print"><td colspan="${colSpan}" class="text-center py-3 text-gray-400 italic text-xs">Document vide. Cliquez sur "+ سطر".</td></tr>`;
             } else {
                 invoiceItems.forEach((item, idx) => {
                     const bg = idx % 2 === 0 ? 'bg-white' : 'bg-gray-50';
@@ -1024,6 +1104,15 @@ Tébessa - Algérie`;
                         profitHtml = `<span class="no-print ml-1 text-[7.5px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
                     }
 
+                    const priceCells = isBL ? '' : `
+                        <td class="px-1 border-r border-gray-200">
+                            <input type="number" oninput="updateItem(${item.id},'price',this)" value="${item.price}"
+                                class="w-full text-center font-bold text-gray-800 bg-transparent outline-none item-price-input border-b border-dashed border-gray-300 focus:border-red-500">
+                        </td>
+                        <td class="px-1.5 text-right font-black text-gray-900 item-total border-r border-gray-200 whitespace-nowrap">
+                            ${total.toLocaleString('fr-FR')}${profitHtml}
+                        </td>`;
+
                     tr.innerHTML = `
                         <td class="px-1.5 border-r border-gray-200">
                             <input type="text" list="catalogDatalist" oninput="handleDesignationInput(${item.id},this)" value="${item.name.replace(/"/g, '&quot;')}"
@@ -1033,13 +1122,7 @@ Tébessa - Algérie`;
                             <input type="number" oninput="updateItem(${item.id},'qty',this)" value="${item.qty}"
                                 class="w-full text-center font-bold text-gray-800 bg-transparent outline-none border-b border-dashed border-gray-300 focus:border-red-500">
                         </td>
-                        <td class="px-1 border-r border-gray-200">
-                            <input type="number" oninput="updateItem(${item.id},'price',this)" value="${item.price}"
-                                class="w-full text-center font-bold text-gray-800 bg-transparent outline-none item-price-input border-b border-dashed border-gray-300 focus:border-red-500">
-                        </td>
-                        <td class="px-1.5 text-right font-black text-gray-900 item-total border-r border-gray-200 whitespace-nowrap">
-                            ${total.toLocaleString('fr-FR')}${profitHtml}
-                        </td>
+                        ${priceCells}
                         <td class="no-print text-center px-0.5 whitespace-nowrap">
                             <button onclick="openQuickCatalogModal(${item.id})" class="text-blue-600 hover:bg-blue-100 px-0.5 rounded cursor-pointer" title="إضافة للكتالوج"><i class="fas fa-plus-circle text-[8.5px]"></i></button>
                             <button onclick="removeInvoiceItem(${item.id})" class="text-red-500 hover:bg-red-100 px-0.5 rounded cursor-pointer" title="حذف السطر"><i class="fas fa-times text-[8.5px]"></i></button>
@@ -1124,7 +1207,7 @@ Tébessa - Algérie`;
         }
 
         function resetInvoiceForm() {
-            if (!confirm('تفريغ الفاتورة وبدء واحدة جديدة؟')) return;
+            if (!confirm('تفريغ الوثيقة وبدء واحدة جديدة؟')) return;
             invoiceItems = []; extraCharges = [];
             ['clientName','clientAddress','clientNif','clientRc','amountInWords','remiseInput','priceHelperInput'].forEach(id => { 
                 const el = document.getElementById(id); 
@@ -1137,7 +1220,7 @@ Tébessa - Algérie`;
         }
 
         function duplicateCurrentInvoice() {
-            if (!confirm('نسخ الفاتورة الحالية كفاتورة جديدة؟')) return;
+            if (!confirm('نسخ الوثيقة الحالية كوثيقة جديدة؟')) return;
             invoiceItems = invoiceItems.map(i => ({...i, id: Date.now() + Math.random()}));
             document.getElementById('invoiceNum').value = '2026/' + String(savedInvoices.length + 1).padStart(2,'0');
             syncInvoiceData();
@@ -1158,7 +1241,8 @@ Tébessa - Algérie`;
                 clientRc:      document.getElementById('clientRc').value,
                 total: currentTotalTTC, status: 'unpaid',
                 currency: currentCurrency,
-                isProforma: isProforma,
+                docType: docType,
+                isProforma: docType === 'proforma',
                 rowDensity: document.getElementById('rowDensitySelect').value,
                 tvaActive: document.getElementById('toggleTva').checked,
                 tvaRate:   parseFloat(document.getElementById('tvaInput').value) || 0,
@@ -1167,11 +1251,11 @@ Tébessa - Algérie`;
                 extraCharges: [...extraCharges],
                 itemsSnapshot: [...invoiceItems] 
             };
-            const idx = savedInvoices.findIndex(i => i.num === invoiceNum);
+            const idx = savedInvoices.findIndex(i => i.num === invoiceNum && (i.docType || (i.isProforma ? 'proforma' : 'facture')) === docType);
             if (idx !== -1) { newInv.status = savedInvoices[idx].status; savedInvoices[idx] = newInv; }
             else savedInvoices.push(newInv);
             localStorage.setItem('dafis_history', JSON.stringify(savedInvoices));
-            alert('✅ Facture sauvegardée !');
+            alert('✅ Document sauvegardé !');
         }
 
         function loadInvoiceForEditing(id) {
@@ -1191,7 +1275,8 @@ Tébessa - Algérie`;
                 updateRowDensity();
             }
 
-            if (inv.isProforma !== isProforma) toggleInvoiceType();
+            docType = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+            applyDocTypeUI();
 
             document.getElementById('toggleTva').checked = inv.tvaActive !== undefined ? inv.tvaActive : true;
             document.getElementById('tvaInput').value    = inv.tvaRate !== undefined ? inv.tvaRate : 0;
@@ -1229,15 +1314,27 @@ Tébessa - Algérie`;
             });
 
             savedInvoices.forEach(inv => {
-                if (inv.status === 'paid')   { totalRev += inv.total; paid++; }
-                if (inv.status === 'unpaid') unpaid++;
+                const t = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+                if (t === 'facture') {
+                    if (inv.status === 'paid')   { totalRev += inv.total; paid++; }
+                    if (inv.status === 'unpaid') unpaid++;
+                }
             });
 
             list.forEach(inv => {
                 const sc = STATUS_CONFIG[inv.status] || STATUS_CONFIG.unpaid;
                 let editBtnHtml = isAdmin ? `<button onclick="loadInvoiceForEditing(${inv.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded cursor-pointer" title="تعديل"><i class="fas fa-edit"></i></button>` : '';
                 let deleteBtnHtml = isAdmin ? `<button onclick="deleteInv(${inv.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded cursor-pointer" title="حذف"><i class="fas fa-trash"></i></button>` : '';
-                const typeTag = inv.isProforma ? '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">PROFORMA</span>' : '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">FACTURE</span>';
+                
+                const invType = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+                let typeTag = '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">FACTURE</span>';
+                if (invType === 'proforma') {
+                    typeTag = '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">PROFORMA</span>';
+                } else if (invType === 'bl') {
+                    typeTag = '<span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">BON LIVRAISON</span>';
+                }
+
+                const amountDisplay = invType === 'bl' ? '—' : `${inv.total.toLocaleString('fr-FR')} ${inv.currency || 'DA'}`;
 
                 tbody.innerHTML += `
                     <tr class="border-b border-gray-200 hover:bg-gray-50">
@@ -1245,7 +1342,7 @@ Tébessa - Algérie`;
                         <td class="py-3 px-4">${typeTag}</td>
                         <td class="py-3 px-4 text-gray-600 text-sm">${inv.date}</td>
                         <td class="py-3 px-4 font-bold text-sm">${inv.client}</td>
-                        <td class="py-3 px-4 font-black text-right text-red-600">${inv.total.toLocaleString('fr-FR')} ${inv.currency || 'DA'}</td>
+                        <td class="py-3 px-4 font-black text-right text-red-600">${amountDisplay}</td>
                         <td class="py-3 px-4 text-center">
                             <select onchange="updateInvStatus(${inv.id},this.value)" class="outline-none rounded-full px-3 py-1 font-bold text-xs ${sc.cls} cursor-pointer">
                                 <option value="paid" ${inv.status==='paid'?'selected':''}>Payée</option>
@@ -1278,7 +1375,7 @@ Tébessa - Algérie`;
         }
 
         function deleteInv(id) {
-            if (!confirm('حذف الفاتورة نهائياً؟')) return;
+            if (!confirm('حذف الوثيقة نهائياً؟')) return;
             savedInvoices = savedInvoices.filter(i => i.id !== id);
             localStorage.setItem('dafis_history', JSON.stringify(savedInvoices));
             renderHistoryTable();
@@ -1338,7 +1435,7 @@ Tébessa - Algérie`;
                             <td class="py-2.5 px-4 font-black text-blue-700">${sellingPrice.toLocaleString('fr-FR')}</td>
                             ${isAdmin ? `<td class="py-2.5 px-4 font-black text-emerald-500" dir="ltr">+${profit.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 text-center whitespace-nowrap">
-                                <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded cursor-pointer" title="إضافة للفاتورة"><i class="fas fa-plus"></i></button>
+                                <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded cursor-pointer" title="إضافة للوثيقة"><i class="fas fa-plus"></i></button>
                                 <button onclick="startInlineEdit(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded cursor-pointer" title="تعديل"><i class="fas fa-pen"></i></button>
                                 <button onclick="deleteFromCatalog(${item.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded cursor-pointer" title="حذف"><i class="fas fa-trash"></i></button>
                             </td>
@@ -1408,6 +1505,12 @@ Tébessa - Algérie`;
             document.querySelectorAll('.no-print').forEach(el => el.style.removeProperty('display'));
         }
 
+        function getDocFilePrefix() {
+            if (docType === 'proforma') return 'Facture_PROFORMA';
+            if (docType === 'bl') return 'Bon_de_Livraison';
+            return 'Facture';
+        }
+
         function downloadWord() {
             const container = document.getElementById('invoice-container');
             const clone = container.cloneNode(true);
@@ -1420,7 +1523,7 @@ Tébessa - Algérie`;
             clone.querySelectorAll('.no-print, button').forEach(el => el.remove());
             const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
             const safeName = document.getElementById('clientName').value.trim() || 'Client';
-            const fileTitle = isProforma ? `Facture_PROFORMA_${safeNum}_${safeName}` : `Facture_${safeNum}_${safeName}`;
+            const fileTitle = `${getDocFilePrefix()}_${safeNum}_${safeName}`;
             const wordContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
             <head><meta charset='utf-8'><title>${fileTitle}</title><style>body { font-family: Arial, sans-serif; margin: 10px; } table { width: 100%; border-collapse: collapse; margin-bottom: 10px; } th, td { border: 1px solid #ddd; padding: 2px; text-align: left; font-size: 9px; } th { background-color: #f2f2f2; }</style></head>
             <body>${clone.innerHTML}</body></html>`;
@@ -1471,8 +1574,7 @@ Tébessa - Algérie`;
                 }
                 const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
                 const safeName = document.getElementById('clientName').value.trim() || 'Client';
-                const pdfPrefix = isProforma ? 'Facture_PROFORMA' : 'Facture';
-                doc.save(`${pdfPrefix}_${safeNum}_${safeName}.pdf`);
+                doc.save(`${getDocFilePrefix()}_${safeNum}_${safeName}.pdf`);
             } catch(err) {
                 alert('Erreur PDF : ' + err.message);
             } finally { restore(); }
