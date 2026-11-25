@@ -136,6 +136,9 @@
                 <input type="checkbox" id="chkToggleNotes" checked onchange="toggleSection('notes')" class="accent-blue-600"> Notes
             </label>
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
+                <input type="checkbox" id="chkToggleBank" checked onchange="toggleSection('bank')" class="accent-emerald-600"> Banque
+            </label>
+            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
                 <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper')" class="accent-green-600"> Remise
             </label>
             <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
@@ -311,7 +314,7 @@
                                     <textarea id="invoiceNotes" class="w-full text-gray-700 text-[8px] bg-transparent outline-none leading-tight" rows="1">Garantie matériel 12 mois. Service après-vente assuré.</textarea>
                                 </div>
 
-                                <div class="border border-gray-300 px-1.5 py-0.5 rounded bg-white">
+                                <div id="sectionBank" class="border border-gray-300 px-1.5 py-0.5 rounded bg-white">
                                     <h3 class="font-bold text-gray-800 border-b pb-0.5 text-[8.5px]"><i class="fas fa-university text-green-600 mr-1"></i> Coordonnées Bancaires :</h3>
                                     <div class="text-gray-700 font-bold text-[8px] leading-tight">
                                         <div>Nom : <span class="text-gray-900">MESSAOUDI AHMED EL MOKHTAR</span></div>
@@ -734,6 +737,9 @@ Tébessa - Algérie`;
             } else if (section === 'notes') {
                 const el = document.getElementById('sectionNotes');
                 if(el) el.style.display = document.getElementById('chkToggleNotes').checked ? 'block' : 'none';
+            } else if (section === 'bank') {
+                const el = document.getElementById('sectionBank');
+                if(el) el.style.display = document.getElementById('chkToggleBank').checked ? 'block' : 'none';
             } else if (section === 'priceHelper') {
                 const el = document.getElementById('rowPriceHelper');
                 if(el) el.style.display = document.getElementById('chkTogglePriceHelper').checked ? 'table-row' : 'none';
