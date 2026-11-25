@@ -89,7 +89,7 @@
     <input type="file" id="backupFileInput" accept=".json" class="hidden" onchange="handleImport(event)">
 
     <!-- شريط الأدوات العلوي sticky -->
-    <div class="no-print bg-white p-2 rounded-xl shadow-md mb-3 flex flex-col xl:flex-row gap-2 items-center w-[96%] max-w-7xl justify-between border border-gray-300 sticky top-2 z-40">
+    <div class="no-print bg-white p-2 rounded-xl shadow-md mb-2 flex flex-col xl:flex-row gap-2 items-center w-[96%] max-w-7xl justify-between border border-gray-300 sticky top-2 z-40">
         
         <div class="flex flex-wrap gap-1 justify-center w-full xl:w-auto">
             <button onclick="saveCurrentInvoice()" class="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg font-bold shadow-sm text-xs cursor-pointer">
@@ -115,12 +115,12 @@
             </button>
         </div>
 
-        <!-- التحكم في حجم الفاتورة وعدد الأسطر + العناصر -->
-        <div class="flex flex-wrap gap-1 justify-center items-center bg-gray-50 p-1.5 rounded-lg border border-gray-200 text-xs">
+        <!-- التحكم في حجم الجدول + قائمة منسدلة لإظهار/إخفاء الخانات -->
+        <div class="flex flex-wrap gap-1.5 justify-center items-center bg-gray-50 p-1.5 rounded-lg border border-gray-200 text-xs">
             <div class="flex items-center gap-1 bg-indigo-50 border border-indigo-300 px-1.5 py-0.5 rounded font-bold text-indigo-900" dir="rtl">
                 <i class="fas fa-compress-arrows-alt text-indigo-600"></i>
                 <span>سعة الجدول:</span>
-                <select id="rowDensitySelect" onchange="updateRowDensity()" class="bg-white border border-indigo-300 rounded px-1 py-0 text-xs font-black text-indigo-700 outline-none cursor-pointer">
+                <select id="rowDensitySelect" onchange="updateRowDensity(true)" class="bg-white border border-indigo-300 rounded px-1 py-0 text-xs font-black text-indigo-700 outline-none cursor-pointer">
                     <option value="10">10 أسطر (كبير)</option>
                     <option value="20">20 سطر (متوسط)</option>
                     <option value="30">30 سطر (مدمج)</option>
@@ -129,24 +129,51 @@
                 </select>
             </div>
 
-            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkToggleFrais" checked onchange="toggleSection('frais')" class="accent-orange-600"> Frais
-            </label>
-            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkToggleNotes" checked onchange="toggleSection('notes')" class="accent-blue-600"> Notes
-            </label>
-            <label class="flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkToggleBank" checked onchange="toggleSection('bank')" class="accent-emerald-600"> Banque
-            </label>
-            <label class="price-control flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper')" class="accent-green-600"> Remise
-            </label>
-            <label class="price-control flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkToggleRemise" checked onchange="toggleSection('remise')" class="accent-purple-600"> Versement
-            </label>
-            <label class="price-control flex items-center gap-1 font-bold text-gray-700 cursor-pointer bg-white px-1.5 py-0.5 rounded border border-gray-300">
-                <input type="checkbox" id="chkToggleWords" checked onchange="toggleSection('words')" class="accent-red-600"> الحروف
-            </label>
+            <!-- زر القائمة المنسدلة لإظهار/إخفاء الخانات -->
+            <div class="relative" id="displayDropdownWrapper">
+                <button type="button" id="displayDropdownBtn" onclick="toggleDisplayDropdown(event)"
+                    class="flex items-center gap-1.5 bg-white hover:bg-gray-100 text-gray-800 font-bold px-2.5 py-1 rounded border border-gray-300 shadow-xs text-xs cursor-pointer" dir="rtl">
+                    <i class="fas fa-sliders-h text-indigo-600"></i>
+                    <span>إظهار/إخفاء الخانات</span>
+                    <i class="fas fa-chevron-down text-[10px] text-gray-500"></i>
+                </button>
+                <div id="displayDropdownMenu" class="hidden absolute right-0 mt-1.5 w-60 bg-white rounded-xl shadow-xl border border-gray-200 p-2.5 z-50 flex flex-col gap-1.5" dir="rtl">
+                    <div class="text-[11px] font-black text-gray-500 border-b border-gray-100 pb-1 mb-0.5 flex items-center justify-between">
+                        <span>خيارات العرض والحفظ التلقائي</span>
+                        <i class="fas fa-check-circle text-emerald-500" title="يتم الحفظ تلقائياً"></i>
+                    </div>
+                    <label class="flex items-center justify-between gap-2 font-bold text-gray-700 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+                        <span>Frais / Détails</span>
+                        <input type="checkbox" id="chkToggleFrais" checked onchange="toggleSection('frais', true)" class="accent-orange-600 w-3.5 h-3.5">
+                    </label>
+                    <label class="flex items-center justify-between gap-2 font-bold text-gray-700 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+                        <span>Notes / Remarques</span>
+                        <input type="checkbox" id="chkToggleNotes" checked onchange="toggleSection('notes', true)" class="accent-blue-600 w-3.5 h-3.5">
+                    </label>
+                    <label class="flex items-center justify-between gap-2 font-bold text-gray-700 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+                        <span>Coordonnées Bancaires</span>
+                        <input type="checkbox" id="chkToggleBank" checked onchange="toggleSection('bank', true)" class="accent-emerald-600 w-3.5 h-3.5">
+                    </label>
+                    <label class="price-control flex items-center justify-between gap-2 font-bold text-gray-700 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+                        <span>Remise / Autre</span>
+                        <input type="checkbox" id="chkTogglePriceHelper" checked onchange="toggleSection('priceHelper', true)" class="accent-green-600 w-3.5 h-3.5">
+                    </label>
+                    <label class="price-control flex items-center justify-between gap-2 font-bold text-gray-700 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+                        <span>Versement</span>
+                        <input type="checkbox" id="chkToggleRemise" checked onchange="toggleSection('remise', true)" class="accent-purple-600 w-3.5 h-3.5">
+                    </label>
+                    <label class="price-control flex items-center justify-between gap-2 font-bold text-gray-700 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
+                        <span>المبلغ بالحروف</span>
+                        <input type="checkbox" id="chkToggleWords" checked onchange="toggleSection('words', true)" class="accent-red-600 w-3.5 h-3.5">
+                    </label>
+                    <div class="border-t border-gray-200 my-0.5 pt-1.5">
+                        <label class="flex items-center justify-between gap-2 font-bold text-indigo-800 cursor-pointer hover:bg-indigo-50 px-2 py-1 rounded">
+                            <span>بادئة الترقيم (FAC-/PRO-/BL-)</span>
+                            <input type="checkbox" id="chkUseDocPrefix" checked onchange="toggleDocPrefix(true)" class="accent-indigo-600 w-3.5 h-3.5">
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="flex flex-wrap gap-1.5 justify-center items-center">
@@ -160,11 +187,11 @@
 
             <div class="price-control flex gap-1.5 border-r border-gray-300 pr-2">
                 <label class="flex items-center gap-1 cursor-pointer text-xs font-bold text-gray-700 bg-white px-2 py-1 rounded border border-gray-300 hover:bg-gray-100" dir="rtl">
-                    <input type="checkbox" id="toggleTva" checked onchange="calculateTotals()" class="w-3 h-3 accent-blue-600"> TVA
+                    <input type="checkbox" id="toggleTva" checked onchange="calculateTotals(); saveDisplayPreferences();" class="w-3 h-3 accent-blue-600"> TVA
                 </label>
             </div>
 
-            <select id="currencySelect" onchange="updateCurrency()" class="price-control text-xs font-bold border border-gray-300 rounded px-1.5 py-1 bg-white text-gray-700 outline-none cursor-pointer">
+            <select id="currencySelect" onchange="updateCurrency(true)" class="price-control text-xs font-bold border border-gray-300 rounded px-1.5 py-1 bg-white text-gray-700 outline-none cursor-pointer">
                 <option value="DA">DA</option>
                 <option value="EUR">EUR</option>
                 <option value="USD">USD</option>
@@ -199,6 +226,19 @@
         </div>
     </div>
 
+    <!-- شريط تنبيه مزامنة الأسعار بين الفاتورة والكتالوج -->
+    <div id="priceSyncBanner" class="no-print hidden w-[96%] max-w-4xl mb-2 bg-amber-50 border border-amber-400 text-amber-950 rounded-xl px-3.5 py-2 shadow-sm flex flex-wrap items-center justify-between gap-2 text-xs" dir="rtl">
+        <div class="flex items-center gap-2 font-bold">
+            <i class="fas fa-sync-alt text-amber-600"></i>
+            <span id="priceSyncMessage"></span>
+        </div>
+        <div class="flex items-center gap-1.5">
+            <button id="btnSyncToCatalog" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded-lg font-bold cursor-pointer text-[11px]">اعتماد السعر الجديد في الكتالوج</button>
+            <button id="btnRevertFromCatalog" class="bg-white hover:bg-amber-100 text-amber-900 border border-amber-400 px-2.5 py-1 rounded-lg font-bold cursor-pointer text-[11px]">استرجاع سعر الكتالوج</button>
+            <button onclick="dismissPriceSyncBanner()" class="text-amber-700 hover:text-amber-950 px-1.5 py-1 cursor-pointer" title="إغلاق"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
     <!-- حاوية الفاتورة A4 -->
     <div class="wrapper-scroll print-container flex justify-center">
         <div class="invoice-wrapper" id="invoice-container">
@@ -224,14 +264,14 @@
 
                         <div class="flex flex-col items-end w-[40%]">
                             <h1 id="invoiceTitle" class="font-black text-gray-900 uppercase tracking-widest mb-0.5 whitespace-nowrap leading-none" style="font-size:16px; letter-spacing:.08em;">FACTURE</h1>
-                            <div class="flex flex-col w-full max-w-[185px] gap-0 mb-0.5">
+                            <div class="flex flex-col w-full max-w-[195px] gap-0 mb-0.5">
                                 <div class="flex justify-between items-center border-b border-gray-300">
                                     <span class="font-bold text-gray-500 text-[8.5px] uppercase tracking-wider">N°</span>
-                                    <input type="text" id="invoiceNum" value="2026/41" oninput="syncInvoiceData()" class="text-right font-black text-red-600 text-[11px] bg-transparent outline-none w-24">
+                                    <input type="text" id="invoiceNum" value="FAC-2026/41" oninput="syncInvoiceData()" class="text-right font-black text-red-600 text-[11px] bg-transparent outline-none w-32">
                                 </div>
                                 <div class="flex justify-between items-center border-b border-gray-300">
                                     <span class="font-bold text-gray-500 text-[8.5px] uppercase tracking-wider">DATE</span>
-                                    <input type="text" id="invoiceDate" oninput="syncInvoiceData()" class="text-right font-black text-gray-800 text-[9.5px] bg-transparent outline-none w-24">
+                                    <input type="text" id="invoiceDate" oninput="syncInvoiceData()" class="text-right font-black text-gray-800 text-[9.5px] bg-transparent outline-none w-32">
                                 </div>
                             </div>
                             <div class="text-gray-800 font-bold text-[8.5px] flex flex-col items-end leading-tight text-right">
@@ -256,11 +296,16 @@
                         </div>
 
                         <div class="border border-gray-300 rounded px-1.5 py-1 bg-white">
-                            <div class="font-black text-gray-800 border-b border-gray-200 pb-0.5 mb-0.5 flex items-center gap-1"><i class="fas fa-user-tie text-red-600"></i> CLIENT</div>
+                            <div class="font-black text-gray-800 border-b border-gray-200 pb-0.5 mb-0.5 flex items-center justify-between">
+                                <span class="flex items-center gap-1"><i class="fas fa-user-tie text-red-600"></i> CLIENT</span>
+                                <button type="button" onclick="saveCurrentClientProfile(true)" class="no-print text-[7.5px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 px-1.5 py-0 rounded cursor-pointer" title="حفظ أو تحديث بيانات العميل الكاملة">
+                                    <i class="fas fa-user-check"></i> حفظ العميل
+                                </button>
+                            </div>
                             <div class="flex flex-col gap-0 leading-tight">
                                 <div class="flex items-center gap-1">
                                     <span class="font-bold text-gray-600 w-16 shrink-0">Nom/Raison:</span>
-                                    <input type="text" id="clientName" list="clientsDatalist" value="/" placeholder="Nom du client..." class="flex-1 font-black text-[9.5px] text-gray-900 border-b border-dashed border-gray-400 focus:border-red-600">
+                                    <input type="text" id="clientName" list="clientsDatalist" value="/" placeholder="Nom du client..." oninput="handleClientNameInput()" onchange="handleClientNameInput()" class="flex-1 font-black text-[9.5px] text-gray-900 border-b border-dashed border-gray-400 focus:border-red-600">
                                     <datalist id="clientsDatalist"></datalist>
                                 </div>
                                 <div class="flex items-center gap-1">
@@ -275,6 +320,16 @@
                                     <span class="font-bold text-gray-600 w-16 shrink-0">NIS/RC :</span>
                                     <input type="text" id="clientRc" value="/" placeholder="NIS / RC..." class="flex-1 font-bold border-b border-dashed border-gray-300 focus:border-red-500 text-gray-800">
                                 </div>
+                                <div class="grid grid-cols-2 gap-1.5 mt-0.5">
+                                    <div class="flex items-center gap-1">
+                                        <span class="font-bold text-gray-600 shrink-0">Tél :</span>
+                                        <input type="text" id="clientPhone" value="" placeholder="Téléphone..." class="w-full font-bold border-b border-dashed border-gray-300 focus:border-red-500 text-gray-800 text-[8px]">
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="font-bold text-gray-600 shrink-0">Email :</span>
+                                        <input type="text" id="clientEmail" value="" placeholder="Email..." class="w-full font-bold border-b border-dashed border-gray-300 focus:border-red-500 text-gray-800 text-[8px]">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -288,7 +343,7 @@
                                     <th id="thQty" class="py-0.5 px-1 font-bold border border-gray-800 text-center w-[8%]">Qté</th>
                                     <th class="price-col py-0.5 px-1 font-bold border border-gray-800 text-center w-[17%]">P.U HT (<span id="thCurrency">DA</span>)</th>
                                     <th class="price-col py-0.5 px-1.5 font-bold border border-gray-800 text-right w-[25%]">Total HT</th>
-                                    <th class="no-print w-10 border border-gray-800"></th>
+                                    <th class="no-print w-12 border border-gray-800"></th>
                                 </tr>
                             </thead>
                             <tbody id="invoiceTableBody"></tbody>
@@ -310,8 +365,13 @@
                                 </div>
 
                                 <div id="sectionNotes" class="border border-gray-300 px-1.5 py-0.5 rounded bg-gray-50">
-                                    <h3 class="font-bold text-gray-800 border-b pb-0.5 text-[8.5px]"><i class="fas fa-info-circle text-blue-600 mr-1"></i> Notes / Remarques :</h3>
-                                    <textarea id="invoiceNotes" class="w-full text-gray-700 text-[8px] bg-transparent outline-none leading-tight" rows="1">Garantie matériel 12 mois. Service après-vente assuré.</textarea>
+                                    <h3 class="font-bold text-gray-800 border-b pb-0.5 text-[8.5px] flex items-center justify-between">
+                                        <span><i class="fas fa-info-circle text-blue-600 mr-1"></i> Notes / Remarques :</span>
+                                        <button type="button" onclick="resetDefaultNote()" class="no-print text-[7.5px] text-blue-600 hover:text-blue-800 font-bold cursor-pointer" title="استعادة الملاحظة الافتراضية لهذا النوع">
+                                            <i class="fas fa-undo-alt"></i> افتراضي
+                                        </button>
+                                    </h3>
+                                    <textarea id="invoiceNotes" class="w-full text-gray-700 text-[8px] bg-transparent outline-none leading-tight" rows="2">Garantie matériel 12 mois. Service après-vente assuré.</textarea>
                                 </div>
 
                                 <div id="sectionBank" class="border border-gray-300 px-1.5 py-0.5 rounded bg-white">
@@ -384,13 +444,29 @@
                             </div>
                         </div>
 
-                        <!-- التوقيع والختم -->
-                        <div class="mt-1 flex justify-end items-end">
-                            <div class="text-center font-bold text-gray-700 border-b border-gray-800 pb-0.5 px-8 text-[8.5px]">Cachet & Signature</div>
+                        <!-- التوقيع والختم (+ خانة استلام العميل في Bon de Livraison) -->
+                        <div id="signatureRow" class="mt-1.5 flex justify-end items-end gap-4">
+                            <div id="clientSignatureBox" class="hidden w-[52%] border border-gray-300 rounded px-2 py-1 bg-gray-50/70">
+                                <div class="font-black text-gray-800 text-[8.5px] border-b border-gray-300 pb-0.5 mb-0.5 flex items-center gap-1">
+                                    <i class="fas fa-file-signature text-emerald-700"></i> Réceptionnaire / Signature du client
+                                </div>
+                                <div class="text-[7.5px] text-gray-700 italic leading-tight mb-4">
+                                    Je soussigné(e) déclare avoir reçu le matériel ci-dessus en bon état et conforme.
+                                </div>
+                                <div class="flex justify-between text-[7.5px] font-bold text-gray-700 pt-1 border-t border-dashed border-gray-400">
+                                    <span>Nom & Prénom : .......................</span>
+                                    <span>Date & Signature</span>
+                                </div>
+                            </div>
+
+                            <div id="companySignatureBox" class="text-center">
+                                <div class="font-bold text-gray-700 border-b border-gray-800 pb-0.5 px-8 text-[8.5px]">Cachet & Signature</div>
+                                <div id="companySigCaption" class="hidden text-[7px] text-gray-500 font-bold mt-0.5">DAFIS SOLUTIONS</div>
+                            </div>
                         </div>
 
                         <!-- الفوتر الرسمي -->
-                        <div class="mt-0.5 pt-0.5 border-t-2 border-gray-800 flex justify-between items-end">
+                        <div class="mt-1 pt-0.5 border-t-2 border-gray-800 flex justify-between items-end">
                             <div class="flex flex-col items-start gap-0 text-[8px] font-bold text-gray-700 leading-tight">
                                 <div class="flex items-center gap-1"><i class="fas fa-envelope text-red-600 w-3 text-center"></i> contact.dafisolutions@gmail.com</div>
                                 <div class="flex items-center gap-1 text-[8.5px]"><i class="fas fa-phone-alt text-red-600 w-3 text-center"></i> <span class="tracking-wider">06 59 84 96 56 / 07 95 98 33 37</span></div>
@@ -448,7 +524,7 @@
     <div id="quickAddCatalogModal" class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden modal-enter" dir="rtl">
             <div class="bg-blue-800 text-white px-5 py-3.5 flex justify-between items-center">
-                <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة السلعة للكتالوج</h3>
+                <h3 class="font-bold text-sm flex items-center gap-2"><i class="fas fa-plus-circle"></i> إضافة / تحديث السلعة في الكتالوج</h3>
                 <button onclick="closeQuickCatalogModal()" class="text-gray-200 hover:text-white text-xl cursor-pointer"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 flex flex-col gap-3">
@@ -474,7 +550,7 @@
         </div>
     </div>
 
-    <!-- Modals (معاينة + سجل + كتالوج) -->
+    <!-- نافذة المعاينة -->
     <div id="previewModal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
         <div class="bg-gray-100 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[95vh]">
             <div class="bg-gray-800 text-white px-5 py-3 flex justify-between items-center">
@@ -489,35 +565,51 @@
         </div>
     </div>
 
+    <!-- نافذة السجل -->
     <div id="historyModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
             <div class="bg-purple-800 text-white px-6 py-4 flex justify-between items-center">
-                <h2 class="text-lg font-bold flex items-center gap-2" dir="rtl"><i class="fas fa-history"></i> سجل الفواتير الموحد</h2>
+                <h2 class="text-lg font-bold flex items-center gap-2" dir="rtl"><i class="fas fa-history"></i> سجل الوثائق الموحد</h2>
                 <button onclick="toggleHistory(false)" class="text-gray-200 hover:text-white text-2xl cursor-pointer"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-gray-100" dir="rtl">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-2">
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
                         <div class="text-gray-500 font-bold text-xs mb-1">إجمالي الوثائق</div>
                         <div class="text-2xl font-black text-purple-600" id="statTotalInvoices">0</div>
+                        <div class="text-[10px] text-gray-500 font-bold mt-0.5" id="statDocBreakdown"></div>
                     </div>
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
-                        <div class="text-gray-500 font-bold text-xs mb-1">المدفوعة</div>
+                        <div class="text-gray-500 font-bold text-xs mb-1">الفواتير المدفوعة</div>
                         <div class="text-2xl font-black text-emerald-600" id="statPaid">0</div>
+                        <div class="text-[10px] text-emerald-700 font-bold mt-0.5">Factures فقط</div>
                     </div>
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
-                        <div class="text-gray-500 font-bold text-xs mb-1">غير المدفوعة</div>
+                        <div class="text-gray-500 font-bold text-xs mb-1">الفواتير غير المدفوعة</div>
                         <div class="text-2xl font-black text-red-600" id="statUnpaid">0</div>
+                        <div class="text-[10px] text-red-700 font-bold mt-0.5">Factures فقط</div>
                     </div>
                     <div class="bg-white p-3 rounded-xl shadow border border-gray-200 text-center">
-                        <div class="text-gray-500 font-bold text-xs mb-1">المداخيل</div>
+                        <div class="text-gray-500 font-bold text-xs mb-1">المداخيل المحصّلة</div>
                         <div class="text-xl font-black text-emerald-600" id="statTotalRevenue">0 DA</div>
+                        <div class="text-[10px] text-emerald-700 font-bold mt-0.5">الفواتير المدفوعة فقط</div>
                     </div>
                 </div>
-                <div class="mb-3 flex gap-2" dir="ltr">
-                    <input type="text" id="historySearch" oninput="renderHistoryTable()" placeholder="🔍 Rechercher par N°, client..." class="flex-1 border-2 border-gray-300 rounded-lg px-4 py-2 font-bold text-sm focus:border-purple-500 outline-none bg-white">
+                <div class="bg-purple-50 border border-purple-200 text-purple-900 rounded-lg px-3 py-1.5 text-[11px] font-bold mb-3 flex items-center gap-1.5">
+                    <i class="fas fa-info-circle text-purple-600"></i>
+                    <span>تنبيه: إحصائيات المداخيل والفواتير المدفوعة وغير المدفوعة تحتسب الفواتير الرسمية (Facture) فقط، ولا تشمل الفواتير الأولية (Proforma) أو وصولات التسليم (Bon de Livraison).</span>
+                </div>
+
+                <div class="mb-3 flex flex-wrap gap-2" dir="ltr">
+                    <input type="text" id="historySearch" oninput="renderHistoryTable()" placeholder="🔍 Rechercher par N°, client..." class="flex-1 min-w-[200px] border-2 border-gray-300 rounded-lg px-4 py-2 font-bold text-sm focus:border-purple-500 outline-none bg-white">
+                    <select id="historyTypeFilter" onchange="renderHistoryTable()" class="border-2 border-gray-300 rounded-lg px-3 py-2 font-bold text-sm outline-none bg-white cursor-pointer">
+                        <option value="">Tous les types</option>
+                        <option value="facture">Facture</option>
+                        <option value="proforma">Proforma</option>
+                        <option value="bl">Bon de Livraison</option>
+                    </select>
                     <select id="historyStatusFilter" onchange="renderHistoryTable()" class="border-2 border-gray-300 rounded-lg px-3 py-2 font-bold text-sm outline-none bg-white cursor-pointer">
-                        <option value="">Tous</option>
+                        <option value="">Tous les statuts</option>
                         <option value="paid">Payée</option>
                         <option value="unpaid">Non payée</option>
                         <option value="pending">En attente</option>
@@ -544,6 +636,7 @@
         </div>
     </div>
 
+    <!-- نافذة الكتالوج -->
     <div id="catalogModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden no-print flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh] modal-enter">
             <div class="bg-blue-800 text-white px-6 py-4 flex justify-between items-center">
@@ -551,6 +644,18 @@
                 <button onclick="toggleCatalog(false)" class="text-gray-200 hover:text-white text-2xl cursor-pointer"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-5 overflow-y-auto flex-1 bg-gray-100" dir="rtl">
+                <!-- شريط تنبيه تحديث السعر في الفاتورة الحالية من الكتالوج -->
+                <div id="catalogReverseSyncBanner" class="hidden mb-3 bg-emerald-50 border border-emerald-400 text-emerald-950 rounded-xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs shadow-sm">
+                    <div class="flex items-center gap-2 font-bold">
+                        <i class="fas fa-sync-alt text-emerald-600"></i>
+                        <span id="catalogReverseSyncMsg"></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btnApplyCatalogToInvoice" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg font-bold cursor-pointer text-xs">تحديث السعر في الوثيقة الحالية</button>
+                        <button onclick="document.getElementById('catalogReverseSyncBanner').classList.add('hidden')" class="text-emerald-800 hover:text-black px-1.5 py-1 cursor-pointer"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+
                 <div class="bg-white p-4 rounded-xl shadow mb-2 border border-gray-200">
                     <h3 class="font-bold text-gray-800 mb-3 text-sm">إضافة سلعة جديدة:</h3>
                     <div class="flex flex-col md:flex-row gap-3">
@@ -605,17 +710,32 @@
     <!-- السكريبت والبرمجة بالكامل -->
     <script>
         let isAdmin = sessionStorage.getItem('dafis_admin') === 'true';
-        let invoiceItems   = [];
-        let extraCharges   = [];
-        let catalogItems   = [];
-        let savedInvoices  = [];
-        let clientsList    = [];
-        let inlineEditId   = null; 
+        let invoiceItems    = [];
+        let extraCharges    = [];
+        let catalogItems    = [];
+        let savedInvoices   = [];
+        let clientsList     = []; // مصفوفة كائنات كاملة للعملاء: { name, address, nif, rc, phone, email }
+        let inlineEditId    = null;
         let currentTotalTTC = 0;
         let currentCurrency = 'DA';
         // أنواع الوثائق: 'facture' | 'proforma' | 'bl'
-        let docType        = 'facture';
-        let quickAddRowId  = null;
+        let docType         = 'facture';
+        let quickAddRowId   = null;
+        let useDocPrefix    = true;
+        let docCounters     = { facture: 40, proforma: 0, bl: 0 };
+        let docNumDrafts    = { facture: null, proforma: null, bl: null };
+
+        const DOC_PREFIXES = {
+            facture: 'FAC-',
+            proforma: 'PRO-',
+            bl: 'BL-'
+        };
+
+        const DEFAULT_NOTES = {
+            facture: 'Garantie matériel 12 mois. Service après-vente assuré.',
+            proforma: 'Garantie matériel 12 mois. Service après-vente assuré.',
+            bl: "Marchandise livrée en bon état. Réserve de propriété jusqu'au paiement intégral."
+        };
 
         const initialDefaultItems = [
             { name: 'XVR Dahua, 8CH 5MP COPER', qty: 1, price: 25500, purchasePrice: 20000 },
@@ -629,18 +749,49 @@
             { name: 'Cable COX', qty: 80, price: 145, purchasePrice: 100 }
         ];
 
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // إغلاق قائمة إظهار/إخفاء الخانات عند النقر خارجها
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('displayDropdownWrapper');
+            const menu = document.getElementById('displayDropdownMenu');
+            if (wrapper && menu && !wrapper.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        function toggleDisplayDropdown(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('displayDropdownMenu');
+            menu.classList.toggle('hidden');
+        }
+
         function initApp() {
             document.getElementById('invoiceDate').value = new Date().toLocaleDateString('fr-FR');
             loadData();
-            
+            loadDisplayPreferences();
+
             if (invoiceItems.length === 0) {
-                invoiceItems = initialDefaultItems.map(i => ({...i, id: Date.now() + Math.random()}));
+                invoiceItems = initialDefaultItems.map(i => ({ ...i, id: Date.now() + Math.random() }));
             }
 
-            updateRowDensity();
+            // تعيين الترقيم الابتدائي وفق العدّاد المستقل والبادئة
+            document.getElementById('invoiceNum').value = getNextDocNumber(docType);
+            docNumDrafts[docType] = document.getElementById('invoiceNum').value;
+
+            updateRowDensity(false);
+            updateCurrency(false);
             renderClientsDatalist();
             renderCatalog();
             applyDocTypeUI();
+            applyAllSectionToggles();
             renderInvoiceTable();
             syncInvoiceData();
             calculateTotals();
@@ -649,8 +800,99 @@
             updateAuthUI();
         }
 
+        // ================= حفظ واستعادة تفضيلات العرض تلقائياً =================
+        function saveDisplayPreferences() {
+            const prefs = {
+                rowDensity: document.getElementById('rowDensitySelect').value,
+                frais: document.getElementById('chkToggleFrais').checked,
+                notes: document.getElementById('chkToggleNotes').checked,
+                bank: document.getElementById('chkToggleBank').checked,
+                priceHelper: document.getElementById('chkTogglePriceHelper').checked,
+                remise: document.getElementById('chkToggleRemise').checked,
+                words: document.getElementById('chkToggleWords').checked,
+                tva: document.getElementById('toggleTva').checked,
+                currency: document.getElementById('currencySelect').value,
+                useDocPrefix: document.getElementById('chkUseDocPrefix').checked
+            };
+            localStorage.setItem('dafis_display_prefs', JSON.stringify(prefs));
+        }
+
+        function loadDisplayPreferences() {
+            const raw = localStorage.getItem('dafis_display_prefs');
+            if (!raw) return;
+            try {
+                const p = JSON.parse(raw);
+                if (p.rowDensity) document.getElementById('rowDensitySelect').value = p.rowDensity;
+                if (typeof p.frais === 'boolean') document.getElementById('chkToggleFrais').checked = p.frais;
+                if (typeof p.notes === 'boolean') document.getElementById('chkToggleNotes').checked = p.notes;
+                if (typeof p.bank === 'boolean') document.getElementById('chkToggleBank').checked = p.bank;
+                if (typeof p.priceHelper === 'boolean') document.getElementById('chkTogglePriceHelper').checked = p.priceHelper;
+                if (typeof p.remise === 'boolean') document.getElementById('chkToggleRemise').checked = p.remise;
+                if (typeof p.words === 'boolean') document.getElementById('chkToggleWords').checked = p.words;
+                if (typeof p.tva === 'boolean') document.getElementById('toggleTva').checked = p.tva;
+                if (p.currency) {
+                    currentCurrency = p.currency;
+                    document.getElementById('currencySelect').value = p.currency;
+                }
+                if (typeof p.useDocPrefix === 'boolean') {
+                    useDocPrefix = p.useDocPrefix;
+                    document.getElementById('chkUseDocPrefix').checked = p.useDocPrefix;
+                }
+            } catch (e) {}
+        }
+
+        function applyAllSectionToggles() {
+            ['frais', 'notes', 'bank', 'priceHelper', 'remise', 'words'].forEach(sec => toggleSection(sec, false));
+        }
+
+        // ================= الترقيم المستقل لكل نوع وثيقة والبادئة =================
+        function stripDocPrefix(numStr) {
+            return String(numStr || '').replace(/^(FAC|PRO|BL)-/i, '').trim();
+        }
+
+        function extractSeqFromNum(numStr) {
+            const clean = stripDocPrefix(numStr);
+            const parts = clean.split('/');
+            const last = parts[parts.length - 1];
+            const parsed = parseInt(last, 10);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        function getNextDocNumber(type) {
+            const year = new Date().getFullYear();
+            let maxSeq = docCounters[type] || 0;
+            savedInvoices.forEach(inv => {
+                const t = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+                if (t === type) {
+                    const seq = extractSeqFromNum(inv.num);
+                    if (seq > maxSeq) maxSeq = seq;
+                }
+            });
+            const nextSeq = maxSeq + 1;
+            const base = `${year}/${String(nextSeq).padStart(2, '0')}`;
+            return useDocPrefix ? `${DOC_PREFIXES[type]}${base}` : base;
+        }
+
+        function toggleDocPrefix(shouldSave = true) {
+            useDocPrefix = document.getElementById('chkUseDocPrefix').checked;
+            const numInput = document.getElementById('invoiceNum');
+            const clean = stripDocPrefix(numInput.value);
+            numInput.value = useDocPrefix ? `${DOC_PREFIXES[docType]}${clean}` : clean;
+            docNumDrafts[docType] = numInput.value;
+
+            // تحديث المسودات الأخرى إن وُجدت
+            ['facture', 'proforma', 'bl'].forEach(t => {
+                if (docNumDrafts[t]) {
+                    const c = stripDocPrefix(docNumDrafts[t]);
+                    docNumDrafts[t] = useDocPrefix ? `${DOC_PREFIXES[t]}${c}` : c;
+                }
+            });
+
+            if (shouldSave) saveDisplayPreferences();
+        }
+
         // التحكم الديناميكي في عدد الأسطر وحجم الجدول (10، 20، 30، 40، 50)
-        function updateRowDensity() {
+        function updateRowDensity(shouldSave = false) {
             const count = document.getElementById('rowDensitySelect').value;
             const root = document.documentElement;
             const presets = {
@@ -665,10 +907,30 @@
             root.style.setProperty('--row-height', p.rowH);
             root.style.setProperty('--table-font-size', p.font);
             root.style.setProperty('--input-height', p.inputH);
+            if (shouldSave) saveDisplayPreferences();
+        }
+
+        // تبديل الملاحظات الافتراضية بذكاء دون مسح التعديل اليدوي
+        function updateNoteOnDocTypeChange(newType) {
+            const noteEl = document.getElementById('invoiceNotes');
+            if (!noteEl) return;
+            const current = noteEl.value.trim();
+            const knownDefaults = Object.values(DEFAULT_NOTES);
+            if (!current || knownDefaults.includes(current)) {
+                noteEl.value = DEFAULT_NOTES[newType] || DEFAULT_NOTES.facture;
+            }
+        }
+
+        function resetDefaultNote() {
+            const noteEl = document.getElementById('invoiceNotes');
+            if (noteEl) noteEl.value = DEFAULT_NOTES[docType] || DEFAULT_NOTES.facture;
         }
 
         // التبديل الدوري بين: Facture -> Facture Proforma -> Bon de Livraison
         function cycleDocType() {
+            // حفظ رقم الوثيقة الحالي للنوع السابق قبل التبديل
+            docNumDrafts[docType] = document.getElementById('invoiceNum').value;
+
             if (docType === 'facture') {
                 docType = 'proforma';
             } else if (docType === 'proforma') {
@@ -676,7 +938,14 @@
             } else {
                 docType = 'facture';
             }
+
+            // استعادة رقم النوع الجديد أو توليد الرقم التالي المستقل له
+            document.getElementById('invoiceNum').value = docNumDrafts[docType] || getNextDocNumber(docType);
+            docNumDrafts[docType] = document.getElementById('invoiceNum').value;
+
+            updateNoteOnDocTypeChange(docType);
             applyDocTypeUI();
+            applyAllSectionToggles();
             renderInvoiceTable();
             renderExtraCharges();
         }
@@ -724,7 +993,7 @@
                 thQty.style.width = '8%';
             }
 
-            // إخفاء / إظهار جدول المجاميع والمبلغ بالحروف وعناصر التسعير في الشريط العلوي
+            // إخفاء / إظهار جدول المجاميع والمبلغ بالحروف وعناصر التسعير
             const totalsBox = document.getElementById('totalsBoxContainer');
             const bottomLeft = document.getElementById('bottomLeftSections');
             const wordsSec = document.getElementById('sectionWords');
@@ -742,6 +1011,24 @@
                 wordsSec.style.display = (!isBL && document.getElementById('chkToggleWords').checked) ? 'block' : 'none';
             }
 
+            // إظهار خانة استلام وتوقيع العميل في Bon de Livraison فقط
+            const sigRow = document.getElementById('signatureRow');
+            const clientSigBox = document.getElementById('clientSignatureBox');
+            const companySigCaption = document.getElementById('companySigCaption');
+            if (sigRow && clientSigBox) {
+                if (isBL) {
+                    sigRow.classList.remove('justify-end');
+                    sigRow.classList.add('justify-between');
+                    clientSigBox.classList.remove('hidden');
+                    if (companySigCaption) companySigCaption.classList.remove('hidden');
+                } else {
+                    sigRow.classList.add('justify-end');
+                    sigRow.classList.remove('justify-between');
+                    clientSigBox.classList.add('hidden');
+                    if (companySigCaption) companySigCaption.classList.add('hidden');
+                }
+            }
+
             document.querySelectorAll('.price-control').forEach(el => {
                 el.style.display = isBL ? 'none' : '';
             });
@@ -753,14 +1040,22 @@
             if (profitDiv) profitDiv.style.display = (isAdmin && !isBL) ? 'block' : 'none';
         }
 
-        // نافذة إرسال البريد الإلكتروني
+        // نافذة إرسال البريد الإلكتروني (مع ملء البريد تلقائياً من بيانات العميل)
         function openEmailModal() {
             const clientName = document.getElementById('clientName').value.trim();
+            const clientEmailInput = document.getElementById('clientEmail').value.trim();
             const invNum = document.getElementById('invoiceNum').value;
             const invDate = document.getElementById('invoiceDate').value;
             const labelMap = { facture: 'Facture', proforma: 'Facture Proforma', bl: 'Bon de Livraison' };
             const docLabel = labelMap[docType] || 'Facture';
             const totalStr = `${currentTotalTTC.toLocaleString('fr-FR')} ${currentCurrency}`;
+
+            let emailToFill = clientEmailInput && clientEmailInput !== '/' ? clientEmailInput : '';
+            if (!emailToFill && clientName) {
+                const found = findClientByName(clientName);
+                if (found && found.email) emailToFill = found.email;
+            }
+            document.getElementById('emailTo').value = emailToFill;
 
             document.getElementById('emailSubject').value = `${docLabel} N° ${invNum} - DAFIS SOLUTIONS`;
             const amountClause = docType === 'bl' ? '.' : `, d'un montant net à payer de ${totalStr}.`;
@@ -800,32 +1095,33 @@ Tébessa - Algérie`;
             }
         }
 
-        function toggleSection(section) {
+        function toggleSection(section, shouldSave = false) {
             if (section === 'frais') {
                 const el = document.getElementById('sectionFrais');
-                if(el) el.style.display = document.getElementById('chkToggleFrais').checked ? 'block' : 'none';
+                if (el) el.style.display = document.getElementById('chkToggleFrais').checked ? 'block' : 'none';
             } else if (section === 'notes') {
                 const el = document.getElementById('sectionNotes');
-                if(el) el.style.display = document.getElementById('chkToggleNotes').checked ? 'block' : 'none';
+                if (el) el.style.display = document.getElementById('chkToggleNotes').checked ? 'block' : 'none';
             } else if (section === 'bank') {
                 const el = document.getElementById('sectionBank');
-                if(el) el.style.display = document.getElementById('chkToggleBank').checked ? 'block' : 'none';
+                if (el) el.style.display = document.getElementById('chkToggleBank').checked ? 'block' : 'none';
             } else if (section === 'priceHelper') {
                 const el = document.getElementById('rowPriceHelper');
-                if(el) el.style.display = document.getElementById('chkTogglePriceHelper').checked ? 'table-row' : 'none';
+                if (el) el.style.display = document.getElementById('chkTogglePriceHelper').checked ? 'table-row' : 'none';
             } else if (section === 'remise') {
                 const el = document.getElementById('rowRemise');
-                if(el) el.style.display = document.getElementById('chkToggleRemise').checked ? 'table-row' : 'none';
+                if (el) el.style.display = document.getElementById('chkToggleRemise').checked ? 'table-row' : 'none';
             } else if (section === 'words') {
                 const el = document.getElementById('sectionWords');
-                if(el) el.style.display = (docType !== 'bl' && document.getElementById('chkToggleWords').checked) ? 'block' : 'none';
+                if (el) el.style.display = (docType !== 'bl' && document.getElementById('chkToggleWords').checked) ? 'block' : 'none';
             }
+            if (shouldSave) saveDisplayPreferences();
             calculateTotals();
         }
 
         function toggleAuth() {
             if (isAdmin) {
-                if(confirm('تسجيل الخروج من حساب المسؤول؟')) {
+                if (confirm('تسجيل الخروج من حساب المسؤول؟')) {
                     isAdmin = false;
                     sessionStorage.removeItem('dafis_admin');
                     updateAuthUI();
@@ -867,8 +1163,8 @@ Tébessa - Algérie`;
             if (catThProf) catThProf.style.display = isAdmin ? 'table-cell' : 'none';
 
             renderInvoiceTable();
-            if(!document.getElementById('catalogModal').classList.contains('hidden')) renderCatalog();
-            if(!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
+            if (!document.getElementById('catalogModal').classList.contains('hidden')) renderCatalog();
+            if (!document.getElementById('historyModal').classList.contains('hidden')) renderHistoryTable();
         }
 
         function generateQR() {
@@ -885,18 +1181,19 @@ Tébessa - Algérie`;
                     colorLight: '#ffffff', 
                     correctLevel: QRCode.CorrectLevel.M 
                 });
-            } catch(e) {}
+            } catch (e) {}
         }
 
-        function updateCurrency() {
+        function updateCurrency(shouldSave = false) {
             currentCurrency = document.getElementById('currencySelect').value;
             document.querySelectorAll('.currency-label').forEach(el => el.textContent = currentCurrency);
             document.getElementById('thCurrency').textContent = currentCurrency;
+            if (shouldSave) saveDisplayPreferences();
             calculateTotals();
         }
 
         function addExtraCharge(label = '', amount = 0) {
-            extraCharges.push({ id: Date.now(), label, amount });
+            extraCharges.push({ id: Date.now() + Math.random(), label, amount });
             renderExtraCharges();
             calculateTotals();
         }
@@ -918,7 +1215,7 @@ Tébessa - Algérie`;
                         class="w-16 border-b border-dashed border-orange-300 text-right text-[8.5px] font-black bg-transparent outline-none text-orange-700">
                     <span class="text-[8px] font-bold text-gray-500 currency-label">${currentCurrency}</span>`;
                 row.innerHTML = `
-                    <input type="text" value="${charge.label}" oninput="updateCharge(${charge.id},'label',this.value)"
+                    <input type="text" value="${escapeHtml(charge.label)}" oninput="updateCharge(${charge.id},'label',this.value)"
                         placeholder="Description..." class="flex-1 border-b border-dashed border-gray-300 text-[8px] font-bold bg-transparent outline-none text-gray-700">
                     ${pricePart}
                     <button onclick="removeExtraCharge(${charge.id})" class="no-print text-red-400 hover:text-red-600 cursor-pointer"><i class="fas fa-times text-[8.5px]"></i></button>`;
@@ -930,38 +1227,120 @@ Tébessa - Algérie`;
             if (c) { c[field] = value; calculateTotals(); }
         }
 
-        function syncInvoiceData() {}
+        function syncInvoiceData() {
+            docNumDrafts[docType] = document.getElementById('invoiceNum').value;
+        }
+
+        // ================= تحميل البيانات وإدارة ملفات العملاء الكاملة =================
+        function normalizeClientsList(rawList) {
+            if (!Array.isArray(rawList)) return [];
+            return rawList.map(c => {
+                if (typeof c === 'string') {
+                    return { name: c.trim(), address: '', nif: '', rc: '', phone: '', email: '' };
+                }
+                return {
+                    name: (c.name || '').trim(),
+                    address: c.address || '',
+                    nif: c.nif || '',
+                    rc: c.rc || '',
+                    phone: c.phone || '',
+                    email: c.email || ''
+                };
+            }).filter(c => c.name);
+        }
 
         function loadData() {
             const sc = localStorage.getItem('dafis_catalog');
-            catalogItems = sc ? JSON.parse(sc) : initialDefaultItems.map((c, i) => ({ id: i+1, name: c.name, purchasePrice: c.purchasePrice, price: c.price }));
+            catalogItems = sc ? JSON.parse(sc) : initialDefaultItems.map((c, i) => ({ id: i + 1, name: c.name, purchasePrice: c.purchasePrice, price: c.price }));
             if (!sc) saveCatalog();
 
             const si = localStorage.getItem('dafis_history');
             if (si) savedInvoices = JSON.parse(si);
 
             const scl = localStorage.getItem('dafis_clients');
-            if (scl) clientsList = JSON.parse(scl);
-            else clientsList = ['ثانویة المجاھد مسعي علي'];
+            if (scl) {
+                clientsList = normalizeClientsList(JSON.parse(scl));
+            } else {
+                clientsList = [{ name: 'ثانویة المجاھد مسعي علي', address: '', nif: '', rc: '', phone: '', email: '' }];
+            }
+            localStorage.setItem('dafis_clients', JSON.stringify(clientsList));
+
+            const cnt = localStorage.getItem('dafis_doc_counters');
+            if (cnt) {
+                try { docCounters = { ...docCounters, ...JSON.parse(cnt) }; } catch (e) {}
+            }
         }
 
         function saveCatalog() { localStorage.setItem('dafis_catalog', JSON.stringify(catalogItems)); }
+        function saveClientsStorage() { localStorage.setItem('dafis_clients', JSON.stringify(clientsList)); }
+        function saveDocCounters() { localStorage.setItem('dafis_doc_counters', JSON.stringify(docCounters)); }
+
+        function findClientByName(name) {
+            const key = (name || '').trim().toLowerCase();
+            if (!key) return null;
+            return clientsList.find(c => c.name.toLowerCase() === key) || null;
+        }
 
         function renderClientsDatalist() {
             const dl = document.getElementById('clientsDatalist');
             dl.innerHTML = '';
-            clientsList.forEach(c => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
+            clientsList.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.name;
+                const meta = [c.phone, c.nif].filter(Boolean).join(' | ');
+                if (meta) o.label = meta;
+                dl.appendChild(o);
+            });
         }
-        function saveClientIfNew(name) {
-            name = name.trim();
-            if (!name || clientsList.includes(name)) return;
-            clientsList.push(name);
-            localStorage.setItem('dafis_clients', JSON.stringify(clientsList));
+
+        // ملء بيانات العميل تلقائياً عند اختيار اسمه
+        function handleClientNameInput() {
+            const nameVal = document.getElementById('clientName').value.trim();
+            const found = findClientByName(nameVal);
+            if (!found) return;
+            document.getElementById('clientAddress').value = found.address || '/';
+            document.getElementById('clientNif').value = found.nif || '/';
+            document.getElementById('clientRc').value = found.rc || '/';
+            document.getElementById('clientPhone').value = found.phone || '';
+            document.getElementById('clientEmail').value = found.email || '';
+        }
+
+        function saveCurrentClientProfile(showToast = false) {
+            const name = document.getElementById('clientName').value.trim();
+            if (!name || name === '/') {
+                if (showToast) alert('يرجى إدخال اسم العميل أولاً.');
+                return;
+            }
+            const cleanField = (id) => {
+                const v = (document.getElementById(id).value || '').trim();
+                return v === '/' ? '' : v;
+            };
+            const profile = {
+                name,
+                address: cleanField('clientAddress'),
+                nif: cleanField('clientNif'),
+                rc: cleanField('clientRc'),
+                phone: cleanField('clientPhone'),
+                email: cleanField('clientEmail')
+            };
+            const idx = clientsList.findIndex(c => c.name.toLowerCase() === name.toLowerCase());
+            if (idx !== -1) {
+                clientsList[idx] = { ...clientsList[idx], ...profile };
+            } else {
+                clientsList.push(profile);
+            }
+            saveClientsStorage();
             renderClientsDatalist();
+            if (showToast) alert(`✅ تم حفظ بيانات العميل "${name}" بنجاح!`);
         }
 
         function exportData() {
-            const data = { catalog: catalogItems, history: savedInvoices, clients: clientsList };
+            const data = {
+                catalog: catalogItems,
+                history: savedInvoices,
+                clients: clientsList,
+                docCounters: docCounters
+            };
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
             a.download = `dafis_backup_${new Date().toISOString().split('T')[0]}.json`;
@@ -975,9 +1354,10 @@ Tébessa - Algérie`;
             reader.onload = e => {
                 try {
                     const d = JSON.parse(e.target.result);
-                    if (d.catalog) { catalogItems = d.catalog.map(c => ({...c, purchasePrice: c.purchasePrice || 0})); saveCatalog(); }
+                    if (d.catalog) { catalogItems = d.catalog.map(c => ({ ...c, purchasePrice: c.purchasePrice || 0 })); saveCatalog(); }
                     if (d.history) { savedInvoices = d.history; localStorage.setItem('dafis_history', JSON.stringify(savedInvoices)); }
-                    if (d.clients) { clientsList = d.clients; localStorage.setItem('dafis_clients', JSON.stringify(clientsList)); }
+                    if (d.clients) { clientsList = normalizeClientsList(d.clients); saveClientsStorage(); }
+                    if (d.docCounters) { docCounters = { ...docCounters, ...d.docCounters }; saveDocCounters(); }
                     initApp();
                     alert('✅ Données importées avec succès !');
                 } catch { alert('❌ Fichier JSON invalide !'); }
@@ -986,7 +1366,88 @@ Tébessa - Algérie`;
             event.target.value = '';
         }
 
-        function addInvoiceItem(name='', qty=1, price=0, purchasePrice=0) {
+        // ================= مزامنة أسعار الفاتورة والكتالوج =================
+        function getCatalogMatch(name) {
+            const key = (name || '').trim().toLowerCase();
+            if (!key) return null;
+            return catalogItems.find(c => c.name.trim().toLowerCase() === key) || null;
+        }
+
+        function checkPriceMismatchAndNotify(item) {
+            if (!item || docType === 'bl') return;
+            const cat = getCatalogMatch(item.name);
+            if (!cat || Number(cat.price) === Number(item.price)) {
+                dismissPriceSyncBanner();
+                return;
+            }
+            const banner = document.getElementById('priceSyncBanner');
+            const msg = document.getElementById('priceSyncMessage');
+            const btnToCat = document.getElementById('btnSyncToCatalog');
+            const btnFromCat = document.getElementById('btnRevertFromCatalog');
+
+            msg.innerHTML = `سعر <span class="underline">"${escapeHtml(item.name)}"</span> في الوثيقة (<strong>${Number(item.price).toLocaleString('fr-FR')} ${currentCurrency}</strong>) يختلف عن سعر الكتالوج (<strong>${Number(cat.price).toLocaleString('fr-FR')} ${currentCurrency}</strong>).`;
+
+            btnToCat.onclick = () => applyInvoicePriceToCatalog(item.id);
+            btnFromCat.onclick = () => applyCatalogPriceToInvoice(item.id);
+            banner.classList.remove('hidden');
+        }
+
+        function dismissPriceSyncBanner() {
+            const banner = document.getElementById('priceSyncBanner');
+            if (banner) banner.classList.add('hidden');
+        }
+
+        function applyInvoicePriceToCatalog(itemId) {
+            const item = invoiceItems.find(i => i.id === itemId);
+            if (!item) return;
+            const cat = getCatalogMatch(item.name);
+            if (cat) {
+                cat.price = item.price;
+                saveCatalog();
+                renderCatalog();
+                renderInvoiceTable();
+                dismissPriceSyncBanner();
+            }
+        }
+
+        function applyCatalogPriceToInvoice(itemId) {
+            const item = invoiceItems.find(i => i.id === itemId);
+            if (!item) return;
+            const cat = getCatalogMatch(item.name);
+            if (cat) {
+                item.price = cat.price;
+                item.purchasePrice = cat.purchasePrice || 0;
+                renderInvoiceTable();
+                dismissPriceSyncBanner();
+            }
+        }
+
+        function checkCatalogToInvoiceSync(catItem) {
+            const matchingRows = invoiceItems.filter(i =>
+                i.name.trim().toLowerCase() === catItem.name.trim().toLowerCase() &&
+                (Number(i.price) !== Number(catItem.price) || Number(i.purchasePrice || 0) !== Number(catItem.purchasePrice || 0))
+            );
+            const banner = document.getElementById('catalogReverseSyncBanner');
+            if (!matchingRows.length || !banner) return;
+
+            const oldPrice = matchingRows[0].price;
+            document.getElementById('catalogReverseSyncMsg').innerHTML =
+                `السلعة "<strong>${escapeHtml(catItem.name)}</strong>" موجودة في الوثيقة الحالية بسعر (${Number(oldPrice).toLocaleString('fr-FR')} ${currentCurrency}). هل تريد تحديثها بسعر الكتالوج الجديد (${Number(catItem.price).toLocaleString('fr-FR')} ${currentCurrency})؟`;
+
+            document.getElementById('btnApplyCatalogToInvoice').onclick = () => {
+                matchingRows.forEach(r => {
+                    r.price = catItem.price;
+                    r.purchasePrice = catItem.purchasePrice || 0;
+                });
+                renderInvoiceTable();
+                dismissPriceSyncBanner();
+                banner.classList.add('hidden');
+            };
+            banner.classList.remove('hidden');
+        }
+
+        // ================= جدول السلع =================
+        function addInvoiceItem(name = '', qty = 1, price = 0, purchasePrice = 0) {
             invoiceItems.push({ id: Date.now() + Math.random(), name, qty, price, purchasePrice });
             renderInvoiceTable();
         }
@@ -998,7 +1459,7 @@ Tébessa - Algérie`;
             const item = invoiceItems.find(i => i.id === id);
             if (!item) return;
             item.name = el.value;
-            const cat = catalogItems.find(c => c.name.toLowerCase() === item.name.trim().toLowerCase());
+            const cat = getCatalogMatch(item.name);
             if (cat) {
                 item.price = cat.price;
                 item.purchasePrice = cat.purchasePrice || 0;
@@ -1013,7 +1474,22 @@ Tébessa - Algérie`;
             if (item) { 
                 item[field] = parseFloat(el.value) || 0; 
                 updateRowTotal(el.closest('tr'), item); 
-                calculateTotals(); 
+                calculateTotals();
+                if (field === 'price') {
+                    checkPriceMismatchAndNotify(item);
+                    updateRowSyncIndicator(el.closest('tr'), item);
+                }
+            }
+        }
+        function updateRowSyncIndicator(row, item) {
+            if (!row) return;
+            const syncBtn = row.querySelector('.row-price-sync-btn');
+            if (!syncBtn) return;
+            const cat = getCatalogMatch(item.name);
+            const hasDiff = cat && Number(cat.price) !== Number(item.price) && docType !== 'bl';
+            syncBtn.style.display = hasDiff ? 'inline-block' : 'none';
+            if (hasDiff) {
+                syncBtn.title = `يختلف عن الكتالوج (${cat.price.toLocaleString('fr-FR')}) - اضغط لاعتماد السعر الجديد في الكتالوج`;
             }
         }
         function updateRowTotal(row, item) {
@@ -1074,6 +1550,7 @@ Tébessa - Algérie`;
             }
 
             closeQuickCatalogModal();
+            dismissPriceSyncBanner();
             renderCatalog();
             renderInvoiceTable();
         }
@@ -1104,6 +1581,9 @@ Tébessa - Algérie`;
                         profitHtml = `<span class="no-print ml-1 text-[7.5px] font-bold ${pColor}" dir="ltr">(${profit >= 0 ? '+' : ''}${profit.toLocaleString('fr-FR')})</span>`;
                     }
 
+                    const cat = getCatalogMatch(item.name);
+                    const hasPriceDiff = !isBL && cat && Number(cat.price) !== Number(item.price);
+
                     const priceCells = isBL ? '' : `
                         <td class="px-1 border-r border-gray-200">
                             <input type="number" oninput="updateItem(${item.id},'price',this)" value="${item.price}"
@@ -1115,7 +1595,7 @@ Tébessa - Algérie`;
 
                     tr.innerHTML = `
                         <td class="px-1.5 border-r border-gray-200">
-                            <input type="text" list="catalogDatalist" oninput="handleDesignationInput(${item.id},this)" value="${item.name.replace(/"/g, '&quot;')}"
+                            <input type="text" list="catalogDatalist" oninput="handleDesignationInput(${item.id},this)" value="${escapeHtml(item.name)}"
                                 class="w-full font-bold text-gray-800 bg-transparent outline-none" placeholder="Désignation...">
                         </td>
                         <td class="px-1 border-r border-gray-200">
@@ -1124,7 +1604,8 @@ Tébessa - Algérie`;
                         </td>
                         ${priceCells}
                         <td class="no-print text-center px-0.5 whitespace-nowrap">
-                            <button onclick="openQuickCatalogModal(${item.id})" class="text-blue-600 hover:bg-blue-100 px-0.5 rounded cursor-pointer" title="إضافة للكتالوج"><i class="fas fa-plus-circle text-[8.5px]"></i></button>
+                            <button onclick="applyInvoicePriceToCatalog(${item.id})" style="display:${hasPriceDiff ? 'inline-block' : 'none'}" class="row-price-sync-btn text-amber-600 hover:bg-amber-100 px-0.5 rounded cursor-pointer" title="${hasPriceDiff ? `يختلف عن الكتالوج (${cat.price.toLocaleString('fr-FR')}) - اضغط لاعتماد السعر في الكتالوج` : ''}"><i class="fas fa-sync-alt text-[8px]"></i></button>
+                            <button onclick="openQuickCatalogModal(${item.id})" class="text-blue-600 hover:bg-blue-100 px-0.5 rounded cursor-pointer" title="إضافة/تحديث في الكتالوج"><i class="fas fa-plus-circle text-[8.5px]"></i></button>
                             <button onclick="removeInvoiceItem(${item.id})" class="text-red-500 hover:bg-red-100 px-0.5 rounded cursor-pointer" title="حذف السطر"><i class="fas fa-times text-[8.5px]"></i></button>
                         </td>`;
                     tbody.appendChild(tr);
@@ -1180,14 +1661,14 @@ Tébessa - Algérie`;
         async function callGeminiWithRetry(prompt, retries = 4) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             const payload = { contents:[{parts:[{text:prompt}]}], systemInstruction:{parts:[{text:"You are a professional assistant for an Algerian security company's invoices. Reply concisely in French."}]} };
-            const delays = [1000,2000,5000,10000];
+            const delays = [1000, 2000, 5000, 10000];
             for (let i = 0; i < retries; i++) {
                 try {
                     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     const r = await res.json();
                     return r.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                } catch(e) {
+                } catch (e) {
                     if (i === retries - 1) throw e;
                     console.error("Gemini API Error:", e);
                     await new Promise(r => setTimeout(r, delays[i]));
@@ -1201,7 +1682,7 @@ Tébessa - Algérie`;
             const orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>'; btn.disabled = true;
             try {
                 const txt = await callGeminiWithRetry(`Convert ${currentTotalTTC} ${currentCurrency} to French words for an invoice. Return ONLY the text string, no quotes.`);
-                if (txt) document.getElementById('amountInWords').value = txt.trim().replace(/^"|"\$/g,'');
+                if (txt) document.getElementById('amountInWords').value = txt.trim().replace(/^"|"$/g, '');
             } catch { alert("Erreur IA Gemini."); }
             finally { btn.innerHTML = orig; btn.disabled = false; }
         }
@@ -1209,37 +1690,60 @@ Tébessa - Algérie`;
         function resetInvoiceForm() {
             if (!confirm('تفريغ الوثيقة وبدء واحدة جديدة؟')) return;
             invoiceItems = []; extraCharges = [];
-            ['clientName','clientAddress','clientNif','clientRc','amountInWords','remiseInput','priceHelperInput'].forEach(id => { 
+            ['clientName', 'clientAddress', 'clientNif', 'clientRc', 'clientPhone', 'clientEmail', 'amountInWords', 'remiseInput', 'priceHelperInput'].forEach(id => { 
                 const el = document.getElementById(id); 
-                if(el) el.value = (id === 'remiseInput' || id === 'priceHelperInput') ? '0' : ''; 
+                if (el) el.value = (id === 'remiseInput' || id === 'priceHelperInput') ? '0' : ''; 
             });
             document.getElementById('invoiceDate').value = new Date().toLocaleDateString('fr-FR');
-            document.getElementById('invoiceNum').value = '2026/' + String(savedInvoices.length + 1).padStart(2,'0');
+            document.getElementById('invoiceNum').value = getNextDocNumber(docType);
+            docNumDrafts[docType] = document.getElementById('invoiceNum').value;
+            resetDefaultNote();
+            dismissPriceSyncBanner();
             renderInvoiceTable();
             renderExtraCharges();
         }
 
         function duplicateCurrentInvoice() {
             if (!confirm('نسخ الوثيقة الحالية كوثيقة جديدة؟')) return;
-            invoiceItems = invoiceItems.map(i => ({...i, id: Date.now() + Math.random()}));
-            document.getElementById('invoiceNum').value = '2026/' + String(savedInvoices.length + 1).padStart(2,'0');
+            invoiceItems = invoiceItems.map(i => ({ ...i, id: Date.now() + Math.random() }));
+            document.getElementById('invoiceNum').value = getNextDocNumber(docType);
+            docNumDrafts[docType] = document.getElementById('invoiceNum').value;
             syncInvoiceData();
             renderInvoiceTable();
         }
 
         function saveCurrentInvoice() {
             const clientName = document.getElementById('clientName').value.trim();
-            const invoiceNum = document.getElementById('invoiceNum').value;
-            if (!clientName || !invoiceItems.length) { alert('أدخل اسم العميل وأضف سلعة واحدة على الأقل.'); return; }
-            saveClientIfNew(clientName);
+            const invoiceNum = document.getElementById('invoiceNum').value.trim();
+            if (!clientName || clientName === '/' || !invoiceItems.length) {
+                alert('أدخل اسم العميل وأضف سلعة واحدة على الأقل.');
+                return;
+            }
+
+            // حفظ/تحديث بيانات العميل الكاملة تلقائياً
+            saveCurrentClientProfile(false);
+
+            // تحديث عدّاد نوع الوثيقة
+            const seq = extractSeqFromNum(invoiceNum);
+            if (seq > (docCounters[docType] || 0)) {
+                docCounters[docType] = seq;
+                saveDocCounters();
+            }
+
             const newInv = {
-                id: Date.now(), num: invoiceNum,
+                id: Date.now(),
+                num: invoiceNum,
                 date: document.getElementById('invoiceDate').value,
                 client: clientName,
                 clientAddress: document.getElementById('clientAddress').value,
                 clientNif:     document.getElementById('clientNif').value,
                 clientRc:      document.getElementById('clientRc').value,
-                total: currentTotalTTC, status: 'unpaid',
+                clientPhone:   document.getElementById('clientPhone').value,
+                clientEmail:   document.getElementById('clientEmail').value,
+                notes:         document.getElementById('invoiceNotes').value,
+                amountInWords: document.getElementById('amountInWords').value,
+                total: currentTotalTTC,
+                status: 'unpaid',
                 currency: currentCurrency,
                 docType: docType,
                 isProforma: docType === 'proforma',
@@ -1249,7 +1753,7 @@ Tébessa - Algérie`;
                 priceHelperVal: parseFloat(document.getElementById('priceHelperInput').value) || 0,
                 remiseVal: parseFloat(document.getElementById('remiseInput').value) || 0,
                 extraCharges: [...extraCharges],
-                itemsSnapshot: [...invoiceItems] 
+                itemsSnapshot: [...invoiceItems]
             };
             const idx = savedInvoices.findIndex(i => i.num === invoiceNum && (i.docType || (i.isProforma ? 'proforma' : 'facture')) === docType);
             if (idx !== -1) { newInv.status = savedInvoices[idx].status; savedInvoices[idx] = newInv; }
@@ -1261,28 +1765,36 @@ Tébessa - Algérie`;
         function loadInvoiceForEditing(id) {
             const inv = savedInvoices.find(i => i.id === id);
             if (!inv) return;
-            document.getElementById('invoiceNum').value   = inv.num;
-            document.getElementById('invoiceDate').value  = inv.date;
-            document.getElementById('clientName').value   = inv.client;
+            docType = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+
+            document.getElementById('invoiceNum').value    = inv.num;
+            docNumDrafts[docType] = inv.num;
+            document.getElementById('invoiceDate').value   = inv.date;
+            document.getElementById('clientName').value    = inv.client;
             document.getElementById('clientAddress').value = inv.clientAddress || '';
             document.getElementById('clientNif').value     = inv.clientNif || '';
             document.getElementById('clientRc').value      = inv.clientRc || '';
+            document.getElementById('clientPhone').value   = inv.clientPhone || '';
+            document.getElementById('clientEmail').value   = inv.clientEmail || '';
+            document.getElementById('invoiceNotes').value  = inv.notes !== undefined ? inv.notes : (DEFAULT_NOTES[docType] || DEFAULT_NOTES.facture);
+            document.getElementById('amountInWords').value = inv.amountInWords || '';
             document.getElementById('priceHelperInput').value = inv.priceHelperVal !== undefined ? inv.priceHelperVal : 0;
             document.getElementById('remiseInput').value   = inv.remiseVal !== undefined ? inv.remiseVal : 0;
             
             if (inv.rowDensity) {
                 document.getElementById('rowDensitySelect').value = inv.rowDensity;
-                updateRowDensity();
+                updateRowDensity(false);
             }
 
-            docType = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
             applyDocTypeUI();
+            applyAllSectionToggles();
 
             document.getElementById('toggleTva').checked = inv.tvaActive !== undefined ? inv.tvaActive : true;
             document.getElementById('tvaInput').value    = inv.tvaRate !== undefined ? inv.tvaRate : 0;
-            if (inv.currency) { currentCurrency = inv.currency; document.getElementById('currencySelect').value = inv.currency; updateCurrency(); }
+            if (inv.currency) { currentCurrency = inv.currency; document.getElementById('currencySelect').value = inv.currency; updateCurrency(false); }
             extraCharges = inv.extraCharges ? [...inv.extraCharges] : [];
-            invoiceItems = inv.itemsSnapshot.map(i => ({...i, purchasePrice: i.purchasePrice || 0}));
+            invoiceItems = inv.itemsSnapshot.map(i => ({ ...i, purchasePrice: i.purchasePrice || 0 }));
+            dismissPriceSyncBanner();
             syncInvoiceData(); renderInvoiceTable(); renderExtraCharges(); calculateTotals();
             toggleHistory(false);
         }
@@ -1303,63 +1815,79 @@ Tébessa - Algérie`;
         function renderHistoryTable() {
             const tbody  = document.getElementById('historyTableBody');
             const search = (document.getElementById('historySearch').value || '').toLowerCase();
+            const fType  = document.getElementById('historyTypeFilter').value;
             const fStat  = document.getElementById('historyStatusFilter').value;
             tbody.innerHTML = '';
-            let totalRev = 0, paid = 0, unpaid = 0;
 
-            const list = [...savedInvoices].reverse().filter(inv => {
-                const matchSearch = !search || inv.num.toLowerCase().includes(search) || inv.client.toLowerCase().includes(search);
-                const matchStat   = !fStat  || inv.status === fStat;
-                return matchSearch && matchStat;
-            });
+            let totalRev = 0, paid = 0, unpaid = 0;
+            let cntFac = 0, cntPro = 0, cntBL = 0;
 
             savedInvoices.forEach(inv => {
                 const t = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
                 if (t === 'facture') {
-                    if (inv.status === 'paid')   { totalRev += inv.total; paid++; }
+                    cntFac++;
+                    if (inv.status === 'paid') { totalRev += inv.total; paid++; }
                     if (inv.status === 'unpaid') unpaid++;
+                } else if (t === 'proforma') {
+                    cntPro++;
+                } else if (t === 'bl') {
+                    cntBL++;
                 }
             });
 
-            list.forEach(inv => {
-                const sc = STATUS_CONFIG[inv.status] || STATUS_CONFIG.unpaid;
-                let editBtnHtml = isAdmin ? `<button onclick="loadInvoiceForEditing(${inv.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded cursor-pointer" title="تعديل"><i class="fas fa-edit"></i></button>` : '';
-                let deleteBtnHtml = isAdmin ? `<button onclick="deleteInv(${inv.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded cursor-pointer" title="حذف"><i class="fas fa-trash"></i></button>` : '';
-                
-                const invType = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
-                let typeTag = '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">FACTURE</span>';
-                if (invType === 'proforma') {
-                    typeTag = '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">PROFORMA</span>';
-                } else if (invType === 'bl') {
-                    typeTag = '<span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">BON LIVRAISON</span>';
-                }
-
-                const amountDisplay = invType === 'bl' ? '—' : `${inv.total.toLocaleString('fr-FR')} ${inv.currency || 'DA'}`;
-
-                tbody.innerHTML += `
-                    <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="py-3 px-4 font-bold text-gray-900">${inv.num}</td>
-                        <td class="py-3 px-4">${typeTag}</td>
-                        <td class="py-3 px-4 text-gray-600 text-sm">${inv.date}</td>
-                        <td class="py-3 px-4 font-bold text-sm">${inv.client}</td>
-                        <td class="py-3 px-4 font-black text-right text-red-600">${amountDisplay}</td>
-                        <td class="py-3 px-4 text-center">
-                            <select onchange="updateInvStatus(${inv.id},this.value)" class="outline-none rounded-full px-3 py-1 font-bold text-xs ${sc.cls} cursor-pointer">
-                                <option value="paid" ${inv.status==='paid'?'selected':''}>Payée</option>
-                                <option value="unpaid" ${inv.status==='unpaid'?'selected':''}>Non payée</option>
-                                <option value="pending" ${inv.status==='pending'?'selected':''}>En attente</option>
-                                <option value="cancelled" ${inv.status==='cancelled'?'selected':''}>Annulée</option>
-                            </select>
-                        </td>
-                        <td class="py-3 px-4 text-center whitespace-nowrap">
-                            ${editBtnHtml}
-                            <button onclick="loadInvoiceForEditing(${inv.id})" class="text-teal-600 hover:bg-teal-100 p-1.5 rounded cursor-pointer" title="تحميل"><i class="fas fa-folder-open"></i></button>
-                            ${deleteBtnHtml}
-                        </td>
-                    </tr>`;
+            const list = [...savedInvoices].reverse().filter(inv => {
+                const t = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+                const matchSearch = !search || inv.num.toLowerCase().includes(search) || inv.client.toLowerCase().includes(search);
+                const matchType   = !fType  || t === fType;
+                const matchStat   = !fStat  || inv.status === fStat;
+                return matchSearch && matchType && matchStat;
             });
+
+            if (!list.length) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-gray-400 font-bold text-sm">Aucun document trouvé.</td></tr>`;
+            } else {
+                list.forEach(inv => {
+                    const sc = STATUS_CONFIG[inv.status] || STATUS_CONFIG.unpaid;
+                    const editBtnHtml = isAdmin ? `<button onclick="loadInvoiceForEditing(${inv.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded cursor-pointer" title="تعديل"><i class="fas fa-edit"></i></button>` : '';
+                    const deleteBtnHtml = isAdmin ? `<button onclick="deleteInv(${inv.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded cursor-pointer" title="حذف"><i class="fas fa-trash"></i></button>` : '';
+                    
+                    const invType = inv.docType || (inv.isProforma ? 'proforma' : 'facture');
+                    let typeTag = '<span class="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">FACTURE</span>';
+                    if (invType === 'proforma') {
+                        typeTag = '<span class="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">PROFORMA</span>';
+                    } else if (invType === 'bl') {
+                        typeTag = '<span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">BON LIVRAISON</span>';
+                    }
+
+                    const amountDisplay = invType === 'bl' ? '—' : `${inv.total.toLocaleString('fr-FR')} ${inv.currency || 'DA'}`;
+                    const statusControl = invType === 'facture'
+                        ? `<select onchange="updateInvStatus(${inv.id},this.value)" class="outline-none rounded-full px-3 py-1 font-bold text-xs ${sc.cls} cursor-pointer">
+                                <option value="paid" ${inv.status === 'paid' ? 'selected' : ''}>Payée</option>
+                                <option value="unpaid" ${inv.status === 'unpaid' ? 'selected' : ''}>Non payée</option>
+                                <option value="pending" ${inv.status === 'pending' ? 'selected' : ''}>En attente</option>
+                                <option value="cancelled" ${inv.status === 'cancelled' ? 'selected' : ''}>Annulée</option>
+                           </select>`
+                        : `<span class="text-[11px] font-bold text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">${invType === 'proforma' ? 'Devis / Proforma' : 'Livré'}</span>`;
+
+                    tbody.innerHTML += `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4 font-bold text-gray-900">${escapeHtml(inv.num)}</td>
+                            <td class="py-3 px-4">${typeTag}</td>
+                            <td class="py-3 px-4 text-gray-600 text-sm">${escapeHtml(inv.date)}</td>
+                            <td class="py-3 px-4 font-bold text-sm">${escapeHtml(inv.client)}</td>
+                            <td class="py-3 px-4 font-black text-right text-red-600">${amountDisplay}</td>
+                            <td class="py-3 px-4 text-center">${statusControl}</td>
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                ${editBtnHtml}
+                                <button onclick="loadInvoiceForEditing(${inv.id})" class="text-teal-600 hover:bg-teal-100 p-1.5 rounded cursor-pointer" title="تحميل"><i class="fas fa-folder-open"></i></button>
+                                ${deleteBtnHtml}
+                            </td>
+                        </tr>`;
+                });
+            }
 
             document.getElementById('statTotalInvoices').innerText = savedInvoices.length;
+            document.getElementById('statDocBreakdown').innerText = `${cntFac} فاتورة | ${cntPro} أولية | ${cntBL} تسليم`;
             document.getElementById('statPaid').innerText   = paid;
             document.getElementById('statUnpaid').innerText = unpaid;
             document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString('fr-FR') + ' DA';
@@ -1383,8 +1911,14 @@ Tébessa - Algérie`;
 
         function toggleCatalog(show) {
             const m = document.getElementById('catalogModal');
-            if (show) { inlineEditId = null; renderCatalog(); m.classList.remove('hidden'); }
-            else m.classList.add('hidden');
+            if (show) {
+                inlineEditId = null;
+                document.getElementById('catalogReverseSyncBanner').classList.add('hidden');
+                renderCatalog();
+                m.classList.remove('hidden');
+            } else {
+                m.classList.add('hidden');
+            }
         }
 
         function sortCatalog(by) {
@@ -1411,7 +1945,7 @@ Tébessa - Algérie`;
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-300 bg-blue-50">
                             <td class="py-2 px-2">
-                                <input type="text" id="inlineName_${item.id}" value="${item.name.replace(/"/g, '&quot;')}" class="w-full border-2 border-blue-300 rounded px-2 py-1.5 text-sm font-bold bg-white focus:outline-none focus:border-blue-500">
+                                <input type="text" id="inlineName_${item.id}" value="${escapeHtml(item.name)}" class="w-full border-2 border-blue-300 rounded px-2 py-1.5 text-sm font-bold bg-white focus:outline-none focus:border-blue-500">
                             </td>
                             ${isAdmin ? `
                             <td class="py-2 px-2">
@@ -1428,14 +1962,15 @@ Tébessa - Algérie`;
                             </td>
                         </tr>`;
                 } else {
+                    const safeJsName = item.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
                     tbody.innerHTML += `
                         <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
-                            <td class="py-2.5 px-4 font-bold text-gray-800">${item.name}</td>
+                            <td class="py-2.5 px-4 font-bold text-gray-800">${escapeHtml(item.name)}</td>
                             ${isAdmin ? `<td class="py-2.5 px-4 font-bold text-gray-500">${purchasePrice.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 font-black text-blue-700">${sellingPrice.toLocaleString('fr-FR')}</td>
                             ${isAdmin ? `<td class="py-2.5 px-4 font-black text-emerald-500" dir="ltr">+${profit.toLocaleString('fr-FR')}</td>` : ''}
                             <td class="py-2.5 px-4 text-center whitespace-nowrap">
-                                <button onclick="addInvoiceItem('${item.name.replace(/'/g,"\\'")}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded cursor-pointer" title="إضافة للوثيقة"><i class="fas fa-plus"></i></button>
+                                <button onclick="addInvoiceItem('${safeJsName}',1,${sellingPrice},${purchasePrice})" class="text-green-600 hover:bg-green-100 p-1.5 rounded cursor-pointer" title="إضافة للوثيقة"><i class="fas fa-plus"></i></button>
                                 <button onclick="startInlineEdit(${item.id})" class="text-blue-600 hover:bg-blue-100 p-1.5 rounded cursor-pointer" title="تعديل"><i class="fas fa-pen"></i></button>
                                 <button onclick="deleteFromCatalog(${item.id})" class="text-red-600 hover:bg-red-100 p-1.5 rounded cursor-pointer" title="حذف"><i class="fas fa-trash"></i></button>
                             </td>
@@ -1453,10 +1988,13 @@ Tébessa - Algérie`;
             const purchInput = document.getElementById(`inlinePurch_${id}`);
             const sellInput = document.getElementById(`inlineSell_${id}`);
             item.name = nameInput.value.trim() || item.name;
-            if(purchInput) item.purchasePrice = parseFloat(purchInput.value) || 0;
+            if (purchInput) item.purchasePrice = parseFloat(purchInput.value) || 0;
             item.price = parseFloat(sellInput.value) || 0;
             saveCatalog();
-            inlineEditId = null; renderCatalog();
+            inlineEditId = null;
+            renderCatalog();
+            renderInvoiceTable();
+            checkCatalogToInvoiceSync(item);
         }
 
         function addNewCatalogItem() {
@@ -1468,7 +2006,7 @@ Tébessa - Algérie`;
             catalogItems.push({ id: Date.now(), name, purchasePrice, price });
             saveCatalog(); renderCatalog(); 
             document.getElementById('newCatName').value = '';
-            if(purchInput) purchInput.value = '';
+            if (purchInput) purchInput.value = '';
             document.getElementById('newCatPrice').value = '';
         }
 
@@ -1484,7 +2022,7 @@ Tébessa - Algérie`;
             content.innerHTML = '<div class="text-white font-bold text-lg animate-pulse">⏳ Génération de l\'aperçu...</div>';
             modal.classList.remove('hidden');
             const noPrint = document.querySelectorAll('.no-print');
-            noPrint.forEach(el => el.style.setProperty('display','none','important'));
+            noPrint.forEach(el => el.style.setProperty('display', 'none', 'important'));
             setTimeout(async () => {
                 const pages = document.querySelectorAll('#invoice-container .page-a4');
                 content.innerHTML = '';
@@ -1511,27 +2049,233 @@ Tébessa - Algérie`;
             return 'Facture';
         }
 
+        // ================= تصدير Word محسّن ومنسّق خصيصاً لـ Microsoft Word =================
         function downloadWord() {
-            const container = document.getElementById('invoice-container');
-            const clone = container.cloneNode(true);
-            clone.querySelectorAll('input, textarea').forEach(el => {
-                const span = document.createElement('span');
-                span.textContent = el.value;
-                if (el.tagName === 'TEXTAREA') span.style.whiteSpace = 'pre-wrap';
-                el.parentNode.replaceChild(span, el);
-            });
-            clone.querySelectorAll('.no-print, button').forEach(el => el.remove());
-            const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
-            const safeName = document.getElementById('clientName').value.trim() || 'Client';
+            const isBL = (docType === 'bl');
+            const docTitleText = document.getElementById('invoiceTitle').innerText;
+            const invNum = document.getElementById('invoiceNum').value || '001';
+            const invDate = document.getElementById('invoiceDate').value || '';
+
+            const cName = document.getElementById('clientName').value.trim() || '/';
+            const cAddr = document.getElementById('clientAddress').value.trim() || '/';
+            const cNif  = document.getElementById('clientNif').value.trim() || '/';
+            const cRc   = document.getElementById('clientRc').value.trim() || '/';
+            const cTel  = document.getElementById('clientPhone').value.trim();
+            const cMail = document.getElementById('clientEmail').value.trim();
+
+            const showFrais = document.getElementById('chkToggleFrais').checked;
+            const showNotes = document.getElementById('chkToggleNotes').checked;
+            const showBank  = document.getElementById('chkToggleBank').checked;
+            const showHelper = !isBL && document.getElementById('chkTogglePriceHelper').checked;
+            const showRemise = !isBL && document.getElementById('chkToggleRemise').checked;
+            const showWords  = !isBL && document.getElementById('chkToggleWords').checked;
+            const showTva    = !isBL && document.getElementById('toggleTva').checked;
+
+            const safeNum  = invNum.replace(/[\\/:*?"<>|]/g, '-');
+            const safeName = (cName === '/' ? 'Client' : cName).replace(/[\\/:*?"<>|]/g, '_');
             const fileTitle = `${getDocFilePrefix()}_${safeNum}_${safeName}`;
-            const wordContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head><meta charset='utf-8'><title>${fileTitle}</title><style>body { font-family: Arial, sans-serif; margin: 10px; } table { width: 100%; border-collapse: collapse; margin-bottom: 10px; } th, td { border: 1px solid #ddd; padding: 2px; text-align: left; font-size: 9px; } th { background-color: #f2f2f2; }</style></head>
-            <body>${clone.innerHTML}</body></html>`;
-            const blob = new Blob(['\ufeff', wordContent], { type: 'application/msword' });
+
+            // صفوف جدول السلع (حذف أعمدة الأسعار نهائياً في Bon de Livraison)
+            let itemsHeaderHtml = isBL
+                ? `<tr>
+                        <th style="width:82%; text-align:left;">DÉSIGNATION</th>
+                        <th style="width:18%; text-align:center;">QTÉ</th>
+                   </tr>`
+                : `<tr>
+                        <th style="width:52%; text-align:left;">DÉSIGNATION</th>
+                        <th style="width:10%; text-align:center;">QTÉ</th>
+                        <th style="width:18%; text-align:center;">P.U HT (${escapeHtml(currentCurrency)})</th>
+                        <th style="width:20%; text-align:right;">TOTAL HT</th>
+                   </tr>`;
+
+            let itemsRowsHtml = invoiceItems.map((item, idx) => {
+                const bg = idx % 2 === 0 ? '#ffffff' : '#f9fafb';
+                if (isBL) {
+                    return `<tr style="background:${bg};">
+                        <td style="font-weight:bold;">${escapeHtml(item.name)}</td>
+                        <td style="text-align:center; font-weight:bold;">${item.qty}</td>
+                    </tr>`;
+                }
+                const lineTotal = (item.qty * item.price).toLocaleString('fr-FR');
+                return `<tr style="background:${bg};">
+                    <td style="font-weight:bold;">${escapeHtml(item.name)}</td>
+                    <td style="text-align:center; font-weight:bold;">${item.qty}</td>
+                    <td style="text-align:center;">${Number(item.price).toLocaleString('fr-FR')}</td>
+                    <td style="text-align:right; font-weight:bold;">${lineTotal}</td>
+                </tr>`;
+            }).join('');
+
+            // قسم التفاصيل السفلية اليسرى
+            let leftBoxes = '';
+            if (showFrais && extraCharges.length > 0) {
+                const fraisRows = extraCharges.map(c =>
+                    `<div>• ${escapeHtml(c.label)}${isBL ? '' : ` : <b>${Number(c.amount || 0).toLocaleString('fr-FR')} ${escapeHtml(currentCurrency)}</b>`}</div>`
+                ).join('');
+                leftBoxes += `<div class="box"><div class="box-title">${isBL ? 'Détails supplémentaires :' : 'Frais supplémentaires :'}</div>${fraisRows}</div>`;
+            }
+            if (showNotes) {
+                const notesTxt = escapeHtml(document.getElementById('invoiceNotes').value).replace(/\n/g, '<br>');
+                leftBoxes += `<div class="box"><div class="box-title">Notes / Remarques :</div><div>${notesTxt}</div></div>`;
+            }
+            if (showBank) {
+                leftBoxes += `<div class="box"><div class="box-title">Coordonnées Bancaires :</div>
+                    <div><b>Nom :</b> MESSAOUDI AHMED EL MOKHTAR</div>
+                    <div><b>N° compte :</b> 00100491030000209946</div>
+                </div>`;
+            }
+
+            // جدول المجاميع (يُحذف نهائياً في Bon de Livraison)
+            let totalsHtml = '';
+            if (!isBL) {
+                const totalFrais = showFrais ? extraCharges.reduce((s, c) => s + (parseFloat(c.amount) || 0), 0) : 0;
+                const tvaRate = parseFloat(document.getElementById('tvaInput').value) || 0;
+                const helperLabel = escapeHtml(document.getElementById('priceHelperLabel').value || 'Remise / Autre');
+                const helperVal = parseFloat(document.getElementById('priceHelperInput').value) || 0;
+                const remiseVal = parseFloat(document.getElementById('remiseInput').value) || 0;
+
+                totalsHtml = `<table class="totals-table">
+                    <tr><td class="lbl">Total HT</td><td class="val">${escapeHtml(document.getElementById('valSousTotal').innerText)}</td></tr>
+                    ${totalFrais > 0 && showFrais ? `<tr><td class="lbl">Frais Supp.</td><td class="val">${escapeHtml(document.getElementById('valFrais').innerText)}</td></tr>` : ''}
+                    ${showTva ? `<tr><td class="lbl">TVA (${tvaRate}%)</td><td class="val">${escapeHtml(document.getElementById('valTva').innerText)}</td></tr>` : ''}
+                    ${showHelper ? `<tr><td class="lbl">${helperLabel}</td><td class="val">${helperVal.toLocaleString('fr-FR')} ${escapeHtml(currentCurrency)}</td></tr>` : ''}
+                    ${showRemise ? `<tr><td class="lbl">Versement</td><td class="val">${remiseVal.toLocaleString('fr-FR')} ${escapeHtml(currentCurrency)}</td></tr>` : ''}
+                    <tr><td class="lbl"><b>Total TTC</b></td><td class="val" style="color:#dc2626;"><b>${escapeHtml(document.getElementById('valTotalTtc').innerText)}</b></td></tr>
+                    <tr class="net-row"><td class="lbl" style="background:#1f2937;color:#ffffff;">NET À PAYER</td><td class="val" style="background:#1f2937;color:#f87171;">${escapeHtml(document.getElementById('valNetAPayer').innerText)}</td></tr>
+                </table>`;
+            }
+
+            const bottomLayoutHtml = isBL
+                ? (leftBoxes ? `<div style="margin-top:8px;">${leftBoxes}</div>` : '')
+                : `<table class="layout-table" style="margin-top:8px;">
+                    <tr>
+                        <td style="width:56%; vertical-align:top; padding-right:8px;">${leftBoxes}</td>
+                        <td style="width:44%; vertical-align:top;">${totalsHtml}</td>
+                    </tr>
+                   </table>`;
+
+            const wordsHtml = showWords
+                ? `<div class="box" style="margin-top:6px;"><b>Arrêtée la présente facture à la somme de :</b> <i>${escapeHtml(document.getElementById('amountInWords').value)}</i></div>`
+                : '';
+
+            // التوقيعات
+            const signaturesHtml = isBL
+                ? `<table class="layout-table" style="margin-top:16px;">
+                    <tr>
+                        <td style="width:55%; vertical-align:top; border:1px solid #d1d5db; padding:8px; background:#f9fafb;">
+                            <div style="font-weight:bold; border-bottom:1px solid #d1d5db; padding-bottom:3px; margin-bottom:4px;">Réceptionnaire / Signature du client</div>
+                            <div style="font-size:8.5pt; font-style:italic; color:#4b5563; margin-bottom:26px;">Je soussigné(e) déclare avoir reçu le matériel ci-dessus en bon état et conforme.</div>
+                            <div style="font-size:8.5pt; font-weight:bold; border-top:1px dashed #9ca3af; padding-top:4px;">Nom &amp; Prénom : .................................. &nbsp;&nbsp; Date &amp; Signature</div>
+                        </td>
+                        <td style="width:45%; vertical-align:bottom; text-align:center; padding:8px;">
+                            <div style="display:inline-block; font-weight:bold; border-bottom:1px solid #1f2937; padding:0 28px 3px 28px;">Cachet &amp; Signature</div>
+                            <div style="font-size:8pt; color:#6b7280; margin-top:3px;">DAFIS SOLUTIONS</div>
+                        </td>
+                    </tr>
+                   </table>`
+                : `<table class="layout-table" style="margin-top:18px;">
+                    <tr>
+                        <td style="width:60%;"></td>
+                        <td style="width:40%; text-align:center;">
+                            <div style="display:inline-block; font-weight:bold; border-bottom:1px solid #1f2937; padding:0 28px 3px 28px;">Cachet &amp; Signature</div>
+                        </td>
+                    </tr>
+                   </table>`;
+
+            const wordContent = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>${escapeHtml(fileTitle)}</title>
+<!--[if gte mso 9]>
+<xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml>
+<![endif]-->
+<style>
+    @page WordSection1 { size: 210mm 297mm; margin: 10mm 12mm 10mm 12mm; mso-header-margin: 5mm; mso-footer-margin: 5mm; }
+    div.WordSection1 { page: WordSection1; }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #111827; margin: 0; }
+    table { border-collapse: collapse; width: 100%; }
+    .layout-table td { border: none; padding: 0; }
+    .info-box { border: 1px solid #d1d5db; padding: 6px 8px; font-size: 8.5pt; line-height: 1.35; }
+    .info-title { font-weight: bold; border-bottom: 1px solid #e5e7eb; padding-bottom: 2px; margin-bottom: 4px; }
+    .items-table { margin-top: 8px; }
+    .items-table th { background: #1f2937; color: #ffffff; font-size: 8.5pt; padding: 5px 6px; border: 1px solid #1f2937; }
+    .items-table td { font-size: 8.5pt; padding: 4px 6px; border: 1px solid #d1d5db; }
+    .totals-table td { font-size: 8.5pt; padding: 3px 6px; border: 1px solid #d1d5db; }
+    .totals-table .lbl { background: #f3f4f6; font-weight: bold; width: 52%; }
+    .totals-table .val { text-align: right; font-weight: bold; }
+    .box { border: 1px solid #d1d5db; background: #f9fafb; padding: 5px 7px; margin-bottom: 5px; font-size: 8.5pt; line-height: 1.3; }
+    .box-title { font-weight: bold; border-bottom: 1px solid #e5e7eb; padding-bottom: 2px; margin-bottom: 3px; }
+    .footer { margin-top: 14px; padding-top: 5px; border-top: 2px solid #1f2937; font-size: 8pt; color: #374151; line-height: 1.35; }
+</style>
+</head>
+<body>
+<div class="WordSection1">
+    <table class="layout-table" style="border-bottom:2px solid #1f2937; padding-bottom:6px; margin-bottom:8px;">
+        <tr>
+            <td style="width:55%; vertical-align:middle; padding-bottom:6px;">
+                <div style="font-size:17pt; font-weight:900; color:#dc2626; letter-spacing:1px;">DAFIS SOLUTIONS</div>
+                <div style="font-size:8.5pt; font-weight:bold; color:#1f2937;">AGRÉE PAR L'ÉTAT — Solutions de Télésurveillance &amp; Réseaux</div>
+            </td>
+            <td style="width:45%; text-align:right; vertical-align:middle; padding-bottom:6px;">
+                <div style="font-size:14pt; font-weight:900; color:#111827; letter-spacing:1px;">${escapeHtml(docTitleText)}</div>
+                <div style="font-size:9.5pt; font-weight:bold; color:#dc2626;">N° : ${escapeHtml(invNum)}</div>
+                <div style="font-size:8.5pt; font-weight:bold; color:#374151;">DATE : ${escapeHtml(invDate)}</div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="layout-table">
+        <tr>
+            <td style="width:49%; vertical-align:top; padding-right:5px;">
+                <div class="info-box" style="background:#f9fafb;">
+                    <div class="info-title" style="color:#dc2626;">VENDEUR : DAFIS SOLUTIONS</div>
+                    <div><b>Adresse :</b> /</div>
+                    <div><b>NIF :</b> 10012010442118800000</div>
+                    <div><b>NIS :</b> 100012010442176</div>
+                    <div><b>RC :</b> 23A2954240</div>
+                    <div><b>Code Act. :</b> 504206/507202/607002/613139</div>
+                    <div><b>AI :</b> 1201/1304032</div>
+                </div>
+            </td>
+            <td style="width:2%;"></td>
+            <td style="width:49%; vertical-align:top;">
+                <div class="info-box">
+                    <div class="info-title" style="color:#1f2937;">CLIENT</div>
+                    <div><b>Nom / Raison :</b> ${escapeHtml(cName)}</div>
+                    <div><b>Adresse :</b> ${escapeHtml(cAddr)}</div>
+                    <div><b>NIF :</b> ${escapeHtml(cNif)}</div>
+                    <div><b>NIS / RC :</b> ${escapeHtml(cRc)}</div>
+                    ${cTel ? `<div><b>Tél :</b> ${escapeHtml(cTel)}</div>` : ''}
+                    ${cMail ? `<div><b>Email :</b> ${escapeHtml(cMail)}</div>` : ''}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="items-table">
+        <thead>${itemsHeaderHtml}</thead>
+        <tbody>${itemsRowsHtml}</tbody>
+    </table>
+
+    ${bottomLayoutHtml}
+    ${wordsHtml}
+    ${signaturesHtml}
+
+    <div class="footer">
+        <b>Email :</b> contact.dafisolutions@gmail.com &nbsp;|&nbsp; <b>Tél :</b> 06 59 84 96 56 / 07 95 98 33 37<br>
+        <b>Web :</b> https://dafis-solutions.github.io/HOME/ &nbsp;|&nbsp; <b>Adresse :</b> Tébessa, 12004 - Algérie
+    </div>
+</div>
+</body>
+</html>`;
+
+            const blob = new Blob(['\ufeff', wordContent], { type: 'application/msword;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = `${fileTitle}.doc`;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            a.href = url;
+            a.download = `${fileTitle}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
@@ -1541,7 +2285,7 @@ Tébessa - Algérie`;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري...';
             btn.disabled = true;
             const noPrint = document.querySelectorAll('.no-print');
-            noPrint.forEach(el => el.style.setProperty('display','none','important'));
+            noPrint.forEach(el => el.style.setProperty('display', 'none', 'important'));
             const replacements = [];
             document.querySelectorAll('#invoice-container input, #invoice-container textarea').forEach(el => {
                 const isTA = el.tagName === 'TEXTAREA';
@@ -1563,8 +2307,8 @@ Tébessa - Algérie`;
             };
             try {
                 const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait', compress:true });
-                const canvasOpts = { scale:2, useCORS:true, allowTaint:true, logging:false, backgroundColor:'#ffffff' };
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+                const canvasOpts = { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' };
                 const pages = document.querySelectorAll('#invoice-container .page-a4');
                 for (let i = 0; i < pages.length; i++) {
                     if (i > 0) doc.addPage();
@@ -1572,12 +2316,15 @@ Tébessa - Algérie`;
                     const imgData = canvas.toDataURL('image/jpeg', 0.97);
                     doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
                 }
-                const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/\//g,'-');
-                const safeName = document.getElementById('clientName').value.trim() || 'Client';
+                const safeNum  = (document.getElementById('invoiceNum').value || '001').replace(/[\\/:*?"<>|]/g, '-');
+                const safeName = (document.getElementById('clientName').value.trim() || 'Client').replace(/[\\/:*?"<>|]/g, '_');
                 doc.save(`${getDocFilePrefix()}_${safeNum}_${safeName}.pdf`);
-            } catch(err) {
-                alert('Erreur PDF : ' + err.message);
-            } finally { restore(); }
+            } catch (err) {
+                console.error('PDF generation error:', err);
+                alert('❌ حدث خطأ أثناء إنشاء ملف PDF.');
+            } finally {
+                restore();
+            }
         }
     </script>
 </body>
